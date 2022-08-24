@@ -227,7 +227,6 @@
   )
 
 
-
   (wire (pts (xy 160.02 130.81) (xy 160.02 133.35))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 3a65531b-d75b-469f-aaa2-80aecc409f73)
@@ -876,6 +875,9 @@
     (path "/e0d036b0-8434-43ae-8afe-6f2e24cac785"
       (reference "#PWR0105") (unit 1) (value "GND") (footprint "")
     )
+    (path "/8ae04189-9a62-4c2c-b6af-68aaa5063c12/f3e2448b-8d87-475d-aa92-23818f919a47"
+      (reference "#PWR0106") (unit 1) (value "GND") (footprint "")
+    )
     (path "/b660bab9-7028-47fa-8717-20664ec48a2d/40b3b223-7cdc-4666-8a5b-751ce49ff388"
       (reference "C1") (unit 1) (value "10n") (footprint "Capacitor_SMD:C_0402_1005Metric")
     )
@@ -1066,16 +1068,10 @@
       (reference "R7") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/964ae28e-f607-41fc-a426-1e07a5300055/94ae4ea8-a12c-446a-a532-9fad48450a1f"
-      (reference "R8") (unit 1) (value "13") (footprint "Resistor_SMD:R_2512_6332Metric")
+      (reference "R8") (unit 1) (value "6R2") (footprint "Resistor_SMD:R_2512_6332Metric")
     )
     (path "/964ae28e-f607-41fc-a426-1e07a5300055/6a902b7d-baf7-4b1e-954d-43b1315883d7"
-      (reference "R9") (unit 1) (value "13") (footprint "Resistor_SMD:R_2512_6332Metric")
-    )
-    (path "/964ae28e-f607-41fc-a426-1e07a5300055/449882b2-2428-4ac0-a9f5-9e023c1c2c56"
-      (reference "R10") (unit 1) (value "13") (footprint "Resistor_SMD:R_2512_6332Metric")
-    )
-    (path "/964ae28e-f607-41fc-a426-1e07a5300055/4a05322c-0fbd-4041-acaf-e0b38d2ce9e1"
-      (reference "R11") (unit 1) (value "13") (footprint "Resistor_SMD:R_2512_6332Metric")
+      (reference "R9") (unit 1) (value "6R2") (footprint "Resistor_SMD:R_2512_6332Metric")
     )
     (path "/964ae28e-f607-41fc-a426-1e07a5300055/4ad866eb-6c3f-4f5c-8932-a8a1da3109e4"
       (reference "R12") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0402_1005Metric")
@@ -1155,7 +1151,7 @@
     (path "/ea7adce2-e0fd-4d7d-bbac-e62f6044a9b5/5e7d3e3a-5376-4a3e-b641-7930449bc58d"
       (reference "U9") (unit 1) (value "MIC5528-3.3YMT-TR") (footprint "LibreCAL:DFN-6-1EP_1.2x1.2mm_P0.4mm_EP0.3x0.94mm")
     )
-    (path "/8ae04189-9a62-4c2c-b6af-68aaa5063c12/7f085394-82e5-42f7-a3ec-149545768d20"
+    (path "/8ae04189-9a62-4c2c-b6af-68aaa5063c12/238f1ad5-220b-47e5-9b49-d3c91cdd8927"
       (reference "Y1") (unit 1) (value "ECS-120-8-36-CKM-TR3") (footprint "Crystal:Crystal_SMD_2520-4Pin_2.5x2.0mm")
     )
   )

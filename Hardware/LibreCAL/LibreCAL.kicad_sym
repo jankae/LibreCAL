@@ -249,7 +249,7 @@
         (name "RF2" (effects (font (size 1.27 1.27))))
         (number "2" (effects (font (size 1.27 1.27))))
       )
-      (pin no_connect line (at -17.78 -7.62 0) (length 2.54)
+      (pin passive line (at -17.78 -7.62 0) (length 2.54)
         (name "NC" (effects (font (size 1.27 1.27))))
         (number "20" (effects (font (size 1.27 1.27))))
       )
