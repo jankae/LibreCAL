@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "LibreCAL")(type "KiCad")(uri "${KIPRJMOD}/LibreCAL.pretty")(options "")(descr ""))
+)

@@ -1,0 +1,78 @@
+\documentclass[border=10pt]{standalone}  
+\usepackage{tikz}
+\usepackage[european,siunitx,rotatelabels]{circuitikzgit}
+\usetikzlibrary{arrows,calc,positioning}
+\usetikzlibrary{arrows.meta,decorations.markings}
+
+  \tikzset{
+         Heat/.style={
+         draw=none,
+         inner color=red,%you can erase this line
+         outer color=yellow, %you can erase this line
+            postaction={
+                decorate,
+                rounded corners=2pt,
+                decoration={
+                    markings,
+                    mark=between positions 6pt and 55pt step 9pt
+                    with {
+                        \draw[-Triangle,red,line width=0.5pt](0,0)
+                            --++(0.1,0.1)
+                            --++(-0.2,0.1)
+                            --++(0.1,0.1)
+                            --++(0,0.2);
+                    }
+                }
+            }
+      }
+  }
+
+\begin{document} 
+
+\begin{circuitikz}
+% switches
+\node[rotary switch <->=6 in 90 wiper 0, anchor=out 1](switch1) at (-3,3) {};
+\node[rotary switch <->=6 in 90 wiper 0, anchor=out 1, xscale =-1](switch2) at (3,3){};
+\node[rotary switch <->=6 in 90 wiper 0, anchor=out 1](switch3) at (-3,-3){};
+\node[rotary switch <->=6 in 90 wiper 0, anchor=out 1, xscale =-1](switch4) at (3,-3){};
+\node at (1.6,-0.75){4x PE426462};
+
+% Ports
+\draw (switch1.in) to[short,-o] ++(-2,0) node[left]{Port 1};
+\draw (switch2.in) to[short,-o] ++(2,0) node[right]{Port 2};
+\draw (switch3.in) to[short,-o] ++(-2,0) node[left]{Port 3};
+\draw (switch4.in) to[short,-o] ++(2,0) node[right]{Port 4};
+
+% Throughs
+\draw (switch1.out 6)--(switch3.out 1);
+\draw (switch2.out 6)--(switch4.out 1);
+\draw (switch1.out 1)|-++(0,0.5)-|(switch2.out 1);
+\draw (switch3.out 6)|-++(0,-0.5)-|(switch4.out 6);
+\draw (switch1.out 5)--(switch4.out 2);
+\draw (switch2.out 5)--(switch3.out 2);
+
+% Shorts
+\draw (switch1.out 3)-|++(0.5, -0.5) node[ground]{};
+\draw (switch2.out 3)-|++(-0.5, -0.5) node[ground]{};
+\draw (switch3.out 4)-|++(0.5, -0.1) node[ground]{};
+\draw (switch4.out 4)-|++(-0.5, -0.1) node[ground]{};
+
+% Loads
+\draw (switch1.out 2) to[R, l=$50\Omega$] ++(2,0) -| ++(0,-0.2) node[ground]{};
+\draw (switch2.out 2)++(-2,-0.2) node[ground]{}|-++(0,0.2) to[R, l=$50\Omega$] ++(2,0);
+\draw (switch3.out 3) to[R, l=$50\Omega$] ++(2,0) -| ++(0,-0.2) node[ground]{};
+\draw (switch4.out 3)++(-2,-0.2) node[ground]{}|-++(0,0.2) to[R, l=$50\Omega$] ++(2,0);
+
+% Thermal control
+\node[draw,dashed, minimum width=8cm,minimum height=12cm](thermal) at (0,-2){};
+\node[anchor=south] at (thermal.north) {Dashed part is thermally isolated};
+\node[draw,minimum width=8cm, minimum height=2cm](rp) at (0,-10){RP2040/Flash/Power supply};
+\draw (rp.north)++(-3,0)--++(0,2) to[thRn=$NTC$] ++(2,0) --++(0,-2);
+\draw (rp.north)++(1,0)--++(0,2) to[R,l_=$Heater$,n=heater] ++(2,0) --++(0,-2);
+\draw[Heat](heater.north west) -- (heater.north east);
+
+% USB
+\draw (rp.south) to[short,-o]++(0,-1) node[below]{USB};
+
+\end{circuitikz}
+\end{document}
