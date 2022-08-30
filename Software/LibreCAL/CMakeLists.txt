@@ -30,15 +30,14 @@ target_include_directories(FreeRTOS PUBLIC
 )
 
 file(GLOB LibreCAL_src
-     "src/*.h"
      "src/*.c"
-     "src/*/*.h"
-     "src/*/*.c"
+     "src/USB/*.c"
 )
 add_executable(LibreCAL ${LibreCAL_src})
 
 target_include_directories(LibreCAL PUBLIC
 	src
+	src/USB
     ${FREERTOS_SRC_DIRECTORY}/include
 )
 
