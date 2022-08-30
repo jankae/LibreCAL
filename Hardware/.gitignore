@@ -28,6 +28,8 @@ fp-info-cache
 # Exported BOM files
 *.xml
 *.csv
+# But include the explicitly copied BOM file in this folder
+!BOM.csv
 
 Datasheets
 
