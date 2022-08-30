@@ -32,8 +32,8 @@
   (pad "3" thru_hole circle (at -3.96 1.22) (size 1.4 1.4) (drill 1.14) (layers *.Cu *.Mask) (tstamp b45b672e-b2b3-4eec-b6c0-742f4f9bcf0f))
   (pad "4" thru_hole circle (at -1.75 -1.22) (size 1.4 1.4) (drill 1.14) (layers *.Cu *.Mask) (tstamp 611f9dd7-f684-4dd4-a256-cac290e14525))
   (pad "5" thru_hole circle (at -3.96 -1.22) (size 1.4 1.4) (drill 1.14) (layers *.Cu *.Mask) (tstamp 82fbd3f1-2e9f-4f2e-a162-6126846d090d))
-  (pad "6" smd rect (at -2.77 2.2875) (size 5.54 3.555) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 48d7e0b3-355f-4f57-a2c0-b751d3106a6e))
   (pad "6" smd rect (at -2.77 -2.2875) (size 5.54 3.555) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp b0b08eed-e6b4-4789-ad64-71b7fd240c14))
+  (pad "7" smd rect (at -2.77 2.2875) (size 5.54 3.555) (layers "F.Cu" "F.Paste" "F.Mask") (tstamp 48d7e0b3-355f-4f57-a2c0-b751d3106a6e))
   (model "${KIPRJMOD}/KiCad3DFiles/901-10510-2.stp"
     (offset (xyz 9.53 0 0.1))
     (scale (xyz 1 1 1))

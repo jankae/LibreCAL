@@ -273,7 +273,6 @@
   )
 
 
-
   (wire (pts (xy 124.46 154.94) (xy 124.46 157.48))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 3a65531b-d75b-469f-aaa2-80aecc409f73)
@@ -317,6 +316,23 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid a103fb8d-9075-449d-9db4-4bc036d99f95))
+  )
+
+  (symbol (lib_id "LibreCAL:Cover") (at 72.39 154.94 0) (unit 1)
+    (in_bom no) (on_board yes) (fields_autoplaced)
+    (uuid 3789b0ae-08e6-4dfa-af0f-48751ba38e44)
+    (property "Reference" "COVER2" (id 0) (at 78.74 152.3999 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "Bottom Cover" (id 1) (at 78.74 154.9399 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "LibreCAL:BottomCover" (id 2) (at 72.39 154.94 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "" (id 3) (at 72.39 154.94 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
   )
 
   (symbol (lib_id "Mechanical:MountingHole_Pad") (at 149.86 176.53 0) (unit 1)
@@ -455,19 +471,19 @@
     (pin "1" (uuid 4b9dab40-b40c-4bc7-a6be-26bf8cbaa480))
   )
 
-  (symbol (lib_id "LibreCAL:Cover") (at 72.39 156.21 0) (unit 1)
+  (symbol (lib_id "LibreCAL:Cover") (at 46.99 154.94 0) (unit 1)
     (in_bom no) (on_board yes) (fields_autoplaced)
-    (uuid ac162879-7480-449d-8f17-09ac1fe716ba)
-    (property "Reference" "COVER2" (id 0) (at 78.74 153.6699 0)
+    (uuid a5774e18-31e1-4bb5-a8f4-b8516b668c1a)
+    (property "Reference" "COVER1" (id 0) (at 53.34 152.3999 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "Bottom Cover" (id 1) (at 78.74 156.2099 0)
+    (property "Value" "Top Cover" (id 1) (at 53.34 154.9399 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Footprint" "LibreCAL:BottomCover" (id 2) (at 72.39 156.21 0)
+    (property "Footprint" "LibreCAL:TopCover" (id 2) (at 46.99 154.94 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Datasheet" "" (id 3) (at 72.39 156.21 0)
+    (property "Datasheet" "" (id 3) (at 46.99 154.94 0)
       (effects (font (size 1.27 1.27)) hide)
     )
   )
@@ -540,23 +556,6 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid eac260da-6446-4804-881f-fca5aa233776))
-  )
-
-  (symbol (lib_id "LibreCAL:Cover") (at 46.99 156.21 0) (unit 1)
-    (in_bom no) (on_board yes) (fields_autoplaced)
-    (uuid dcda2e3f-39cb-4b5d-a0f7-3f67f2dd2c02)
-    (property "Reference" "COVER1" (id 0) (at 53.34 153.6699 0)
-      (effects (font (size 1.27 1.27)) (justify left))
-    )
-    (property "Value" "Top Cover" (id 1) (at 53.34 156.2099 0)
-      (effects (font (size 1.27 1.27)) (justify left))
-    )
-    (property "Footprint" "LibreCAL:TopCover" (id 2) (at 46.99 156.21 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
-    (property "Datasheet" "" (id 3) (at 46.99 156.21 0)
-      (effects (font (size 1.27 1.27)) hide)
-    )
   )
 
   (symbol (lib_id "power:GND") (at 151.13 157.48 0) (unit 1)
@@ -1231,10 +1230,10 @@
     (path "/964ae28e-f607-41fc-a426-1e07a5300055/abcff090-2be5-44bc-bf0a-ad755299e88d"
       (reference "C50") (unit 1) (value "NFM18CC223R1C3D") (footprint "LibreCAL:NFM18CC")
     )
-    (path "/dcda2e3f-39cb-4b5d-a0f7-3f67f2dd2c02"
+    (path "/a5774e18-31e1-4bb5-a8f4-b8516b668c1a"
       (reference "COVER1") (unit 1) (value "Top Cover") (footprint "LibreCAL:TopCover")
     )
-    (path "/ac162879-7480-449d-8f17-09ac1fe716ba"
+    (path "/3789b0ae-08e6-4dfa-af0f-48751ba38e44"
       (reference "COVER2") (unit 1) (value "Bottom Cover") (footprint "LibreCAL:BottomCover")
     )
     (path "/7cda3f62-10ef-4aa0-b16d-0105fed08f28/5d5ef986-e027-49b3-9d19-9548be20ff28"
