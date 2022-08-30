@@ -37,3 +37,6 @@ Datasheets
 *.out
 *.synctex.gz
 *.toc
+
+/Screenshots/
+

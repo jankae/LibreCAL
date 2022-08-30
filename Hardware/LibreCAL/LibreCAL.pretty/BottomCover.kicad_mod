@@ -1,0 +1,18 @@
+(footprint "BottomCover" (version 20211014) (generator pcbnew)
+  (layer "F.Cu")
+  (tedit 0)
+  (fp_text reference "REF**" (at 0 -0.5 unlocked) (layer "F.SilkS") hide
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 6aeb8ad2-28c7-4dd8-b1e2-1bdc9cc50aea)
+  )
+  (fp_text value "BottomCover" (at 0 1 unlocked) (layer "F.Fab") hide
+    (effects (font (size 1 1) (thickness 0.15)))
+    (tstamp 23f64b6a-e200-46bd-8a38-a7b044cc3a47)
+  )
+  (fp_rect (start 0 0) (end 55 -65.5) (layer "F.Fab") (width 0.1) (fill none) (tstamp 1b006da3-58cf-4535-b530-a1edec323018))
+  (model "${KIPRJMOD}/KiCad3DFiles/BottomCover.step"
+    (offset (xyz 55 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 180 0))
+  )
+)

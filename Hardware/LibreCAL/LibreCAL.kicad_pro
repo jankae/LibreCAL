@@ -45,7 +45,7 @@
         "silk_text_upright": false,
         "zones": {
           "45_degree_only": false,
-          "min_clearance": 0.36
+          "min_clearance": 0.19999999999999998
         }
       },
       "diff_pair_dimensions": [
@@ -55,7 +55,32 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "copper_edge_clearance|100000000|100510000|4b22f502-fdcb-4636-89f3-5a9c16353da9|3e63cd76-2b60-4639-bd45-58a282c67f09",
+        "copper_edge_clearance|100000000|72935000|4b22f502-fdcb-4636-89f3-5a9c16353da9|1f9fff30-86c9-41f0-9c7d-5f559e1a0a38",
+        "copper_edge_clearance|100000000|77510000|4b22f502-fdcb-4636-89f3-5a9c16353da9|fd009281-37d8-4867-a5b2-a58dee9db012",
+        "copper_edge_clearance|100000000|80935000|4b22f502-fdcb-4636-89f3-5a9c16353da9|1f9fff30-86c9-41f0-9c7d-5f559e1a0a38",
+        "copper_edge_clearance|100000000|85510000|4b22f502-fdcb-4636-89f3-5a9c16353da9|fd009281-37d8-4867-a5b2-a58dee9db012",
+        "copper_edge_clearance|100000000|87935000|4b22f502-fdcb-4636-89f3-5a9c16353da9|adc8273c-6270-4acc-bf56-1f4726e36e4c",
+        "copper_edge_clearance|100000000|92510000|4b22f502-fdcb-4636-89f3-5a9c16353da9|3e63cd76-2b60-4639-bd45-58a282c67f09",
+        "copper_edge_clearance|100000000|95935000|4b22f502-fdcb-4636-89f3-5a9c16353da9|adc8273c-6270-4acc-bf56-1f4726e36e4c",
+        "copper_edge_clearance|100075000|76925000|4b22f502-fdcb-4636-89f3-5a9c16353da9|52a3314f-764f-4ae5-93e1-24b793ee887c",
+        "copper_edge_clearance|100075000|84925000|4b22f502-fdcb-4636-89f3-5a9c16353da9|52a3314f-764f-4ae5-93e1-24b793ee887c",
+        "copper_edge_clearance|100075000|91925000|4b22f502-fdcb-4636-89f3-5a9c16353da9|2d9a22b5-39ff-499d-be57-a7f666056663",
+        "copper_edge_clearance|100075000|99925000|4b22f502-fdcb-4636-89f3-5a9c16353da9|2d9a22b5-39ff-499d-be57-a7f666056663",
+        "copper_edge_clearance|154925000|100075000|928094dd-7268-4c32-b884-cff1bd1b1c21|1ca9c8c0-2271-4b91-9dc9-eb03a724f37a",
+        "copper_edge_clearance|154925000|77075000|928094dd-7268-4c32-b884-cff1bd1b1c21|97fb1a6f-aec6-4bb4-8293-98c6b43144dd",
+        "copper_edge_clearance|154925000|85075000|928094dd-7268-4c32-b884-cff1bd1b1c21|97fb1a6f-aec6-4bb4-8293-98c6b43144dd",
+        "copper_edge_clearance|154925000|92075000|928094dd-7268-4c32-b884-cff1bd1b1c21|1ca9c8c0-2271-4b91-9dc9-eb03a724f37a",
+        "copper_edge_clearance|155000000|104065000|928094dd-7268-4c32-b884-cff1bd1b1c21|0bc7fbc6-7a21-45d8-8ae7-255634b9ad0c",
+        "copper_edge_clearance|155000000|76490000|928094dd-7268-4c32-b884-cff1bd1b1c21|2757717e-3325-408d-8bd5-b8af5d9ddb24",
+        "copper_edge_clearance|155000000|81065000|928094dd-7268-4c32-b884-cff1bd1b1c21|e52d69c8-e56b-4abb-ada6-0aa11dde8956",
+        "copper_edge_clearance|155000000|84490000|928094dd-7268-4c32-b884-cff1bd1b1c21|2757717e-3325-408d-8bd5-b8af5d9ddb24",
+        "copper_edge_clearance|155000000|89065000|928094dd-7268-4c32-b884-cff1bd1b1c21|e52d69c8-e56b-4abb-ada6-0aa11dde8956",
+        "copper_edge_clearance|155000000|91490000|928094dd-7268-4c32-b884-cff1bd1b1c21|a6e3ba7b-b5be-4eab-a791-f11feb6c4c11",
+        "copper_edge_clearance|155000000|96065000|928094dd-7268-4c32-b884-cff1bd1b1c21|0bc7fbc6-7a21-45d8-8ae7-255634b9ad0c",
+        "copper_edge_clearance|155000000|99490000|928094dd-7268-4c32-b884-cff1bd1b1c21|a6e3ba7b-b5be-4eab-a791-f11feb6c4c11"
+      ],
       "meta": {
         "version": 2
       },
@@ -104,9 +129,9 @@
         "allow_microvias": false,
         "max_error": 0.005,
         "min_clearance": 0.15,
-        "min_copper_edge_clearance": 0.3,
+        "min_copper_edge_clearance": 0.19999999999999998,
         "min_hole_clearance": 0.25,
-        "min_hole_to_hole": 0.39999999999999997,
+        "min_hole_to_hole": 0.3,
         "min_microvia_diameter": 0.19999999999999998,
         "min_microvia_drill": 0.09999999999999999,
         "min_silk_clearance": 0.0,
@@ -120,6 +145,7 @@
       },
       "track_widths": [
         0.0,
+        0.18,
         0.2,
         0.3,
         0.5,
@@ -392,7 +418,7 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "../LibreCAL.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""
@@ -429,7 +455,7 @@
       "workbook_filename": ""
     },
     "page_layout_descr_file": "",
-    "plot_directory": "",
+    "plot_directory": "../",
     "spice_adjust_passive_values": false,
     "spice_external_command": "spice \"%I\"",
     "subpart_first_id": 65,
