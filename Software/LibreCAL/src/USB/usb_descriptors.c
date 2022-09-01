@@ -26,6 +26,8 @@
 #include "tusb.h"
 #include "usb_descriptors.h"
 
+#include "serial.h"
+
 /* A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
  * Same VID/PID with different interface e.g MSC (first), then CDC (later) will possibly cause system error on PC.
  *
@@ -78,10 +80,11 @@ enum
   ITF_NUM_CDC = 0,
   ITF_NUM_CDC_DATA,
   ITF_NUM_VENDOR,
+  ITF_NUM_MSC,
   ITF_NUM_TOTAL
 };
 
-#define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_VENDOR_DESC_LEN)
+#define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_VENDOR_DESC_LEN + TUD_MSC_DESC_LEN)
 
 #if CFG_TUSB_MCU == OPT_MCU_LPC175X_6X || CFG_TUSB_MCU == OPT_MCU_LPC177X_8X || CFG_TUSB_MCU == OPT_MCU_LPC40XX
   // LPC 17xx and 40xx endpoint type (bulk/interrupt/iso) are fixed by its number
@@ -102,6 +105,10 @@ enum
   #define EPNUM_CDC_OUT    2
   #define EPNUM_VENDOR_IN  3
   #define EPNUM_VENDOR_OUT 3
+  #define EPNUM_MSC_IN	   4
+  #define EPNUM_MSC_OUT    4
+  #define EPNUM_MSC2_IN	   5
+  #define EPNUM_MSC2_OUT   5
 #endif
 
 uint8_t const desc_configuration[] =
@@ -113,7 +120,10 @@ uint8_t const desc_configuration[] =
   TUD_CDC_DESCRIPTOR(ITF_NUM_CDC, 4, 0x81, 8, EPNUM_CDC_OUT, 0x80 | EPNUM_CDC_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
 
   // Interface number, string index, EP Out & IN address, EP size
-  TUD_VENDOR_DESCRIPTOR(ITF_NUM_VENDOR, 5, EPNUM_VENDOR_OUT, 0x80 | EPNUM_VENDOR_IN, TUD_OPT_HIGH_SPEED ? 512 : 64)
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_VENDOR, 5, EPNUM_VENDOR_OUT, 0x80 | EPNUM_VENDOR_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
+
+  // Interface number, string index, EP Out & EP In address, EP size
+  TUD_MSC_DESCRIPTOR(ITF_NUM_MSC, 6, EPNUM_MSC_OUT, 0x80 | EPNUM_MSC_IN, 64),
 };
 
 // Invoked when received GET CONFIGURATION DESCRIPTOR
@@ -205,7 +215,8 @@ char const* string_desc_arr [] =
   "LibreCAL",              	     // 2: Product
   "123456",                      // 3: Serials, should use chip ID
   "LibreCAL CDC",                 // 4: CDC Interface
-  "LibreCAL Vendor"               // 5: Vendor Interface
+  "LibreCAL Vendor",               // 5: Vendor Interface
+  "LibreCAL Storage",			// 6: MSC Interface
 };
 
 static uint16_t _desc_str[32];
@@ -230,6 +241,11 @@ uint16_t const* tud_descriptor_string_cb(uint8_t index, uint16_t langid)
     if ( !(index < sizeof(string_desc_arr)/sizeof(string_desc_arr[0])) ) return NULL;
 
     const char* str = string_desc_arr[index];
+    char boardID[17];
+    if(index == 3) {
+    	// special case: serial number
+    	str = getSerial();
+    }
 
     // Cap at max char
     chr_count = (uint8_t) strlen(str);

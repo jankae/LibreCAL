@@ -32,14 +32,16 @@ target_include_directories(FreeRTOS PUBLIC
 file(GLOB LibreCAL_src
      "src/*.c"
      "src/USB/*.c"
+     "src/fatfs/*.c"
 )
 add_executable(LibreCAL ${LibreCAL_src})
 
 target_include_directories(LibreCAL PUBLIC
 	src
 	src/USB
+	src/fatfs
     ${FREERTOS_SRC_DIRECTORY}/include
 )
 
 pico_add_extra_outputs(LibreCAL)
-target_link_libraries(LibreCAL pico_stdlib hardware_spi hardware_pwm FreeRTOS tinyusb_device tinyusb_board)
+target_link_libraries(LibreCAL pico_stdlib pico_unique_id hardware_spi hardware_pwm FreeRTOS tinyusb_device tinyusb_board)
