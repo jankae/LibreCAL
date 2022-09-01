@@ -5,19 +5,23 @@
 
 #include "USB/usb.h"
 
-
 #define LED_PIN   (25)
 
+
 static void defaultTask(void* ptr) {
-	while(true);
+	while(true) {
+		vTaskDelay(1);
+	}
 }
 
-static void usb_rx(const uint8_t *buf, uint16_t len) {
-	usb_transmit(buf, len);
+static void usb_rx(const uint8_t *buf, uint16_t len, usb_interface_t i) {
+	printf("USB RX\r\n");
+	usb_transmit(buf, len, i);
 }
 
 int main(void) {
-    gpio_init(LED_PIN);
+	stdio_init_all();
+	gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, 1);
 

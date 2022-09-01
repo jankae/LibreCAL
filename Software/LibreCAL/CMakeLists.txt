@@ -42,4 +42,4 @@ target_include_directories(LibreCAL PUBLIC
 )
 
 pico_add_extra_outputs(LibreCAL)
-target_link_libraries(LibreCAL pico_stdlib hardware_spi hardware_pwm FreeRTOS)
+target_link_libraries(LibreCAL pico_stdlib hardware_spi hardware_pwm FreeRTOS tinyusb_device tinyusb_board)
