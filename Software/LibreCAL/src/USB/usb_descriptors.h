@@ -25,6 +25,8 @@
 #ifndef USB_DESCRIPTORS_H_
 #define USB_DESCRIPTORS_H_
 
+#include <stdint.h>
+
 enum
 {
   VENDOR_REQUEST_MICROSOFT = 1

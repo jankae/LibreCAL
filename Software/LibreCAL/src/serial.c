@@ -1,8 +1,7 @@
-#include "serial.h"
-
 #include <stdint.h>
 #include <stdbool.h>
 #include <pico/unique_id.h>
+#include <serial.h>
 
 static bool generated = false;
 static char serial[13];

@@ -1,12 +1,16 @@
+#include <ff.h>
+#include <serial.h>
+#include <usb.h>
+#include <cstdio>
+#include <cstring>
+
 #include "pico/stdlib.h"
 #include "pico/unique_id.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
 
-#include "USB/usb.h"
-#include "ff.h"
-#include "serial.h"
+#include "SCPI.hpp"
 
 #define LED_PIN   (25)
 
@@ -23,7 +27,7 @@ static void defaultTask(void* ptr) {
 
 static void usb_rx(const uint8_t *buf, uint16_t len, usb_interface_t i) {
 	printf("USB RX\r\n");
-	usb_transmit(buf, len, i);
+	SCPI::Input((const char*) buf, len, i);
 }
 
 int main(void) {
@@ -31,6 +35,8 @@ int main(void) {
 	gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, 1);
+
+    SCPI::Init(usb_transmit);
 
     printf("Unique ID: %s\r\n", getSerial());
 

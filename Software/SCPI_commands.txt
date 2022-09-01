@@ -1,0 +1,8 @@
+*IDN? -> LibreCAL_Serial
+*LST? -> List all commands
+:TEMPerature? -> returns current temperature in Celsius
+:TEMPerature -> sets target temperature
+:TEMPerature:STABLE? -> checks if temperature is stable
+:PORT? n -> returns currently selected standard for port n
+:PORT n -> set standard for port n
+

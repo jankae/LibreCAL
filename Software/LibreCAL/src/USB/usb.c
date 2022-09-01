@@ -1,7 +1,6 @@
-#include "usb.h"
-
+#include <usb.h>
+#include <usb_descriptors.h>
 #include "tusb.h"
-#include "usb_descriptors.h"
 
 static usbd_recv_callback_t callback;
 
@@ -79,7 +78,7 @@ void usb_init(usbd_recv_callback_t receive_callback) {
 	tud_init(0);
 	xTaskCreate(tinyUSB_task, "TinyUSB", 1024, NULL, 5, NULL);
 }
-bool usb_transmit(const uint8_t *data, uint16_t length, usb_interface_t i) {
+bool usb_transmit(const uint8_t *data, uint16_t length, uint8_t i) {
 	printf("USB TX\r\n");
 	if(i == USB_INTERFACE_CDC) {
 		printf("CDC TX\r\n");

@@ -29,12 +29,21 @@ target_include_directories(FreeRTOS PUBLIC
     ${FREERTOS_SRC_DIRECTORY}/portable/GCC/ARM_CM0
 )
 
-file(GLOB LibreCAL_src
-     "src/*.c"
-     "src/USB/*.c"
-     "src/fatfs/*.c"
+add_executable(LibreCAL 
+	src/main.cpp
+	src/Switch.cpp
+	src/Heater.cpp
+	src/SCPI.cpp
+	src/serial.c
+	src/freertos.c
+	src/USB/msc_disk.c
+	src/USB/usb_descriptors.c
+	src/USB/usb.c
+	src/fatfs/ff.c
+	src/fatfs/ffsystem.c
+	src/fatfs/ffunicode.c
+	src/fatfs/ramdisk.c
 )
-add_executable(LibreCAL ${LibreCAL_src})
 
 target_include_directories(LibreCAL PUBLIC
 	src
@@ -44,4 +53,4 @@ target_include_directories(LibreCAL PUBLIC
 )
 
 pico_add_extra_outputs(LibreCAL)
-target_link_libraries(LibreCAL pico_stdlib pico_unique_id hardware_spi hardware_pwm FreeRTOS tinyusb_device tinyusb_board)
+target_link_libraries(LibreCAL pico_stdlib pico_unique_id hardware_spi hardware_pwm hardware_adc FreeRTOS tinyusb_device tinyusb_board)

@@ -23,9 +23,9 @@
  *
  */
 
+#include <ramdisk.h>
 #include "bsp/board.h"
 #include "tusb.h"
-#include "fatfs/ramdisk.h"
 
 #if CFG_TUD_MSC
 
