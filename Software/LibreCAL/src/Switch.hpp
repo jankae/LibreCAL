@@ -24,7 +24,11 @@ enum class Standard {
 
 void Init();
 void SetStandard(uint8_t port, Standard s);
+Standard GetStandard(uint8_t port);
 bool isValid();
+
+const char* StandardName(Standard s);
+bool NameMatched(const char *name, Standard s);
 
 };
 

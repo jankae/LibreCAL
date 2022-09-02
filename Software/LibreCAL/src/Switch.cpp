@@ -2,6 +2,8 @@
 
 #include "pico/stdlib.h"
 
+#include <cstring>
+
 using namespace Switch;
 
 static const uint8_t VxPins[Switch::NumPorts][3] {
@@ -133,8 +135,29 @@ void Switch::SetStandard(uint8_t port, Standard s) {
 	}
 }
 
+Standard Switch::GetStandard(uint8_t port) {
+	if(port < Switch::NumPorts) {
+		return portStandards[port];
+	}
+}
+
 bool Switch::isValid() {
 	return configValid;
+}
+
+const char* Switch::StandardName(Standard s) {
+	switch(s) {
+	case Standard::Open: return "OPEN";
+	case Standard::Short: return "SHORT";
+	case Standard::Load: return "LOAD";
+	case Standard::Through: return "THROUGH";
+	case Standard::None: return "NONE";
+	}
+}
+
+bool Switch::NameMatched(const char *name, Standard s) {
+	auto compare = StandardName(s);
+	return strcmp(name, compare) == 0;
 }
 
 

@@ -17,7 +17,7 @@ static constexpr uint8_t ADCPin = 29;
 
 void Init();
 void SetTarget(uint8_t celsius);
-uint8_t GetTemp();
+float GetTemp();
 bool isStable();
 
 };

@@ -11,7 +11,7 @@
 
 static uint8_t target;
 static bool stable = false;
-static uint8_t tempCelsius;
+static float temp;
 
 using namespace Heater;
 
@@ -49,8 +49,7 @@ void HeaterTask(void*) {
 		constexpr float NTC_B = 4300.0f;
 		constexpr float T0 = 25.0f;
 		constexpr float Tzero = 273.15f;
-		float temp = (T0 + Tzero) * NTC_B / ((T0 + Tzero) * logf(NTC_resistance / NTC_nominal) + NTC_B) - Tzero;
-		tempCelsius = temp;
+		temp = (T0 + Tzero) * NTC_B / ((T0 + Tzero) * logf(NTC_resistance / NTC_nominal) + NTC_B) - Tzero;
 
 		float basePower = (temp - assumed_ambient) / thermal_resistance; // required power to hold current temperature
 		float deviation = target - temp;
@@ -101,8 +100,8 @@ void Heater::SetTarget(uint8_t celsius) {
 	target = celsius;
 }
 
-uint8_t Heater::GetTemp() {
-	return tempCelsius;
+float Heater::GetTemp() {
+	return temp;
 }
 
 bool Heater::isStable() {
