@@ -16,6 +16,8 @@ jobs:
 
       - name: Install toolchain
         run: |
+          sudo apt update
+		  sudo apt install -y build-essential
           sudo git clone https://github.com/raspberrypi/pico-sdk.git /opt/pico-sdk
           sudo git -C /opt/pico-sdk submodule update --init
           echo 'export PICO_SDK_PATH=/opt/pico-sdk' | sudo tee -a /etc/profile.d/pico-sdk.sh
