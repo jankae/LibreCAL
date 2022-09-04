@@ -36,6 +36,7 @@ jobs:
 
       - name: Build application
         run: |
+          export PICO_SDK_PATH=/opt/pico-sdk
           cd Software/LibreCAL
           mkdir build && cd build
           cmake ..
