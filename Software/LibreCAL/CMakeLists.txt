@@ -29,6 +29,12 @@ target_include_directories(FreeRTOS PUBLIC
     ${FREERTOS_SRC_DIRECTORY}/portable/GCC/ARM_CM0
 )
 
+add_definitions(
+-DFW_MAJOR=0
+-DFW_MINOR=1
+-DFW_PATCH=0
+)
+
 add_executable(LibreCAL 
 	src/main.cpp
 	src/Switch.cpp

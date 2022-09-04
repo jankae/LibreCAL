@@ -1,0 +1,54 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:       
+  Embedded_Firmware:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Install toolchain
+        run: |
+          sudo git clone https://github.com/raspberrypi/pico-sdk.git /opt/pico-sdk
+          sudo git -C /opt/pico-sdk submodule update --init
+          echo 'export PICO_SDK_PATH=/opt/pico-sdk' | sudo tee -a /etc/profile.d/pico-sdk.sh
+          source /etc/profile
+        
+      - name: Get build timestamp
+        id: id_date
+        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+
+      - name: Get app version
+        id: id_version
+        run: |
+          cd Software/LibreCAL
+          fw_major=`grep -oP '(?<=FW_MAJOR=)[0-9]+' CMakeLists.txt`
+          fw_minor=`grep -oP '(?<=FW_MINOR=)[0-9]+' CMakeLists.txt`
+          fw_patch=`grep -oP '(?<=FW_PATCH=)[0-9]+' CMakeLists.txt`
+          echo "::set-output name=app_version::-v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
+
+      - name: Build application
+        run: |
+          cd Software/LibreCAL
+          mkdir build && cd build
+          cmake ..
+          make -j9
+          make -j9
+        shell: bash
+
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        env: 
+          LIBREVNA_VERSION: "${{steps.id_version.outputs.app_version}}"
+        with:
+          name: EmbeddedFirmware-${{env.LIBREVNA_VERSION}}
+          path: |
+            Software/LibreCAL/LibreCAL.uf2
+
