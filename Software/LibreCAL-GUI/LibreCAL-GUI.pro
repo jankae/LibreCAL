@@ -1,6 +1,6 @@
 CONFIG += c++17
 
-QT += widgets
+QT += core gui widgets charts
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -15,6 +15,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         appwindow.cpp \
+        caldevice.cpp \
         informationbox.cpp \
         main.cpp \
         usbdevice.cpp
@@ -34,6 +35,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     appwindow.h \
+    caldevice.h \
     informationbox.h \
     usbdevice.h
 

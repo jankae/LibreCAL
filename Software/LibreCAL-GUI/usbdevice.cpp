@@ -15,7 +15,7 @@ using USBID = struct {
     int PID;
 };
 static constexpr USBID IDs[] = {
-    {0xCAFE, 0x4013},
+    {0x0483, 0x4122},
 };
 
 USBDevice::USBDevice(QString serial)
@@ -76,12 +76,18 @@ USBDevice::~USBDevice()
 
 bool USBDevice::Cmd(QString cmd)
 {
-
+    return send(cmd) && receive(nullptr);
 }
 
 QString USBDevice::Query(QString query)
 {
-
+    if(send(query)) {
+        QString rcv;
+        if(receive(&rcv)) {
+            return rcv;
+        }
+    }
+    return QString();
 }
 
 
@@ -184,7 +190,7 @@ bool USBDevice::send(const QString &s)
     memcpy(data, s.toLatin1().data(), s.size());
     memcpy(&data[s.size()], "\r\n", 2);
     int actual;
-    auto r = libusb_bulk_transfer(m_handle, LIBUSB_ENDPOINT_OUT, data, s.size() + 2, &actual, 0);
+    auto r = libusb_bulk_transfer(m_handle, LIBUSB_ENDPOINT_OUT | 0x03, data, s.size() + 2, &actual, 0);
     if(r == 0 && actual == s.size() + 2) {
         return true;
     } else {
@@ -194,16 +200,40 @@ bool USBDevice::send(const QString &s)
 
 bool USBDevice::receive(QString *s)
 {
-    unsigned char data[512];
+    char data[512];
     memset(data, 0, sizeof(data));
     int actual;
-    auto r = libusb_bulk_transfer(m_handle, LIBUSB_ENDPOINT_IN, data, sizeof(data), &actual, 100);
-    if(r == 0) {
-        // TODO
+    int rcvCnt = 0;
+    bool endOfLineFound = false;
+    int res;
+    do {
+        res = libusb_bulk_transfer(m_handle, LIBUSB_ENDPOINT_IN | 0x03, (unsigned char*) &data[rcvCnt], sizeof(data) - rcvCnt, &actual, 100);
+        for(int i=rcvCnt;i<rcvCnt+actual;i++) {
+            if(i == 0) {
+                continue;
+            }
+            if(data[i] == '\n' && data[i-1] == '\r') {
+                endOfLineFound = true;
+                data[i-1] = '\0';
+                break;
+            }
+        }
+        rcvCnt += actual;
+    } while(res == 0 && !endOfLineFound);
+    if(res == 0) {
+        if(s) {
+            *s = QString(data);
+        }
         return true;
     } else {
         return false;
     }
+}
+
+bool USBDevice::flushRX()
+{
+    char data[512];
+//    libusb_bulk_transfer(m_handle, LIBUSB_ENDPOINT_IN | 0x03, (unsigned char*) data, sizeof(data), &actual, 1);
 }
 
 

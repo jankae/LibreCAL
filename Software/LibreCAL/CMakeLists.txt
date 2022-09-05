@@ -42,6 +42,7 @@ add_executable(LibreCAL
 	src/SCPI.cpp
 	src/serial.c
 	src/freertos.c
+	src/Touchstone.cpp
 	src/USB/msc_disk.c
 	src/USB/usb_descriptors.c
 	src/USB/usb.c

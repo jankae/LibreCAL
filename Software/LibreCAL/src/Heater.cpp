@@ -12,6 +12,7 @@
 static uint8_t target;
 static bool stable = false;
 static float temp;
+static float power;
 
 using namespace Heater;
 
@@ -60,9 +61,16 @@ void HeaterTask(void*) {
 		} else if(integral < -I_limit) {
 			integral = -I_limit;
 		}
-		float power = deviation * P + integral;
+		float p = deviation * P + integral;
+		if(p > maxPower) {
+			p = maxPower;
+		} else if(p < 0) {
+			p = 0;
+		}
+		power = p;
+
 		// convert power to PWM, maximum power is approximately 1.9W
-		int32_t pwm = power * UINT16_MAX / 1.9f;
+		int32_t pwm = power * UINT16_MAX / maxPower;
 		if(pwm > UINT16_MAX) {
 			pwm = UINT16_MAX;
 		} else if(pwm < 0) {
@@ -104,6 +112,10 @@ float Heater::GetTemp() {
 	return temp;
 }
 
-bool Heater::isStable() {
+bool Heater::IsStable() {
 	return stable;
+}
+
+float Heater::GetPower() {
+	return power;
 }

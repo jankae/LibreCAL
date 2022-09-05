@@ -2,6 +2,9 @@
 #include <usb_descriptors.h>
 #include "tusb.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 static usbd_recv_callback_t callback;
 
 // Invoked when a control transfer occurred on an interface of this class
@@ -82,10 +85,16 @@ bool usb_transmit(const uint8_t *data, uint16_t length, uint8_t i) {
 	printf("USB TX\r\n");
 	if(i == USB_INTERFACE_CDC) {
 		printf("CDC TX\r\n");
+//		while(tud_cdc_write_available() < length) {
+//			vTaskDelay(1);
+//		}
 		tud_cdc_write(data, length);
 		tud_cdc_write_flush();
 	} else if(i == USB_INTERFACE_VENDOR) {
 		printf("VENDOR TX\r\n");
+//		while(tud_vendor_write_available() < length) {
+//			vTaskDelay(1);
+//		}
 		tud_vendor_write(data, length);
 	}
     return true;

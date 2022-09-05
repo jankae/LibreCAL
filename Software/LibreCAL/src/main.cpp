@@ -26,7 +26,8 @@ static void defaultTask(void* ptr) {
 }
 
 static void usb_rx(const uint8_t *buf, uint16_t len, usb_interface_t i) {
-	printf("USB RX\r\n");
+	printf("USB RX: ");
+	int it;
 	SCPI::Input((const char*) buf, len, i);
 }
 
@@ -65,14 +66,17 @@ int main(void) {
         }
     }
     /* Create a file as new */
-    fr = f_open(&fil, "1:serial.txt", FA_CREATE_NEW | FA_WRITE);
+    fr = f_open(&fil, "1:info.txt", FA_CREATE_ALWAYS | FA_WRITE);
     if (fr) {
     	printf("f_open: %d\r\n", fr);
     }
 
     /* Write a message */
     UINT bw;
+    f_printf(&fil, "Serial: ");
     f_write(&fil, getSerial(), strlen(getSerial()), &bw);
+    f_printf(&fil, "\r\nFirmware: %d.%d.%d\r\n", FW_MAJOR, FW_MINOR, FW_PATCH);
+    f_printf(&fil, "Number of populated ports: %d", 4);
     /* Close the file */
     f_close(&fil);
 
