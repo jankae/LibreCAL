@@ -79,22 +79,21 @@ static void tinyUSB_task(void* ptr) {
 void usb_init(usbd_recv_callback_t receive_callback) {
 	callback = receive_callback;
 	tud_init(0);
-	xTaskCreate(tinyUSB_task, "TinyUSB", 1024, NULL, 5, NULL);
+	xTaskCreate(tinyUSB_task, "TinyUSB", 1024, NULL, 1, NULL);
 }
 bool usb_transmit(const uint8_t *data, uint16_t length, uint8_t i) {
 	printf("USB TX\r\n");
 	if(i == USB_INTERFACE_CDC) {
-		printf("CDC TX\r\n");
-//		while(tud_cdc_write_available() < length) {
-//			vTaskDelay(1);
-//		}
+		while(tud_cdc_write_available() < length) {
+			vTaskDelay(1);
+		}
 		tud_cdc_write(data, length);
 		tud_cdc_write_flush();
 	} else if(i == USB_INTERFACE_VENDOR) {
 		printf("VENDOR TX\r\n");
-//		while(tud_vendor_write_available() < length) {
-//			vTaskDelay(1);
-//		}
+		while(tud_vendor_write_available() < length) {
+			vTaskDelay(1);
+		}
 		tud_vendor_write(data, length);
 	}
     return true;

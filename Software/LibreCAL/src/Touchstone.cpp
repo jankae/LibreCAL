@@ -9,6 +9,8 @@
 static FIL writeFile;
 static bool writeFileOpen = false;
 
+static bool writeFactory = false;
+
 static FIL readFile;
 static bool readFileOpen = false;
 static uint32_t nextReadPoint;
@@ -30,29 +32,44 @@ static bool extract_double_values(const char *line, double *values, uint8_t expe
 	return true;
 }
 
+// Returns true if it is a factory file
+static bool adjustNames(const char *folder, const char *filename, char *path, char *name) {
+	if(strcmp(folder, "FACTORY") != 0) {
+		sprintf(path, "0:/%s", folder);
+		sprintf(name, "0:%s", filename);
+		return false;
+	} else {
+		sprintf(path, "1:/");
+		sprintf(name, "1:/%s", filename);
+		return true;
+	}
+}
+
 static bool open_file(FIL &f, const char *folder, const char *filename, BYTE mode) {
 	char name[50];
-	if(folder) {
-		snprintf(name, sizeof(name), "0:%s", filename);
-		char dir[50];
-		snprintf(dir, sizeof(dir), "0:/%s", folder);
-		auto res = f_chdir(dir);
-		if(res != FR_OK) {
-			// unable to change directory, this coefficient name probably does not exist
-			if(mode & FA_CREATE_ALWAYS) {
-				// we want to create the file, create the folder first
-				if(f_mkdir(dir) != FR_OK || f_chdir(dir) != FR_OK) {
-					return false;
-				}
-			} else {
-				// not creating a new file
+	char path[50];
+	if(adjustNames(folder, filename, path, name)) {
+		if(mode & (FA_CREATE_ALWAYS | FA_CREATE_NEW | FA_WRITE)) {
+			// write access to factory file requested
+			if(!writeFactory) {
 				return false;
 			}
 		}
-	} else {
-		snprintf(name, sizeof(name), "1:/%s", filename);
 	}
-	auto res = f_open(&f, name, mode);
+	auto res = f_chdir(path);
+	if(res != FR_OK) {
+		// unable to change directory, this coefficient name probably does not exist
+		if(mode & FA_CREATE_ALWAYS) {
+			// we want to create the file, create the folder first
+			if(f_mkdir(path) != FR_OK || f_chdir(path) != FR_OK) {
+				return false;
+			}
+		} else {
+			// not creating a new file
+			return false;
+		}
+	}
+	res = f_open(&f, name, mode);
 	return res == FR_OK;
 }
 
@@ -164,4 +181,68 @@ int Touchstone::GetPoint(const char *folder, const char *filename,
 		}
 	}
 	return values_per_line;
+}
+
+void Touchstone::EnableFactoryWriting() {
+	writeFactory = true;
+}
+
+bool Touchstone::DeleteFile(const char *folder, const char *filename) {
+	char name[50];
+	char path[50];
+	if(adjustNames(folder, filename, path, name)) {
+		// delete access to factory file requested
+		if(!writeFactory) {
+			return false;
+		}
+	}
+	if(f_chdir(path) != FR_OK) {
+		return false;
+	}
+	if(f_unlink(name) != FR_OK) {
+		return false;
+	}
+	// check if directory is empty now
+	DIR dir;
+	FILINFO fno;
+	if(f_opendir(&dir, path) != FR_OK) {
+		// this is technically an error, but we already deleted the file, so return true.
+		// Only negative effect is that the directory of the file may still be existing
+		// even if empty
+		return true;
+	}
+	if(f_readdir(&dir, &fno) != FR_OK) {
+		// same as above
+		f_closedir(&dir);
+		return true;
+	}
+	if(fno.fname[0] == 0) {
+		// complete directory is empty, delete the folder
+		f_unlink(path);
+	}
+	f_closedir(&dir);
+	return true;
+}
+
+bool Touchstone::GetUserCoefficientName(uint8_t index, char *name, uint16_t maxlen) {
+	DIR dir;
+	FILINFO fno;
+	if(f_opendir(&dir, "0:/") != FR_OK) {
+		return false;
+	}
+	while(f_readdir(&dir, &fno) == FR_OK) {
+		if(fno.fattrib & AM_DIR) {
+			// is a directory
+			if(index == 0) {
+				// reached the requested directory
+				snprintf(name, maxlen, fno.fname);
+				f_closedir(&dir);
+				return true;
+			} else {
+				index--;
+			}
+		}
+	}
+	f_closedir(&dir);
+	return false;
 }

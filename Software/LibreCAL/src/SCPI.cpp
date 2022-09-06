@@ -251,6 +251,16 @@ static const Command commands[] = {
 			tx_string(Switch::StandardName(Switch::GetStandard(port - 1)), interface);
 			tx_string("\r\n", interface);
 		}, 2, 1),
+		Command(":COEFFicient:LIST", nullptr, [](char *argv[], int argc, int interface){
+			tx_string("FACTORY", interface);
+			uint8_t i=0;
+			char name[50];
+			while(Touchstone::GetUserCoefficientName(i, name, sizeof(name))) {
+				tx_string(",", interface);
+				tx_string(name, interface);
+			}
+			tx_string("\r\n", interface);
+		}),
 		Command(":COEFFicient:CREATE", [](char *argv[], int argc, int interface){
 			if(!coefficientOptionEnding(argv[2])) {
 				// invalid coefficient name
@@ -265,6 +275,22 @@ static const Command commands[] = {
 				return;
 			}
 			// file started
+			tx_string("\r\n", interface);
+		}, nullptr, 2),
+		Command(":COEFFicient:DELete", [](char *argv[], int argc, int interface){
+			if(!coefficientOptionEnding(argv[2])) {
+				// invalid coefficient name
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			char filename[50];
+			snprintf(filename, sizeof(filename), "%s.%s", argv[2], coefficientOptionEnding(argv[2]));
+			if(!Touchstone::DeleteFile(argv[1], filename)) {
+				// failed to delete file
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			// file deleted
 			tx_string("\r\n", interface);
 		}, nullptr, 2),
 		Command(":COEFFicient:ADD", [](char *argv[], int argc, int interface){
@@ -327,6 +353,13 @@ static const Command commands[] = {
 				tx_string("\r\n", interface);
 			}
 		}, 0, 3),
+		Command(":FACTory:ENABLEWRITE", [](char *argv[], int argc, int interface){
+			if(strcmp("I_AM_SURE", argv[1]) != 0) {
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			tx_string("\r\n", interface);
+		}, nullptr, 1),
 };
 
 static void scpi_lst(char *argv[], int argc, int interface) {

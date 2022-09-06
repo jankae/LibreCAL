@@ -16,7 +16,11 @@ uint32_t GetPointNum(const char *folder, const char *filename);
 bool StartNewFile(const char *folder, const char *filename);
 bool AddPoint(double frequency, double *values, uint8_t num_values);
 bool FinishFile();
+bool DeleteFile(const char *folder, const char *filename);
 int GetPoint(const char *folder, const char *filename, uint32_t point, double *values);
+bool GetUserCoefficientName(uint8_t index, char *name, uint16_t maxlen);
+
+void EnableFactoryWriting();
 
 };
 

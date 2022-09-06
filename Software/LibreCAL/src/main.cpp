@@ -19,16 +19,30 @@ FIL fil;
 FRESULT fr;
 
 
-static void defaultTask(void* ptr) {
-	while(true) {
-		vTaskDelay(1);
-	}
-}
+static char usb_buffer[256];
+static uint16_t usb_len;
+static usb_interface_t usb_interface;
+static xTaskHandle handle;
 
 static void usb_rx(const uint8_t *buf, uint16_t len, usb_interface_t i) {
-	printf("USB RX: ");
-	int it;
-	SCPI::Input((const char*) buf, len, i);
+	if(len > sizeof(usb_buffer)) {
+		// line too long
+		return;
+	}
+	memcpy(usb_buffer, buf, len);
+	usb_len = len;
+	usb_interface = i;
+	xTaskNotify(handle, 0x00, eNoAction);
+}
+
+static void defaultTask(void* ptr) {
+	handle = xTaskGetCurrentTaskHandle();
+	while(true) {
+		uint32_t notification;
+		if(xTaskNotifyWait(0, 0, &notification, portMAX_DELAY)) {
+			SCPI::Input(usb_buffer, usb_len, usb_interface);
+		}
+	}
 }
 
 int main(void) {
