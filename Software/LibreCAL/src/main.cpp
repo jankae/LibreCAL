@@ -6,23 +6,30 @@
 
 #include "pico/stdlib.h"
 #include "pico/unique_id.h"
+#include "hardware/spi.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
 
 #include "SCPI.hpp"
+#include "Flash.hpp"
 
-#define LED_PIN   (25)
+#define LED_PIN   		25
+#define FLASH_CLK_PIN	2
+#define FLASH_MISO_PIN	0
+#define FLASH_MOSI_PIN	3
+#define FLASH_CS_PIN	1
 
 FATFS fs0, fs1;
 FIL fil;
 FRESULT fr;
 
-
 static char usb_buffer[256];
 static uint16_t usb_len;
 static usb_interface_t usb_interface;
 static xTaskHandle handle;
+
+Flash flash(spi0, FLASH_CLK_PIN, FLASH_MOSI_PIN, FLASH_MISO_PIN, FLASH_CS_PIN);
 
 static void usb_rx(const uint8_t *buf, uint16_t len, usb_interface_t i) {
 	if(len > sizeof(usb_buffer)) {
@@ -37,19 +44,6 @@ static void usb_rx(const uint8_t *buf, uint16_t len, usb_interface_t i) {
 
 static void defaultTask(void* ptr) {
 	handle = xTaskGetCurrentTaskHandle();
-	while(true) {
-		uint32_t notification;
-		if(xTaskNotifyWait(0, 0, &notification, portMAX_DELAY)) {
-			SCPI::Input(usb_buffer, usb_len, usb_interface);
-		}
-	}
-}
-
-int main(void) {
-	stdio_init_all();
-	gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-    gpio_put(LED_PIN, 1);
 
     SCPI::Init(usb_transmit);
 
@@ -107,7 +101,29 @@ int main(void) {
 
     usb_init(usb_rx);
 
-    xTaskCreate(defaultTask, "defaultTask", 1024, NULL, 3, NULL);
+	while(true) {
+		uint32_t notification;
+		if(xTaskNotifyWait(0, 0, &notification, portMAX_DELAY)) {
+			SCPI::Input(usb_buffer, usb_len, usb_interface);
+		}
+	}
+}
+
+int main(void) {
+	stdio_init_all();
+	gpio_init(LED_PIN);
+    gpio_set_dir(LED_PIN, GPIO_OUT);
+    gpio_put(LED_PIN, true);
+
+    spi_init(spi0, 1000 * 1000);
+    gpio_set_function(FLASH_CLK_PIN, GPIO_FUNC_SPI);
+    gpio_set_function(FLASH_MOSI_PIN, GPIO_FUNC_SPI);
+    gpio_set_function(FLASH_MISO_PIN, GPIO_FUNC_SPI);
+    gpio_init(FLASH_CS_PIN);
+    gpio_set_dir(FLASH_CS_PIN, GPIO_OUT);
+    gpio_put(FLASH_CS_PIN, true);
+
+    xTaskCreate(defaultTask, "defaultTask", 16384, NULL, 3, NULL);
 
     vTaskStartScheduler();
     return 0;

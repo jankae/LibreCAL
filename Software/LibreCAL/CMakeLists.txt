@@ -43,13 +43,14 @@ add_executable(LibreCAL
 	src/serial.c
 	src/freertos.c
 	src/Touchstone.cpp
-	src/USB/msc_disk.c
+	src/Flash.cpp
+	src/USB/msc_disk.cpp
 	src/USB/usb_descriptors.c
 	src/USB/usb.c
 	src/fatfs/ff.c
 	src/fatfs/ffsystem.c
 	src/fatfs/ffunicode.c
-	src/fatfs/ramdisk.c
+	src/fatfs/flashdisk.cpp
 )
 
 target_include_directories(LibreCAL PUBLIC
