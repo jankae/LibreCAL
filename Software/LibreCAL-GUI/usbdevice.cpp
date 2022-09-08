@@ -1,6 +1,6 @@
 #include "usbdevice.h"
 
-#include "informationbox.h"
+#include "CustomWidgets/informationbox.h"
 
 #include <signal.h>
 #include <QDebug>
@@ -186,6 +186,7 @@ void USBDevice::SearchDevices(std::function<bool (libusb_device_handle *, QStrin
 
 bool USBDevice::send(const QString &s)
 {
+    qDebug() << "Send:"<<s;
     unsigned char data[s.size()+2];
     memcpy(data, s.toLatin1().data(), s.size());
     memcpy(&data[s.size()], "\r\n", 2);
@@ -207,7 +208,7 @@ bool USBDevice::receive(QString *s)
     bool endOfLineFound = false;
     int res;
     do {
-        res = libusb_bulk_transfer(m_handle, LIBUSB_ENDPOINT_IN | 0x03, (unsigned char*) &data[rcvCnt], sizeof(data) - rcvCnt, &actual, 100);
+        res = libusb_bulk_transfer(m_handle, LIBUSB_ENDPOINT_IN | 0x03, (unsigned char*) &data[rcvCnt], sizeof(data) - rcvCnt, &actual, 2000);
         for(int i=rcvCnt;i<rcvCnt+actual;i++) {
             if(i == 0) {
                 continue;
@@ -223,6 +224,7 @@ bool USBDevice::receive(QString *s)
     if(res == 0) {
         if(s) {
             *s = QString(data);
+            qDebug() << "Receive:"<<*s;
         }
         return true;
     } else {

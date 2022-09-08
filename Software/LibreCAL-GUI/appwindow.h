@@ -22,7 +22,11 @@ private slots:
     void DisconnectDevice();
 
     void updateStatus();
+    void loadCoefficients();
+
+    void showCoefficientSet(const CalDevice::CoefficientSet &set);
 private:
+    bool confirmUnsavedCoefficients();
     static constexpr double updateInterval = 1.0;
     static constexpr double maxTempHistory = 60.0;
     Ui::MainWindow *ui;
@@ -37,6 +41,8 @@ private:
     QTimer *updateTimer;
     // temperature chart widgets
     QtCharts::QLineSeries *tempSeries, *heaterSeries;
+
+    bool backgroundOperations;
 };
 
 #endif // APPWINDOW_H

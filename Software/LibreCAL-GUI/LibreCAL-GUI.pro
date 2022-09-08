@@ -14,12 +14,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+        CustomWidgets/informationbox.cpp \
+        CustomWidgets/siunitedit.cpp \
+        CustomWidgets/touchstoneimport.cpp \
         Util/util.cpp \
+        about.cpp \
         appwindow.cpp \
         caldevice.cpp \
-        informationbox.cpp \
         main.cpp \
         touchstone.cpp \
+        touchstoneimportdialog.cpp \
+        unit.cpp \
         usbdevice.cpp
 
 LIBS += -lusb-1.0
@@ -28,6 +33,8 @@ win32:LIBS += -L"$$_PRO_FILE_PWD_" # Github actions placed libusb here
 osx:INCPATH += /usr/local/include
 osx:LIBS += $(shell pkg-config --libs libusb-1.0)
 
+REVISION = $$system(git rev-parse HEAD)
+DEFINES += GITHASH=\\"\"$$REVISION\\"\"
 DEFINES += FW_MAJOR=0 FW_MINOR=1 FW_PATCH=0 FW_SUFFIX=""#\\"\"-alpha.2\\"\"
 
 # Default rules for deployment.
@@ -36,12 +43,20 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    CustomWidgets/informationbox.h \
+    CustomWidgets/siunitedit.h \
+    CustomWidgets/touchstoneimport.h \
     Util/util.h \
+    about.h \
     appwindow.h \
     caldevice.h \
-    informationbox.h \
     touchstone.h \
+    touchstoneimportdialog.h \
+    unit.h \
     usbdevice.h
 
 FORMS += \
-    main.ui
+    CustomWidgets/touchstoneimport.ui \
+    aboutdialog.ui \
+    main.ui \
+    touchstoneimportdialog.ui

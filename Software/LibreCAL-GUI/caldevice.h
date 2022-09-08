@@ -40,16 +40,30 @@ public:
     class CoefficientSet {
     public:
         QString name;
-        std::vector<Touchstone*> opens;
-        std::vector<Touchstone*> shorts;
-        std::vector<Touchstone*> loads;
-        std::vector<Touchstone*> throughs;
+        int ports;
+        class Coefficient {
+        public:
+            Coefficient() : t(Touchstone(1)), modified(false) {}
+            Touchstone t;
+            bool modified;
+        };
+
+        std::vector<Coefficient*> opens;
+        std::vector<Coefficient*> shorts;
+        std::vector<Coefficient*> loads;
+        std::vector<Coefficient*> throughs;
+
+        Coefficient *getThrough(int port1, int port2) const;
     };
 
     // Extracts the coefficients from the device. This is done with a dedicated thread.
     // Do not call any other functions until the update is finished. Process can be
     // monitored through the updateCoefficientsPercent and updateCoefficientsDone signals
     void updateCoefficientSets();
+    std::vector<CoefficientSet> getCoefficientSets() const;
+
+    bool hasModifiedCoefficients();
+
 signals:
     void updateCoefficientsPercent(int percent);
     // emitted when all coefficients have been received and it is safe to call all functions again
