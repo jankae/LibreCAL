@@ -230,7 +230,7 @@ bool Touchstone::GetUserCoefficientName(uint8_t index, char *name, uint16_t maxl
 	if(f_opendir(&dir, "0:/") != FR_OK) {
 		return false;
 	}
-	while(f_readdir(&dir, &fno) == FR_OK) {
+	while(f_readdir(&dir, &fno) == FR_OK && fno.fname[0] != 0) {
 		if(fno.fattrib & AM_DIR) {
 			// is a directory
 			if(index == 0) {

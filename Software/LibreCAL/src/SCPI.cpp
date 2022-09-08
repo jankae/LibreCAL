@@ -258,6 +258,7 @@ static const Command commands[] = {
 			while(Touchstone::GetUserCoefficientName(i, name, sizeof(name))) {
 				tx_string(",", interface);
 				tx_string(name, interface);
+				i++;
 			}
 			tx_string("\r\n", interface);
 		}),
@@ -343,14 +344,19 @@ static const Command commands[] = {
 				tx_string("ERROR\r\n", interface);
 				return;
 			} else {
+				char response[200] = "";
 				for(int i=0;i<decoded;i++) {
-					tx_double(values[i], interface);
+					char val[20];
+					auto len = strlen(response);
+					len += snprintf(&response[len], sizeof(response)-len, "%f",values[i]);
 					if(i<decoded - 1) {
 						// not the last entry
-						tx_string(",", interface);
+						response[len] = ',';
+						response[len+1] = '\0';
 					}
 				}
-				tx_string("\r\n", interface);
+				strcat(response, "\r\n");
+				tx_string(response, interface);
 			}
 		}, 0, 3),
 		Command(":FACTory:ENABLEWRITE", [](char *argv[], int argc, int interface){

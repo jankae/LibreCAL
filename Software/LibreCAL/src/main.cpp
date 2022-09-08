@@ -88,17 +88,6 @@ static void defaultTask(void* ptr) {
     /* Close the file */
     f_close(&fil);
 
-    fr = f_open(&fil, "0:readwrite.txt", FA_CREATE_NEW | FA_WRITE);
-    if (fr) {
-    	printf("f_open: %d\r\n", fr);
-    }
-
-    /* Write a message */
-    const char *str = "You can change this";
-    f_write(&fil, str, strlen(str), &bw);
-    /* Close the file */
-    f_close(&fil);
-
     usb_init(usb_rx);
 
 	while(true) {
@@ -115,7 +104,7 @@ int main(void) {
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, true);
 
-    spi_init(spi0, 1000 * 1000);
+    spi_init(spi0, 20000 * 1000);
     gpio_set_function(FLASH_CLK_PIN, GPIO_FUNC_SPI);
     gpio_set_function(FLASH_MOSI_PIN, GPIO_FUNC_SPI);
     gpio_set_function(FLASH_MISO_PIN, GPIO_FUNC_SPI);
