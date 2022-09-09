@@ -83,9 +83,40 @@
        <attribute name="title">
         <string>Coefficients</string>
        </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,3">
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,3">
         <item>
-         <widget class="QListWidget" name="coeffList"/>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QListWidget" name="coeffList"/>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QPushButton" name="loadCoefficients">
+              <property name="text">
+               <string>Load From Device</string>
+              </property>
+              <property name="icon">
+               <iconset theme="view-refresh"/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="saveCoefficients">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Save To Device</string>
+              </property>
+              <property name="icon">
+               <iconset theme="document-save"/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QScrollArea" name="scrollArea">
@@ -96,8 +127,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-170</y>
-             <width>744</width>
+             <y>0</y>
+             <width>709</width>
              <height>790</height>
             </rect>
            </property>
@@ -964,7 +995,6 @@
     <addaction name="actionUpdate_Device_List"/>
     <addaction name="menuConnect_to"/>
     <addaction name="actionDisconnect"/>
-    <addaction name="actionReload_Coefficients"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">

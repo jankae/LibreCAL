@@ -76,7 +76,15 @@ USBDevice::~USBDevice()
 
 bool USBDevice::Cmd(QString cmd)
 {
-    return send(cmd) && receive(nullptr);
+    QString rcv;
+    bool success = send(cmd) && receive(&rcv);
+    if(success) {
+        // empty response expected by commad
+        return rcv == "";
+    } else {
+        // failed to send/receive
+        return false;
+    }
 }
 
 QString USBDevice::Query(QString query)

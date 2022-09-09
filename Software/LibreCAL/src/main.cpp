@@ -99,7 +99,7 @@ static void defaultTask(void* ptr) {
 }
 
 int main(void) {
-	stdio_init_all();
+//	stdio_init_all();
 	gpio_init(LED_PIN);
     gpio_set_dir(LED_PIN, GPIO_OUT);
     gpio_put(LED_PIN, true);

@@ -112,21 +112,41 @@ int CalDevice::getNumPorts() const
     return numPorts;
 }
 
-void CalDevice::updateCoefficientSets()
+void CalDevice::loadCoefficientSets(QStringList names)
 {
     coeffSets.clear();
-    new std::thread(&CalDevice::updateCoefficientSetsThread, this);
+    new std::thread(&CalDevice::loadCoefficientSetsThread, this, names);
 }
 
-void CalDevice::updateCoefficientSetsThread()
+void CalDevice::saveCoefficientSets()
 {
-    QString resp = usb->Query(":COEFF:LIST?");
-    if(!resp.startsWith("FACTORY")) {
+    if(!hasModifiedCoefficients()) {
+        // nothing to do, already done
+        emit updateCoefficientsDone(true);
+    } else {
+        new std::thread(&CalDevice::saveCoefficientSetsThread, this);
+    }
+}
+
+void CalDevice::loadCoefficientSetsThread(QStringList names)
+{
+    QStringList coeffList = getCoefficientSetNames();
+    if(coeffList.empty()) {
         // something went wrong
-        emit updateCoefficientsDone();
+        emit updateCoefficientsDone(false);
         return;
     }
-    QStringList coeffList = resp.split(",");
+    if(names.size() > 0) {
+        // check if all the requested names are actually available
+        for(auto n : names) {
+            if(!coeffList.contains(n)) {
+                // this coefficient does not exist
+                emit updateCoefficientsDone(false);
+                return;
+            }
+        }
+        coeffList = names;
+    }
     // get total number of coefficient points for accurate percentage calculation
     unsigned long totalPoints = 0;
     for(auto name : coeffList) {
@@ -190,12 +210,107 @@ void CalDevice::updateCoefficientSetsThread()
         }
         coeffSets.push_back(set);
     }
-    emit updateCoefficientsDone();
+    emit updateCoefficientsDone(true);
+}
+
+void CalDevice::saveCoefficientSetsThread()
+{
+    // figure out how many points need to be transferred
+    unsigned long totalPoints = 0;
+    for(auto set : coeffSets) {
+        for(auto c : set.opens) {
+            if(c->modified) {
+                totalPoints += c->t.points();
+            }
+        }
+        for(auto c : set.shorts) {
+            if(c->modified) {
+                totalPoints += c->t.points();
+            }
+        }
+        for(auto c : set.loads) {
+            if(c->modified) {
+                totalPoints += c->t.points();
+            }
+        }
+        for(auto c : set.throughs) {
+            if(c->modified) {
+                totalPoints += c->t.points();
+            }
+        }
+    }
+    unsigned long transferredPoints = 0;
+    int lastPercentage = 0;
+    bool success = true;
+    for(auto set : coeffSets) {
+        auto createCoefficient = [&](QString setName, QString paramName, Touchstone &t, bool &modified) -> bool {
+            if(!modified) {
+                // no changes, nothing to do
+                return true;
+            }
+            int points = t.points();
+            if(points > 0) {
+                // create the file
+                if(!usb->Cmd(":COEFF:CREATE "+setName+" "+paramName)) {
+                    return false;
+                }
+                for(unsigned int i=0;i<points;i++) {
+                    auto point = t.point(i);
+                    if(point.S.size() == 4) {
+                        // S parameters in point are in S11 S12 S21 S22 order but the LibreCAL expects
+                        // S11 S21 S12 S22 (according to the two port touchstone format. Swap here.
+                        swap(point.S[1], point.S[2]);
+                    }
+                    QString cmd = ":COEFF:ADD "+QString::number(point.frequency / 1000000000.0);
+                    for(auto s : point.S) {
+                        cmd += " "+QString::number(s.real())+" "+QString::number(s.imag());
+                    }
+                    if(!usb->Cmd(cmd)) {
+                        return false;
+                    }
+                    transferredPoints++;
+                    int newPercentage = transferredPoints * 100 / totalPoints;
+                    if(newPercentage != lastPercentage) {
+                        lastPercentage = newPercentage;
+                        emit updateCoefficientsPercent(newPercentage);
+                    }
+                }
+                if(!usb->Cmd(":COEFF:FIN")) {
+                    return false;
+                }
+            } else {
+                // no points, delete coefficient
+                if(!usb->Cmd(":COEFF:DEL "+setName+" "+paramName)) {
+                    return false;
+                }
+            }
+            modified = false;
+            return true;
+        };
+        for(int i=1;i<=numPorts;i++) {
+            success &= createCoefficient(set.name, "P"+QString::number(i)+"_OPEN", set.opens[i-1]->t, set.opens[i-1]->modified);
+            success &= createCoefficient(set.name, "P"+QString::number(i)+"_SHORT", set.shorts[i-1]->t, set.shorts[i-1]->modified);
+            success &= createCoefficient(set.name, "P"+QString::number(i)+"_LOAD", set.loads[i-1]->t, set.loads[i-1]->modified);
+            for(int j=i+1;j<=numPorts;j++) {
+                success &= createCoefficient(set.name, "P"+QString::number(i)+QString::number(j)+"_THROUGH", set.getThrough(i,j)->t, set.getThrough(i,j)->modified);
+            }
+        }
+    }
+    emit updateCoefficientsDone(success);
 }
 
 std::vector<CalDevice::CoefficientSet> CalDevice::getCoefficientSets() const
 {
     return coeffSets;
+}
+
+QStringList CalDevice::getCoefficientSetNames()
+{
+    QString resp = usb->Query(":COEFF:LIST?");
+    if(!resp.startsWith("FACTORY")) {
+        return QStringList();
+    }
+    return resp.split(",");
 }
 
 bool CalDevice::hasModifiedCoefficients()

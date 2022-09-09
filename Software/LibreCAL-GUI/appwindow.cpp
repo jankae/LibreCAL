@@ -68,7 +68,6 @@ AppWindow::AppWindow() :
     heaterSeries->attachAxis(yAxis2);
 
     connect(ui->actionUpdate_Device_List, &QAction::triggered, this, &AppWindow::UpdateDeviceList);
-    connect(ui->actionReload_Coefficients, &QAction::triggered, this, &AppWindow::loadCoefficients);
     connect(ui->actionDisconnect, &QAction::triggered, this, &AppWindow::DisconnectDevice);
     connect(ui->actionAbout, &QAction::triggered, [=](){
         About::getInstance().about();
@@ -80,6 +79,8 @@ AppWindow::AppWindow() :
             }
         }
     });
+    connect(ui->loadCoefficients, &QPushButton::clicked, this, &AppWindow::loadCoefficients);
+    connect(ui->saveCoefficients, &QPushButton::clicked, this, &AppWindow::saveCoefficients);
     if(UpdateDeviceList()) {
         ConnectToDevice();
     }
@@ -130,7 +131,7 @@ bool AppWindow::ConnectToDevice(QString serial)
         qDebug() << "Attempting to connect to device...";
         device = new CalDevice(serial);
         ui->actionDisconnect->setEnabled(true);
-        ui->actionReload_Coefficients->setEnabled(true);
+        ui->loadCoefficients->setEnabled(true);
 
         for(auto d : deviceActionGroup->actions()) {
             if(d->text() == device->serial()) {
@@ -185,7 +186,7 @@ void AppWindow::DisconnectDevice()
         deviceActionGroup->checkedAction()->setChecked(false);
     }
     ui->actionDisconnect->setEnabled(false);
-    ui->actionReload_Coefficients->setEnabled(false);
+    ui->loadCoefficients->setEnabled(false);
     tempSeries->clear();
     heaterSeries->clear();
     ui->temperatureStatus->clear();
@@ -266,6 +267,7 @@ void AppWindow::loadCoefficients()
     d->setMinimumDuration(0);
     connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue);
     connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
+        ui->saveCoefficients->setEnabled(false);
         backgroundOperations = false;
         d->accept();
         delete d;
@@ -277,7 +279,40 @@ void AppWindow::loadCoefficients()
         ui->coeffList->setCurrentRow(0);
     });
     d->show();
-    device->updateCoefficientSets();
+    device->loadCoefficientSets();
+}
+
+void AppWindow::saveCoefficients()
+{
+    if(!device) {
+        return;
+    }
+    if(!device->hasModifiedCoefficients()) {
+        // no changes, nothing to do
+        ui->saveCoefficients->setEnabled(false);
+        return;
+    }
+    backgroundOperations = true;
+    auto d = new QProgressDialog();
+    d->setLabelText("Saving calibration coefficients to device...");
+    d->setWindowTitle("Updating");
+    d->setWindowModality(Qt::ApplicationModal);
+    d->setMinimumDuration(0);
+    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue);
+    connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
+        ui->saveCoefficients->setEnabled(device->hasModifiedCoefficients());
+        backgroundOperations = false;
+        d->accept();
+        delete d;
+
+        ui->coeffList->clear();
+        for(auto set : device->getCoefficientSets()) {
+            ui->coeffList->addItem(set.name);
+        }
+        ui->coeffList->setCurrentRow(0);
+    });
+    d->show();
+    device->saveCoefficientSets();
 }
 
 void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
@@ -314,6 +349,7 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
                 info->setText(s);
                 save->setEnabled(true);
                 modified->setChecked(true);
+                ui->saveCoefficients->setEnabled(true);
             });
             import->show();
         });
@@ -407,5 +443,5 @@ bool AppWindow::confirmUnsavedCoefficients()
 {
     return InformationBox::AskQuestion("Continue?", "You have modified the coefficients locally but not yet stored the updates in the device. "
                                              "If you continue, these changes will be lost. "
-                                               "Do you want to continue?", true);
+                                                    "Do you want to continue?", true);
 }

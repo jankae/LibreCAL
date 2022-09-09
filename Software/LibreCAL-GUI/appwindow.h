@@ -1,4 +1,4 @@
-#ifndef APPWINDOW_H
+﻿#ifndef APPWINDOW_H
 #define APPWINDOW_H
 
 #include "ui_main.h"
@@ -23,6 +23,7 @@ private slots:
 
     void updateStatus();
     void loadCoefficients();
+    void saveCoefficients();
 
     void showCoefficientSet(const CalDevice::CoefficientSet &set);
 private:

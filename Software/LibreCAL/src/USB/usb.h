@@ -7,6 +7,8 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
+#define USB_REC_BUFFER_SIZE		256
+
 typedef enum {
 	USB_INTERFACE_CDC = 0,
 	USB_INTERFACE_VENDOR = 1,

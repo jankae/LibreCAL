@@ -232,6 +232,11 @@ bool Touchstone::GetUserCoefficientName(uint8_t index, char *name, uint16_t maxl
 	}
 	while(f_readdir(&dir, &fno) == FR_OK && fno.fname[0] != 0) {
 		if(fno.fattrib & AM_DIR) {
+			if(strcmp(fno.fname, "System Volume Information") == 0
+					|| strncmp(fno.fname, ".Trash", 6) == 0) {
+				// skip directories that were created by linux/windows on the drive
+				continue;
+			}
 			// is a directory
 			if(index == 0) {
 				// reached the requested directory

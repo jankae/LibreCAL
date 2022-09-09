@@ -59,18 +59,26 @@ public:
     // Extracts the coefficients from the device. This is done with a dedicated thread.
     // Do not call any other functions until the update is finished. Process can be
     // monitored through the updateCoefficientsPercent and updateCoefficientsDone signals
-    void updateCoefficientSets();
+    void loadCoefficientSets(QStringList names = QStringList());
+    // Writes coefficient sets to the device. This will only write modified files to save
+    // time. This is done with a dedicated thread.
+    // Do not call any other functions until the update is finished. Process can be
+    // monitored through the updateCoefficientsPercent and updateCoefficientsDone signals
+    void saveCoefficientSets();
     std::vector<CoefficientSet> getCoefficientSets() const;
+
+    QStringList getCoefficientSetNames();
 
     bool hasModifiedCoefficients();
 
 signals:
     void updateCoefficientsPercent(int percent);
     // emitted when all coefficients have been received and it is safe to call all functions again
-    void updateCoefficientsDone();
+    void updateCoefficientsDone(bool success);
 
 private:
-    void updateCoefficientSetsThread();
+    void loadCoefficientSetsThread(QStringList names = QStringList());
+    void saveCoefficientSetsThread();
 
     USBDevice *usb;
     QString firmware;
