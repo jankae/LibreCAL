@@ -97,7 +97,8 @@
                <string>Load From Device</string>
               </property>
               <property name="icon">
-               <iconset theme="view-refresh"/>
+               <iconset theme="view-refresh">
+                <normaloff>.</normaloff>.</iconset>
               </property>
              </widget>
             </item>
@@ -110,7 +111,8 @@
                <string>Save To Device</string>
               </property>
               <property name="icon">
-               <iconset theme="document-save"/>
+               <iconset theme="document-save">
+                <normaloff>.</normaloff>.</iconset>
               </property>
              </widget>
             </item>
@@ -127,7 +129,7 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>0</y>
+             <y>-170</y>
              <width>709</width>
              <height>790</height>
             </rect>
@@ -178,7 +180,7 @@
                <item row="0" column="3">
                 <widget class="QDialogButtonBox" name="buttonsOpenP_1">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -221,7 +223,7 @@
                <item row="1" column="3">
                 <widget class="QDialogButtonBox" name="buttonsShortP_1">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -264,7 +266,7 @@
                <item row="2" column="3">
                 <widget class="QDialogButtonBox" name="buttonsLoadP_1">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -319,7 +321,7 @@
                <item row="0" column="3">
                 <widget class="QDialogButtonBox" name="buttonsOpenP_2">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -362,7 +364,7 @@
                <item row="1" column="3">
                 <widget class="QDialogButtonBox" name="buttonsShortP_2">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -405,7 +407,7 @@
                <item row="2" column="3">
                 <widget class="QDialogButtonBox" name="buttonsLoadP_2">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -457,7 +459,7 @@
                <item row="0" column="3">
                 <widget class="QDialogButtonBox" name="buttonsOpenP_3">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -500,7 +502,7 @@
                <item row="1" column="3">
                 <widget class="QDialogButtonBox" name="buttonsShortP_3">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -543,7 +545,7 @@
                <item row="2" column="3">
                 <widget class="QDialogButtonBox" name="buttonsLoadP_3">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -595,7 +597,7 @@
                <item row="0" column="3">
                 <widget class="QDialogButtonBox" name="buttonsOpenP_4">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -638,7 +640,7 @@
                <item row="1" column="3">
                 <widget class="QDialogButtonBox" name="buttonsShortP_4">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -681,7 +683,7 @@
                <item row="2" column="3">
                 <widget class="QDialogButtonBox" name="buttonsLoadP_4">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -733,7 +735,7 @@
                <item row="0" column="3">
                 <widget class="QDialogButtonBox" name="buttonsThroughP_12">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -776,7 +778,7 @@
                <item row="1" column="3">
                 <widget class="QDialogButtonBox" name="buttonsThroughP_13">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -819,7 +821,7 @@
                <item row="2" column="3">
                 <widget class="QDialogButtonBox" name="buttonsThroughP_14">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -862,7 +864,7 @@
                <item row="3" column="3">
                 <widget class="QDialogButtonBox" name="buttonsThroughP_23">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -905,7 +907,7 @@
                <item row="4" column="3">
                 <widget class="QDialogButtonBox" name="buttonsThroughP_24">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>
@@ -948,7 +950,7 @@
                <item row="5" column="3">
                 <widget class="QDialogButtonBox" name="buttonsThroughP_34">
                  <property name="standardButtons">
-                  <set>QDialogButtonBox::Open|QDialogButtonBox::Save</set>
+                  <set>QDialogButtonBox::Open|QDialogButtonBox::Reset|QDialogButtonBox::Save</set>
                  </property>
                 </widget>
                </item>

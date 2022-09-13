@@ -323,6 +323,7 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
         modified->setAttribute(Qt::WA_TransparentForMouseEvents);
         auto save = buttons->button(QDialogButtonBox::Save);
         auto load = buttons->button(QDialogButtonBox::Open);
+        auto reset = buttons->button(QDialogButtonBox::Reset);
         disconnect(save, &QPushButton::clicked, this, nullptr);
         disconnect(load, &QPushButton::clicked, this, nullptr);
         connect(save, &QPushButton::clicked, this, [=](){
@@ -348,15 +349,24 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
                 s += " to "+Unit::ToString(c->t.maxFreq(), "Hz", " kMG", 4);
                 info->setText(s);
                 save->setEnabled(true);
+                reset->setEnabled(true);
                 modified->setChecked(true);
                 ui->saveCoefficients->setEnabled(true);
             });
             import->show();
         });
+        connect(reset, &QPushButton::clicked, this, [=](){
+            c->t = Touchstone(requiredPorts);
+            info->setText("Not available");
+            save->setEnabled(false);
+            modified->setChecked(true);
+            reset->setEnabled(false);
+        });
         if(!c->t.points()) {
             info->setText("Not available");
             save->setEnabled(false);
             modified->setChecked(false);
+            reset->setEnabled(false);
         } else {
             QString s = QString::number(c->t.points())+" points from "+Unit::ToString(c->t.minFreq(), "Hz", " kMG", 4);
             s += " to "+Unit::ToString(c->t.maxFreq(), "Hz", " kMG", 4);
