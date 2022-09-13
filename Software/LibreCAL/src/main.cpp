@@ -13,6 +13,7 @@
 
 #include "SCPI.hpp"
 #include "Flash.hpp"
+#include "UserInterface.hpp"
 
 #define LED_PIN   		25
 #define FLASH_CLK_PIN	2
@@ -44,8 +45,6 @@ static void usb_rx(const uint8_t *buf, uint16_t len, usb_interface_t i) {
 
 static void defaultTask(void* ptr) {
 	handle = xTaskGetCurrentTaskHandle();
-
-    SCPI::Init(usb_transmit);
 
     printf("Unique ID: %s\r\n", getSerial());
 
@@ -99,11 +98,6 @@ static void defaultTask(void* ptr) {
 }
 
 int main(void) {
-//	stdio_init_all();
-	gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-    gpio_put(LED_PIN, true);
-
     spi_init(spi0, 20000 * 1000);
     gpio_set_function(FLASH_CLK_PIN, GPIO_FUNC_SPI);
     gpio_set_function(FLASH_MOSI_PIN, GPIO_FUNC_SPI);
@@ -111,6 +105,9 @@ int main(void) {
     gpio_init(FLASH_CS_PIN);
     gpio_set_dir(FLASH_CS_PIN, GPIO_OUT);
     gpio_put(FLASH_CS_PIN, true);
+
+    UserInterface::Init();
+    SCPI::Init(usb_transmit);
 
     xTaskCreate(defaultTask, "defaultTask", 16384, NULL, 3, NULL);
 

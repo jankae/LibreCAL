@@ -44,6 +44,7 @@ add_executable(LibreCAL
 	src/freertos.c
 	src/Touchstone.cpp
 	src/Flash.cpp
+	src/UserInterface.cpp
 	src/USB/msc_disk.cpp
 	src/USB/usb_descriptors.c
 	src/USB/usb.c
