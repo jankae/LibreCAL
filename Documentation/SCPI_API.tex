@@ -12,12 +12,27 @@
 \useosf % change normal text to use proportional oldstyle figures
 %\usetosf would provide tabular oldstyle figures in text
 
-   
+\usepackage{svg}
+
 \usepackage{enumitem}
 \usepackage{longtable}
 \setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
 \setlist{leftmargin=*}
 \usepackage{listings}
+\definecolor{darkgreen}{RGB}{0,140,0}
+\lstset{
+	basicstyle=\ttfamily,
+	frame=single,
+	breaklines=true,
+	morecomment=[l][\color{darkgreen}]{\#},
+}
+\lstnewenvironment{example}{\lstset{
+    ,frame=single
+    ,xleftmargin=2em
+    ,xrightmargin=2em
+   % ,backgroundcolor=\color{lightgray}
+    ,title=Example
+}}{}
 \usepackage{makecell}
 \usepackage{hyperref}
 
@@ -134,7 +149,7 @@ This section containg commands related to reading, creating and deleting calibra
 Some definitions:
 \begin{itemize}
 \item \textbf{Coefficient data:} S parameters for a specific standard at a given port and selected frequency. It consists of one complex value for reflection standards (open, short, load) and four complex values for transmission standards (through).
-\item \textbf{Coefficient:} A list of coefficient data, containing multiplt points over a frequency range. Each coefficient within a coefficient set is identified by its coefficient name. This name can be any of the following:
+\item \textbf{Coefficient:} A list of coefficient data, containing multiple points over a frequency range. Each coefficient within a coefficient set is identified by its coefficient name. This name can be any of the following:
 \begin{itemize}
 \item P1\_OPEN
 \item P1\_SHORT
