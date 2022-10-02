@@ -11,6 +11,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "Switch.hpp"
 #include "SCPI.hpp"
 #include "Flash.hpp"
 #include "UserInterface.hpp"
@@ -106,6 +107,7 @@ int main(void) {
     gpio_set_dir(FLASH_CS_PIN, GPIO_OUT);
     gpio_put(FLASH_CS_PIN, true);
 
+    Switch::Init();
     UserInterface::Init();
     SCPI::Init(usb_transmit);
 

@@ -194,7 +194,7 @@ void USBDevice::SearchDevices(std::function<bool (libusb_device_handle *, QStrin
 
 bool USBDevice::send(const QString &s)
 {
-    qDebug() << "Send:"<<s;
+//    qDebug() << "Send:"<<s;
     unsigned char data[s.size()+2];
     memcpy(data, s.toLatin1().data(), s.size());
     memcpy(&data[s.size()], "\r\n", 2);
@@ -232,7 +232,7 @@ bool USBDevice::receive(QString *s)
     if(res == 0) {
         if(s) {
             *s = QString(data);
-            qDebug() << "Receive:"<<*s;
+//            qDebug() << "Receive:"<<*s;
         }
         return true;
     } else {

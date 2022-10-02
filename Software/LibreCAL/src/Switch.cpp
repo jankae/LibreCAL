@@ -38,11 +38,11 @@ static void UpdatePins() {
 			gpio_put(VxPins[i][2], 1);
 			break;
 		case Standard::Through:
-			if(through & 0x0F == 0x00) {
+			if((through & 0x0F) == 0x00) {
 				// this is the first port set to through
 				through |= (i+1); // indicate the port in the lower nibble
 				break;
-			} else if(through & 0xF0 == 0x00) {
+			} else if((through & 0xF0) == 0x00) {
 				// this is the second port set to through
 				through |= (i+1) << 4; // indicate the second port in the upper nibble
 				break;
@@ -59,7 +59,7 @@ static void UpdatePins() {
 			break;
 		}
 	}
-	if((through & 0x0F ==0x00) ^ (through & 0xF0 == 0x00)) {
+	if(((through & 0x0F) == 0x00) ^ ((through & 0xF0) == 0x00)) {
 		// only one port is set to through
 		configValid = false;
 	} else {
@@ -120,7 +120,7 @@ static void UpdatePins() {
 void Switch::Init() {
 	for(uint8_t i=0;i<Switch::NumPorts;i++) {
 		portStandards[i] = Standard::None;
-		for(uint8_t j=0;j<3;i++) {
+		for(uint8_t j=0;j<3;j++) {
 			gpio_init(VxPins[i][j]);
 			gpio_set_dir(VxPins[i][j], GPIO_OUT);
 		}

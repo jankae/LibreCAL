@@ -251,6 +251,13 @@ static const Command commands[] = {
 			tx_string(Switch::StandardName(Switch::GetStandard(port - 1)), interface);
 			tx_string("\r\n", interface);
 		}, 2, 1),
+		Command(":PORT:VALID", nullptr, [](char *argv[], int argc, int interface){
+			if(Switch::isValid()) {
+				tx_string("TRUE\r\n", interface);
+			} else {
+				tx_string("FALSE\r\n", interface);
+			}
+		}),
 		Command(":COEFFicient:LIST", nullptr, [](char *argv[], int argc, int interface){
 			tx_string("FACTORY", interface);
 			uint8_t i=0;

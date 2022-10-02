@@ -24,6 +24,8 @@ AppWindow::AppWindow() :
 
     status = new QLabel("No device connected");
     ui->statusbar->addPermanentWidget(status);
+    ui->portInvalidLabel->setStyleSheet("QLabel { color : red }");
+    ui->portInvalidLabel->setVisible(false);
 
     portCBs = {ui->port1, ui->port2, ui->port3, ui->port4};
 
@@ -180,6 +182,8 @@ void AppWindow::DisconnectDevice()
 
     backgroundOperations = false;
 
+    ui->portInvalidLabel->setVisible(false);
+
     for(auto a : deviceActionGroup->actions()) {
         a->setChecked(false);
     }
@@ -210,6 +214,7 @@ void AppWindow::updateStatus()
             portCBs[i]->setCurrentText(CalDevice::StandardToString(device->getStandard(i+1)));
             portCBs[i]->blockSignals(false);
         }
+        ui->portInvalidLabel->setVisible(!device->portConfigValid());
         // update temperature
         auto temp = device->getTemperature();
         auto power = device->getHeaterPower();

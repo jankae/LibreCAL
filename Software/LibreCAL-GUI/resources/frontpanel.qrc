@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>frontpanel.qrc</file>
+        <file>FrontPanel.svg</file>
+    </qresource>
+</RCC>

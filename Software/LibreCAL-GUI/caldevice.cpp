@@ -64,6 +64,11 @@ bool CalDevice::setStandard(int port, CalDevice::Standard s)
     return usb->Cmd(cmd);
 }
 
+bool CalDevice::portConfigValid()
+{
+    return usb->Query(":PORT:VALID?") == "TRUE";
+}
+
 std::vector<CalDevice::Standard> CalDevice::availableStandards()
 {
     return {Standard::None, Standard::Open, Standard::Short, Standard::Load, Standard::Through};

@@ -27,6 +27,7 @@ public:
 
     Standard getStandard(int port);
     bool setStandard(int port, Standard s);
+    bool portConfigValid();
     static std::vector<Standard> availableStandards();
 
     double getTemperature();

@@ -26,7 +26,7 @@ constexpr uint8_t LEDpins[] = {5,6,7,21,8,22,23,24,25,26};
 
 enum class Button : uint8_t {
 	PORT = 0,
-	FUNTION = 1,
+	FUNCTION = 1,
 };
 
 constexpr uint8_t Buttonpins[] = {4,27};
@@ -75,7 +75,7 @@ void Task(void*) {
 				}
 			}
 		}
-		if(editing && buttonClicked[(int) Button::FUNTION]) {
+		if(editing && buttonClicked[(int) Button::FUNCTION]) {
 			lastButtonPress = xTaskGetTickCount();
 			auto state = Switch::GetStandard(selectedPort);
 			// Select next state

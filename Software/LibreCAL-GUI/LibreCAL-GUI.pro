@@ -60,3 +60,8 @@ FORMS += \
     aboutdialog.ui \
     main.ui \
     touchstoneimportdialog.ui
+
+DISTFILES +=
+
+RESOURCES += \
+    resources/frontpanel.qrc
