@@ -132,6 +132,8 @@ This section contains commands to control and check the configuration of the por
 \subsubsection{:PORT}
 \event{Set a port standard}{:PORT <port> <standard>}{<port> Port number, 1-4\\<standard> Selected standard, one of:\\OPEN\\SHORT\\LOAD\\THROUGH\\NONE}
 \query{Returns the currently used standard at a port}{:PORT? <port>}{<port> Port number}{Standard, one of:\\OPEN\\SHORT\\LOAD\\THROUGH\\NONE}
+\subsubsection{:PORT:VALID}
+\query{Checks whether the current port configuration is valid (either none or exactly two ports set to THROUGH)}{:PORT:VALID?}{None}{TRUE or FALSE}
 
 \subsection{Temperature Control Commands}
 This section contains commands related to the temperature regulation of the \dev{}. While it is possible to change the target temperature, this is not recommended as calibration coefficients will no longer be accurate due to temperature drift.

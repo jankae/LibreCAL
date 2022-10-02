@@ -1,0 +1,291 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc} % LY1 also works
+\usepackage[margin=1in]{geometry}
+
+%% Font settings suggested by fbb documentation.
+\usepackage{textcomp} % to get the right copyright, etc.
+\usepackage[lining,tabular]{fbb} % so math uses tabular lining figures
+\usepackage[scaled=.95,type1]{cabin} % sans serif in style of Gill Sans
+\usepackage[varqu,varl]{zi4}% inconsolata typewriter
+\useosf % change normal text to use proportional oldstyle figures
+%\usetosf would provide tabular oldstyle figures in text
+
+\usepackage{microtype}
+\usepackage{siunitx}
+\DeclareSIUnit{\belmilliwatt}{Bm}
+\DeclareSIUnit{\dBm}{\deci\belmilliwatt}
+\sisetup{range-phrase=--, range-units=single, binary-units = true}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{svg}
+\usetikzlibrary{arrows, shadows}
+\tikzset{%
+  cascaded/.style = {%
+    general shadow = {%
+      shadow scale = 1,
+      shadow xshift = -1ex,
+      shadow yshift = 1ex,
+      draw,
+      thick,
+      fill = white},
+    general shadow = {%
+      shadow scale = 1,
+      shadow xshift = -.5ex,
+      shadow yshift = .5ex,
+      draw,
+      thick,
+      fill = white},
+    fill = white, 
+    draw,
+    thick,
+    minimum width = 1.5cm,
+    minimum height = 2cm}}
+    
+\usepackage{enumitem}
+\setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt}
+\setlist{leftmargin=*}
+\usepackage{listings}
+\definecolor{darkgreen}{RGB}{0,140,0}
+\lstset{
+	basicstyle=\ttfamily,
+	frame=single,
+	breaklines=true,
+	morecomment=[l][\color{darkgreen}]{\#},
+}
+\usepackage[os=win]{menukeys}
+\renewmenumacro{\keys}[+]{shadowedroundedkeys}
+
+\usepackage{booktabs,caption}
+\usepackage[flushleft]{threeparttable}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\usepackage{tabularx} 
+
+\usepackage{stackengine}
+\usepackage{scalerel}
+\usepackage{xcolor,mdframed}
+
+\newcommand\danger[1][5ex]{%
+  \renewcommand\stacktype{L}%
+  \scaleto{\stackon[1.3pt]{\color{red}$\triangle$}{\tiny !}}{#1}%
+}
+
+\newenvironment{important}[1][]{%
+   \begin{mdframed}[%
+      backgroundcolor={red!15}, hidealllines=true,
+      skipabove=0.7\baselineskip, skipbelow=0.7\baselineskip,
+      splitbottomskip=2pt, splittopskip=4pt, #1]%
+   \makebox[0pt]{% ignore the withd of !
+      \smash{% ignor the height of !
+         %\fontsize{32pt}{32pt}\selectfont% make the ! bigger
+         \hspace*{-45pt}% move ! to the left
+         \raisebox{-5pt}{% move ! up a little
+            {\danger}% type the bold red !
+         }%
+      }%
+   }%
+}{\end{mdframed}}
+
+\newcommand\info[1][5ex]{%
+  \renewcommand\stacktype{L}%
+  \scaleto{\stackon[1.2pt]{\color{blue}$\bigcirc$}{\raisebox{-1.5pt}{\small i}}}{#1}%
+}
+
+\newenvironment{information}[1][]{%
+   \begin{mdframed}[%
+      backgroundcolor={blue!15}, hidealllines=true,
+      skipabove=0.7\baselineskip, skipbelow=0.7\baselineskip,
+      splitbottomskip=2pt, splittopskip=4pt, #1]%
+   \makebox[0pt]{% ignore the withd of !
+      \smash{% ignor the height of !
+         %\fontsize{32pt}{32pt}\selectfont% make the ! bigger
+         \hspace*{-45pt}% move ! to the left
+         \raisebox{-5pt}{% move ! up a little
+            {\info}% type the bold red !
+         }%
+      }%
+   }%
+}{\end{mdframed}}
+
+\usepackage{makecell}
+\usepackage{hyperref}
+\newcommand{\dev}{LibreCAL}
+
+\newcommand{\screenshot}[2]{\begin{center}
+\includegraphics[width=#1\textwidth]{images/#2}
+\end{center}}
+
+\title{\dev{} User Manual}
+%\author{Jan Käberich (\url{j.kaeberich@gmx.de})}
+\begin{document}
+\maketitle
+
+\setcounter{tocdepth}{3}
+\tableofcontents
+\clearpage
+
+\section{Overview}
+
+\begin{tikzpicture}
+\begin{scope}[xshift=1.5cm]
+    \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=0.58\textwidth]{images/FrontPanel.pdf}};
+    \begin{scope}[x={(image.south east)},y={(image.north west)}]
+		\node [anchor=east, align=center] (port1) at (-0.2,0.95) {Port 1};
+		\node [anchor=west, align=center] (port2) at (1.2,0.95) {Port 2};
+		\node [anchor=east, align=center] (port3) at (-0.2,0.7) {Port 3};
+		\node [anchor=west, align=center] (port4) at (1.2,0.7) {Port 4};
+		\node [anchor=west, align=center] (leds1) at (-0.3,0.3) {LEDs\\ \footnotesize Left-to-right:\\ \footnotesize Power\\ \footnotesize Ready\\ \footnotesize Wait\\ \footnotesize Port 1\\ \footnotesize Port 2\\ \footnotesize Port 3\\ \footnotesize Port 4};
+		\node [anchor=north, align=center] (usb) at (0.5,-0.2) {USB};
+		\node [anchor=north, align=center] (portsel) at (-0.25,-0.2) {Port Select};
+		\node [anchor=north, align=center] (bootsel) at (0.25,-0.2) {Bootsel};
+		\node [anchor=north, align=center] (functionsel) at (1,-0.2) {Function Select};
+		\node [anchor=east, align=center] (leds2) at (1.3,0.3) {LEDs\\ \footnotesize Left-to-right:\\ \footnotesize Open\\ \footnotesize Short\\ \footnotesize Load\\ \footnotesize Through};
+
+        \draw [-*, ultra thick, gray] (port1) to[] (0.02,0.85);
+        \draw [-*, ultra thick, gray] (port2) to[] (0.98,0.85);
+        \draw [-*, ultra thick, gray] (port3) to[] (0.02,0.64);
+        \draw [-*, ultra thick, gray] (port4) to[] (0.98,0.64);
+        \draw [-*, ultra thick, gray] (usb) to[] (0.5,0.02);
+        \draw [-*, ultra thick, gray] (portsel) to[] (0.28,0.15);
+        \draw [-*, ultra thick, gray] (bootsel) to[] (0.378,0.156);
+        \draw [-*, ultra thick, gray] (functionsel) to[] (0.725,0.153);
+        \draw [-*, ultra thick, gray] (leds1) to[] (0.18,0.36);
+        \draw [-*, ultra thick, gray] (leds2) to[] (0.82,0.36);
+    \end{scope}
+\end{scope}
+\end{tikzpicture}%
+
+\subsection{Ports}
+The four calibration ports use SMA connectors.
+
+\subsection{Heater}
+The critical components are kept at a constant temperature with a resistive heater. The heater is working whenever the \dev{} is powered and can not be disabled.
+
+\subsection{Buttons}
+There are three buttons available:
+\begin{itemize}
+\item \textbf{Port Select:} Selects the port when manually changing calibration standards.
+\item \textbf{Bootsel:} When pressed while applying power, the \dev{} enters the bootloader mode for firmware updates.
+\item \textbf{Function Select:} Selects the standard when manually changing calibration standards.
+\end{itemize}
+
+\subsection{LEDs}
+\begin{itemize}
+\item \textbf{Power:} Always on.
+\item \textbf{Ready:} On when the heater has reached the required temperature.
+\item \textbf{Wait:} On while temperature has not yet settled. Do not make calibration measurements while this LED is on.
+\item \textbf{Port[1-4]:}
+\begin{itemize}
+\item \textbf{While manually changing settings:} The LED corresponding to the currently selected port flashes.
+\item \textbf{Any other time:} LED is on for any port that is active (has a standard enabled)
+\end{itemize}
+\item \textbf{Open,Short,Load,Through:}
+\begin{itemize}
+\item \textbf{While manually changing settings:} The LEDs show the selected standard of the currently selected port.
+\item \textbf{Any other time:} Each LED is on if the corresponding standard is used at any port.
+\end{itemize}
+\end{itemize}
+
+\subsection{USB}
+The \dev{} uses a USB-C connector as the power supply and for data transmission. It requires \SI{5}{\volt} and draws up to \SI{0.5}{\ampere} of current.
+
+
+\section{Firmware Update}
+The \dev{} uses the RP2040 microcontroller and its USB bootloader. To enter the bootloader, hold the "Bootsel" button pressed down while applying power. The \dev{} will show up as a mass storage device. Copy the firmware file to the mass storage and wait for \dev{} to reboot.
+
+\section{Manual control}
+The \dev{} is most useful when automatically controlled by the LibreVNA-GUI or a script. However, it is also possible to configure the calibration standards for each port manually using the "Port Select" and "Function Select" buttons.
+
+\begin{enumerate}
+\item Press "Port Select" to start the manual mode. The LED of the selected port will start flashing and if the port has a calibration standard defined, the corresponding LED will also light up.
+\item Press "Port Select" to switch the port you want to change.
+\item Press "Function Select" to change the calibration standard of the selected port.
+\item After not pressing any button for 3 seconds, the \dev{} will leave manual mode. Changes made in the manual mode are persistent until they are overwritten through USB or a reboot is performed.
+\end{enumerate}
+
+\section{USB control}
+Please see the SCPI API\footnote{\url{https://github.com/jankae/LibreCAL/blob/main/Documentation/SCPI_API.pdf}} for detailed information.
+
+\section{Calibration coefficients}
+For accurate calibrations, the \dev{} provides the calibration coefficients for all calibration standards. There is one default set of calibration coefficients ("FACTORY") as well as the option to add your own (useful if you have additional components permanently mounted to the \dev{} such as port savers).
+
+Each coefficient set consists of a name and the calibration coefficients (as S-parameters) for every reflection and transmission standard. In total there are 18 different coefficients for every coefficient set:
+\begin{itemize}
+\item P1\_OPEN
+\item P1\_SHORT
+\item P1\_LOAD
+\item P2\_OPEN
+\item P2\_SHORT
+\item P2\_LOAD
+\item P3\_OPEN
+\item P3\_SHORT
+\item P3\_LOAD
+\item P4\_OPEN
+\item P4\_SHORT
+\item P4\_LOAD
+\item P12\_THROUGH
+\item P13\_THROUGH
+\item P14\_THROUGH
+\item P23\_THROUGH
+\item P24\_THROUGH
+\item P34\_THROUGH
+\end{itemize}
+
+\paragraph{There are three ways to read calibration coefficients:}
+\begin{itemize}
+\item Read them through the SCPI API.
+\item Use the \dev{}-GUI to extract them and export them as touchstone files (uses the SCPI API internally).
+\item Read the touchstone files directly from the \dev{}.
+\end{itemize}
+
+For the last option, the \dev{} shows up as two mass storage devices: "\mbox{LIBRECAL\_R}" and "\mbox{LIBRECAL\_R}W". \mbox{LIBRECAL\_R} is read-only and is reserved for the factory calibration coefficient set. User-defined calibration coefficient sets can be found in \mbox{LIBRECAL\_R}W. 
+
+\subsection{Adding user-defined coefficients}
+User-defined calibration coefficient sets can be added in the \mbox{LIBRECAL\_R}W mass storage device. Each coefficient set must reside in its own folder. The name of the folder will be used as the coefficient set name and the folder must be in the root directory of \mbox{LIBRECAL\_R}W.
+
+The coefficient set folder should include all required coefficients as touchstone files, file naming must follow these names:
+\begin{itemize}
+\item P1\_OPEN.s1p
+\item P1\_SHORT.s1p
+\item P1\_LOAD.s1p
+\item P2\_OPEN.s1p
+\item P2\_SHORT.s1p
+\item P2\_LOAD.s1p
+\item P3\_OPEN.s1p
+\item P3\_SHORT.s1p
+\item P3\_LOAD.s1p
+\item P4\_OPEN.s1p
+\item P4\_SHORT.s1p
+\item P4\_LOAD.s1p
+\item P12\_THROUGH.s2p
+\item P13\_THROUGH.s2p
+\item P14\_THROUGH.s2p
+\item P23\_THROUGH.s2p
+\item P24\_THROUGH.s2p
+\item P34\_THROUGH.s2p
+\end{itemize}
+
+\begin{information}
+Files may be omitted if the corresponding ports are never going to be used (e.g. when only using two ports of the \dev{}).
+\end{information}
+
+\begin{important}
+The touchstone format of all files must use the following settings:
+\begin{itemize}
+\item Frequency in GHz
+\item S-parameters
+\item S-parameter data in real/imag form
+\item 50 Ohm reference impedance
+\end{itemize}
+\end{important}
+In other words, the touchstone option line must be
+\begin{lstlisting}
+# GHz S RI R 50.0
+\end{lstlisting}
+If the touchstone file uses any other format, it must either be converted before copying it to \mbox{LIBRECAL\_R}W or the \dev{}-GUI must be used to import the touchstone file and create the coefficient from that.
+
+
+\end{document}
