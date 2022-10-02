@@ -24,6 +24,7 @@ private slots:
     void updateStatus();
     void loadCoefficients();
     void saveCoefficients();
+    void createCoefficient();
 
     void showCoefficientSet(const CalDevice::CoefficientSet &set);
 private:

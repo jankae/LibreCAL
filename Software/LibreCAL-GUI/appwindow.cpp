@@ -81,6 +81,7 @@ AppWindow::AppWindow() :
     });
     connect(ui->loadCoefficients, &QPushButton::clicked, this, &AppWindow::loadCoefficients);
     connect(ui->saveCoefficients, &QPushButton::clicked, this, &AppWindow::saveCoefficients);
+    connect(ui->newCoefficient, &QPushButton::clicked, this, &AppWindow::createCoefficient);
     if(UpdateDeviceList()) {
         ConnectToDevice();
     }
@@ -315,6 +316,32 @@ void AppWindow::saveCoefficients()
     device->saveCoefficientSets();
 }
 
+void AppWindow::createCoefficient()
+{
+    bool ok;
+    QString text = QInputDialog::getText(this, "New coefficient", "Name:", QLineEdit::Normal, QString(), &ok);
+    if (!ok || text.isEmpty()) {
+        // aborted
+        return;
+    }
+    // check if name is already taken
+    for(auto c : device->getCoefficientSets()) {
+        if(c.name == text) {
+            // name collision
+            InformationBox::ShowError("Duplicate name", "Unable to create, this coefficient set name is already in use.");
+            return;
+        }
+    }
+    // name is free
+    device->addCoefficientSet(text);
+    ui->coeffList->clear();
+    for(auto set : device->getCoefficientSets()) {
+        ui->coeffList->addItem(set.name);
+    }
+    // select the newly created coefficient set
+    ui->coeffList->setCurrentRow(device->getCoefficientSets().size()-1);
+}
+
 void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
 {
     auto setupCoefficient = [=](CalDevice::CoefficientSet::Coefficient *c, QCheckBox *modified, QLineEdit *info, QDialogButtonBox *buttons, int requiredPorts, bool editable){
@@ -326,6 +353,7 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
         auto reset = buttons->button(QDialogButtonBox::Reset);
         disconnect(save, &QPushButton::clicked, this, nullptr);
         disconnect(load, &QPushButton::clicked, this, nullptr);
+        disconnect(reset, &QPushButton::clicked, this, nullptr);
         connect(save, &QPushButton::clicked, this, [=](){
             QString ending = ".s"+QString::number(c->t.ports())+"p";
             auto filename = QFileDialog::getSaveFileName(this, "Select file for exporting coefficients", "", "Touchstone file (*"+ending+")", nullptr, QFileDialog::DontUseNativeDialog);
@@ -342,7 +370,7 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
                 return false;
             }
             auto import = new TouchstoneImportDialog(requiredPorts, filename);
-            connect(import, &TouchstoneImportDialog::fileImported, [=](Touchstone file){
+            connect(import, &TouchstoneImportDialog::fileImported, this, [=](Touchstone file){
                 c->t = file;
                 c->modified = true;
                 QString s = QString::number(c->t.points())+" points from "+Unit::ToString(c->t.minFreq(), "Hz", " kMG", 4);
@@ -357,10 +385,12 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
         });
         connect(reset, &QPushButton::clicked, this, [=](){
             c->t = Touchstone(requiredPorts);
+            c->modified = true;
             info->setText("Not available");
             save->setEnabled(false);
             modified->setChecked(true);
             reset->setEnabled(false);
+            ui->saveCoefficients->setEnabled(true);
         });
         if(!c->t.points()) {
             info->setText("Not available");
@@ -372,8 +402,9 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
             s += " to "+Unit::ToString(c->t.maxFreq(), "Hz", " kMG", 4);
             info->setText(s);
             save->setEnabled(true);
-            modified->setChecked(c->modified);
+            reset->setEnabled(true);
         }
+        modified->setChecked(c->modified);
         if(editable) {
             modified->show();
             buttons->show();

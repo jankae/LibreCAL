@@ -304,6 +304,18 @@ std::vector<CalDevice::CoefficientSet> CalDevice::getCoefficientSets() const
     return coeffSets;
 }
 
+void CalDevice::addCoefficientSet(QString name)
+{
+    CoefficientSet set;
+    set.name = name;
+    set.ports = numPorts;
+    set.loads.resize(numPorts, new CoefficientSet::Coefficient());
+    set.shorts.resize(numPorts, new CoefficientSet::Coefficient());
+    set.opens.resize(numPorts, new CoefficientSet::Coefficient());
+    set.throughs.resize(numPorts*(numPorts-1)/2, new CoefficientSet::Coefficient());
+    coeffSets.push_back(set);
+}
+
 QStringList CalDevice::getCoefficientSetNames()
 {
     QString resp = usb->Query(":COEFF:LIST?");

@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -90,15 +90,14 @@
            <widget class="QListWidget" name="coeffList"/>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
+           <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
-             <widget class="QPushButton" name="loadCoefficients">
+             <widget class="QPushButton" name="newCoefficient">
               <property name="text">
-               <string>Load From Device</string>
+               <string>New</string>
               </property>
               <property name="icon">
-               <iconset theme="view-refresh">
-                <normaloff>.</normaloff>.</iconset>
+               <iconset theme="document-new"/>
               </property>
              </widget>
             </item>
@@ -116,6 +115,17 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QPushButton" name="loadCoefficients">
+              <property name="text">
+               <string>Load From Device</string>
+              </property>
+              <property name="icon">
+               <iconset theme="view-refresh">
+                <normaloff>.</normaloff>.</iconset>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
          </layout>
@@ -129,8 +139,8 @@
            <property name="geometry">
             <rect>
              <x>0</x>
-             <y>-170</y>
-             <width>709</width>
+             <y>0</y>
+             <width>744</width>
              <height>790</height>
             </rect>
            </property>

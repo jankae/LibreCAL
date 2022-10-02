@@ -67,6 +67,8 @@ public:
     void saveCoefficientSets();
     std::vector<CoefficientSet> getCoefficientSets() const;
 
+    void addCoefficientSet(QString name);
+
     QStringList getCoefficientSetNames();
 
     bool hasModifiedCoefficients();

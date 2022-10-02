@@ -216,11 +216,12 @@ bool Touchstone::DeleteFile(const char *folder, const char *filename) {
 		f_closedir(&dir);
 		return true;
 	}
+	f_closedir(&dir);
 	if(fno.fname[0] == 0) {
 		// complete directory is empty, delete the folder
+		f_chdir("0:/");
 		f_unlink(path);
 	}
-	f_closedir(&dir);
 	return true;
 }
 
