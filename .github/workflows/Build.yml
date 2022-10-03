@@ -58,6 +58,7 @@ jobs:
         with:
           version: '5.15.1'
           arch: 'win64_mingw81'
+          modules: 'qtcharts'
       
       - name: Download libusb
         run: |
