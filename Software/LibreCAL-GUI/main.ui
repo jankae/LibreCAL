@@ -268,11 +268,15 @@
            <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
              <widget class="QPushButton" name="newCoefficient">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>New</string>
               </property>
               <property name="icon">
-               <iconset theme="document-new"/>
+               <iconset theme="document-new">
+                <normaloff>.</normaloff>.</iconset>
               </property>
              </widget>
             </item>
@@ -292,6 +296,9 @@
             </item>
             <item>
              <widget class="QPushButton" name="loadCoefficients">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
               <property name="text">
                <string>Load From Device</string>
               </property>
@@ -1235,6 +1242,7 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="resources/frontpanel.qrc"/>
   <include location="resources/frontpanel.qrc"/>
   <include location="resources/frontpanel.qrc"/>
  </resources>

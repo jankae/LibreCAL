@@ -135,6 +135,7 @@ bool AppWindow::ConnectToDevice(QString serial)
         device = new CalDevice(serial);
         ui->actionDisconnect->setEnabled(true);
         ui->loadCoefficients->setEnabled(true);
+        ui->newCoefficient->setEnabled(true);
 
         for(auto d : deviceActionGroup->actions()) {
             if(d->text() == device->serial()) {
@@ -192,6 +193,7 @@ void AppWindow::DisconnectDevice()
     }
     ui->actionDisconnect->setEnabled(false);
     ui->loadCoefficients->setEnabled(false);
+    ui->newCoefficient->setEnabled(false);
     tempSeries->clear();
     heaterSeries->clear();
     ui->temperatureStatus->clear();
