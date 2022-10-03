@@ -151,7 +151,6 @@ jobs:
           name: LibreCAL-GUI-OSX-${{env.LIBRECAL_VERSION}}
           path: Software/LibreCAL-GUI/LibreCAL-GUI.zip
 
-jobs:       
   Embedded_Firmware:
     runs-on: ubuntu-20.04
     steps:
