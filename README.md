@@ -44,6 +44,7 @@ cd $UNPACKED_ZIP_FOLDER$
 
 ## How does it work?
 The LibreCAL is just a switch-matrix with additional options to terminate each port into an open, short or 50 Ohm connection:
+
 ![](Hardware/Blockdiagram/eCal.svg)
 
 While the blockdiagram is small and simple, the tricky part of any eCal module is repeatability. The LibreCAL contains an integrated heater and temperature sensor to keep the critical parts at a constant temperature during operation. Furthermore, high quality SMA connectors are used to ensure good return loss.
