@@ -1,4 +1,7 @@
 ![Build workflow status](https://github.com/jankae/LibreCAL/actions/workflows/Build.yml/badge.svg)
+
+![LibreVNA](Software/LibreCAL-GUI/resources/banner.png)
+
 # LibreCAL
 **??MHz to 6GHz eCal module for VNAs**
 

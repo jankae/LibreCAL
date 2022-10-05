@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="132mm"
+   height="132mm"
+   viewBox="0 0 132 132"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.2.1 (0f2f062aeb, 2022-09-21, custom)"
+   sodipodi:docname="librecal.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.2190487"
+     inkscape:cx="394.56996"
+     inkscape:cy="225.17558"
+     inkscape:document-units="mm"
+     inkscape:current-layer="g23976"
+     inkscape:document-rotation="0"
+     showgrid="true"
+     inkscape:snap-global="false"
+     inkscape:window-width="1848"
+     inkscape:window-height="1016"
+     inkscape:window-x="1152"
+     inkscape:window-y="733"
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="0"
+     width="132mm"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid995" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Brainstorming"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:none">
+    <rect
+       style="opacity:1;fill:#2b2200;fill-opacity:0.880106;stroke:none;stroke-width:2.86499;stroke-linecap:round;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+       id="rect870"
+       width="367.37036"
+       height="299.03726"
+       x="-78.209885"
+       y="-70.037697"
+       ry="51.097725" />
+    <circle
+       style="opacity:1;fill:#a38300;fill-opacity:0.88;stroke:#000000;stroke-width:2.86501;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+       id="circle866"
+       sodipodi:type="arc"
+       sodipodi:cx="85.104286"
+       sodipodi:cy="-103.62683"
+       sodipodi:rx="94.628075"
+       sodipodi:ry="94.628067"
+       sodipodi:start="0"
+       sodipodi:end="6.2658193"
+       sodipodi:open="true"
+       sodipodi:arc-type="arc"
+       inkscape:transform-center-x="1.3415927"
+       inkscape:transform-center-y="-96.188035"
+       d="M 179.73236,-103.62683 A 94.628075,94.628067 0 0 1 85.515113,-8.9996558 94.628075,94.628067 0 0 1 -9.5202213,-102.80519 a 94.628075,94.628067 0 0 1 93.3920583,-95.44168 94.628075,94.628067 0 0 1 95.846253,92.97681"
+       transform="rotate(90)" />
+    <path
+       style="opacity:1;fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:2.865;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.953322;paint-order:stroke fill markers;stop-color:#000000"
+       id="path885"
+       sodipodi:type="arc"
+       sodipodi:cx="-147.16499"
+       sodipodi:cy="3.0210807"
+       sodipodi:rx="76.308685"
+       sodipodi:ry="76.308685"
+       sodipodi:start="0"
+       sodipodi:end="6.2658193"
+       sodipodi:open="true"
+       sodipodi:arc-type="arc"
+       d="M -70.856308,3.0210807 A 76.308685,76.308685 0 0 1 -146.8337,79.329047 76.308685,76.308685 0 0 1 -223.4708,3.683661 a 76.308685,76.308685 0 0 1 75.31195,-76.964793 76.308685,76.308685 0 0 1 77.291036,74.9771022"
+       transform="rotate(-133.83217)" />
+    <circle
+       style="opacity:1;fill:#a38300;fill-opacity:1;stroke:#000000;stroke-width:2.865;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.768627;paint-order:stroke fill markers;stop-color:#000000"
+       id="circle881"
+       sodipodi:type="arc"
+       sodipodi:cx="124.93677"
+       sodipodi:cy="-104.1824"
+       sodipodi:rx="54.409859"
+       sodipodi:ry="54.409859"
+       sodipodi:start="0"
+       sodipodi:end="6.2658193"
+       sodipodi:open="true"
+       sodipodi:arc-type="arc"
+       inkscape:transform-center-x="0.7713937"
+       inkscape:transform-center-y="-55.30682"
+       d="m 179.34663,-104.1824 a 54.409859,54.409859 0 0 1 -54.17364,54.409342 54.409859,54.409859 0 0 1 -54.64403,-53.936912 54.409859,54.409859 0 0 1 53.69917,-54.87768 54.409859,54.409859 0 0 1 55.11029,53.46041"
+       transform="rotate(90)" />
+    <circle
+       style="opacity:1;fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:2.865;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+       id="circle883"
+       sodipodi:type="arc"
+       sodipodi:cx="145.51555"
+       sodipodi:cy="-104.09811"
+       sodipodi:rx="33.817448"
+       sodipodi:ry="33.817448"
+       sodipodi:start="0"
+       sodipodi:end="6.2658193"
+       sodipodi:open="true"
+       sodipodi:arc-type="arc"
+       inkscape:transform-center-x="33.745939"
+       inkscape:transform-center-y="-0.55051861"
+       d="m 179.333,-104.09811 a 33.817448,33.817448 0 0 1 -33.67063,33.817133 33.817448,33.817448 0 0 1 -33.96299,-33.523493 33.817448,33.817448 0 0 1 33.37573,-34.10822 33.817448,33.817448 0 0 1 34.25279,33.22734"
+       transform="rotate(90)" />
+    <text
+       xml:space="preserve"
+       style="font-size:28.2223px;line-height:1.25;font-family:Righteous;-inkscape-font-specification:Righteous;letter-spacing:0px;word-spacing:0px;fill:#e3dbdb;stroke-width:0.264583"
+       id="text845"
+       transform="translate(0,-8.174697)"><textPath
+         xlink:href="#path885"
+         id="textPath863"><tspan
+           id="tspan843"
+           style="fill:#e3dbdb;stroke-width:0.264583">LibreVNA</tspan></textPath></text>
+    <path
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:2.98517;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+       id="path912"
+       sodipodi:type="arc"
+       sodipodi:cx="124.13914"
+       sodipodi:cy="-32.144421"
+       sodipodi:rx="75.352364"
+       sodipodi:ry="81.806183"
+       sodipodi:start="0"
+       sodipodi:end="6.2658193"
+       sodipodi:open="true"
+       sodipodi:arc-type="arc"
+       d="m 199.4915,-32.144421 a 75.352364,81.806183 0 0 1 -75.02522,81.805412 75.352364,81.806183 0 0 1 -75.676666,-81.095097 75.352364,81.806183 0 0 1 74.368126,-82.509554 75.352364,81.806183 0 0 1 76.3224,80.378664"
+       transform="matrix(0,1,-0.92110839,-0.38930621,0,0)"
+       inkscape:transform-center-x="52.307292"
+       inkscape:transform-center-y="30.507302" />
+    <path
+       style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:2.98517;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+       id="path914"
+       sodipodi:type="arc"
+       sodipodi:cx="-212.74516"
+       sodipodi:cy="-195.45494"
+       sodipodi:rx="75.352364"
+       sodipodi:ry="81.806183"
+       sodipodi:start="0"
+       sodipodi:end="6.2658193"
+       sodipodi:open="true"
+       sodipodi:arc-type="arc"
+       d="m -137.3928,-195.45494 a 75.352364,81.806183 0 0 1 -75.02522,81.80541 75.352364,81.806183 0 0 1 -75.67667,-81.0951 75.352364,81.806183 0 0 1 74.36813,-82.50956 75.352364,81.806183 0 0 1 76.3224,80.37867"
+       transform="matrix(0,-1,-0.92110839,0.38930621,0,0)"
+       inkscape:transform-center-x="52.307292"
+       inkscape:transform-center-y="-30.507298" />
+    <text
+       xml:space="preserve"
+       style="font-size:28.2223px;line-height:1.25;font-family:Righteous;-inkscape-font-specification:Righteous;letter-spacing:0px;word-spacing:0px;fill:#2b2200;stroke-width:0.264583"
+       id="text876"
+       transform="translate(275.23567,-2.2746928)"><textPath
+         xlink:href="#path885"
+         id="textPath874"><tspan
+           id="tspan872"
+           style="fill:#2b2200;stroke-width:0.264583">Libre VNA</tspan></textPath></text>
+    <circle
+       style="opacity:1;fill:#8a8e91;fill-opacity:0.878431;stroke:#000000;stroke-width:2.865;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+       id="circle878"
+       sodipodi:type="arc"
+       sodipodi:cx="145.51555"
+       sodipodi:cy="-385.20639"
+       sodipodi:rx="33.817448"
+       sodipodi:ry="33.817448"
+       sodipodi:start="0"
+       sodipodi:end="6.2658193"
+       sodipodi:open="true"
+       sodipodi:arc-type="arc"
+       inkscape:transform-center-x="33.745939"
+       inkscape:transform-center-y="-0.55051861"
+       d="m 179.333,-385.20639 a 33.817448,33.817448 0 0 1 -33.67063,33.81713 33.817448,33.817448 0 0 1 -33.96299,-33.5235 33.817448,33.817448 0 0 1 33.37573,-34.10821 33.817448,33.817448 0 0 1 34.25279,33.22734"
+       transform="rotate(90)" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Application icon">
+    <g
+       id="g972-3"
+       transform="matrix(0.12363874,0,0,0.12364166,118.74901,-245.88692)"
+       style="stroke-width:1.47315"
+       inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/librevna.png"
+       inkscape:export-xdpi="76"
+       inkscape:export-ydpi="76"
+       inkscape:label="g972-3">
+      <path
+         id="circle918-6"
+         style="opacity:1;fill:#a38300;fill-opacity:1;stroke:#000000;stroke-width:4.22059;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="1.3415927"
+         inkscape:transform-center-y="-96.188035"
+         d="m 265.68093,426.63831 a 94.628075,94.628067 0 0 1 -94.21725,94.62717 94.628075,94.628067 0 0 1 -95.035331,-93.80553 94.628075,94.628067 0 0 1 93.392061,-95.44169 94.628075,94.628067 0 0 1 95.84625,92.97682"
+         transform="rotate(90)" />
+      <path
+         style="opacity:1;fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.953322;paint-order:stroke fill markers;stop-color:#000000"
+         id="path920-7"
+         sodipodi:type="arc"
+         sodipodi:cx="186.40424"
+         sodipodi:cy="-427.75949"
+         sodipodi:rx="76.308685"
+         sodipodi:ry="76.308685"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         transform="rotate(-137.57694)"
+         d="m 262.71292,-427.75949 a 76.308685,76.308685 0 0 1 -75.97739,76.30797 76.308685,76.308685 0 0 1 -76.6371,-75.64539 76.308685,76.308685 0 0 1 75.31195,-76.96479 76.308685,76.308685 0 0 1 77.29103,74.9771" />
+      <circle
+         style="opacity:1;fill:#a38300;fill-opacity:1;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.768627;paint-order:stroke fill markers;stop-color:#000000"
+         id="circle922-5"
+         sodipodi:type="arc"
+         sodipodi:cx="210.88533"
+         sodipodi:cy="426.08273"
+         sodipodi:rx="54.409859"
+         sodipodi:ry="54.409859"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         inkscape:transform-center-x="0.7713937"
+         inkscape:transform-center-y="-55.30682"
+         transform="rotate(90)"
+         d="m 265.29519,426.08273 a 54.409859,54.409859 0 0 1 -54.17364,54.40935 54.409859,54.409859 0 0 1 -54.64403,-53.93691 54.409859,54.409859 0 0 1 53.69917,-54.87768 54.409859,54.409859 0 0 1 55.11029,53.46041" />
+      <circle
+         style="opacity:1;fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+         id="circle924-3"
+         sodipodi:type="arc"
+         sodipodi:cx="231.46411"
+         sodipodi:cy="426.16702"
+         sodipodi:rx="33.817448"
+         sodipodi:ry="33.817448"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         inkscape:transform-center-x="33.745939"
+         inkscape:transform-center-y="-0.55051861"
+         transform="rotate(90)"
+         d="m 265.28156,426.16702 a 33.817448,33.817448 0 0 1 -33.67063,33.81713 33.817448,33.817448 0 0 1 -33.96299,-33.52349 33.817448,33.817448 0 0 1 33.37573,-34.10822 33.817448,33.817448 0 0 1 34.25279,33.22734" />
+      <text
+         xml:space="preserve"
+         style="font-size:28.2223px;line-height:1.25;font-family:Righteous;-inkscape-font-specification:Righteous;letter-spacing:0px;word-spacing:0px;fill:#e3dbdb;stroke-width:0.389771"
+         id="text930-5"
+         transform="translate(-530.26513,77.773868)"><textPath
+           xlink:href="#path885"
+           id="textPath928-6"
+           style="stroke-width:0.389771"><tspan
+             id="tspan926-2"
+             style="fill:#e3dbdb;stroke-width:0.389771">LibreVNA</tspan></textPath></text>
+      <path
+         id="path932-9"
+         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:15.9517;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="52.307292"
+         inkscape:transform-center-y="30.507302"
+         d="m -1953.0918,537.39258 a 357.64939,357.64942 0 0 0 -17.0449,110.6582 357.64939,357.64942 0 0 0 357.6445,356.09762 l 1.6426,-0.014 a 351.27067,230.90158 50.966233 0 0 3.3769,-46.15628 351.27067,230.90158 50.966233 0 0 -287.2461,-402.48047 351.27067,230.90158 50.966233 0 0 -58.373,-18.10547 z"
+         transform="scale(0.26458333)" />
+      <path
+         id="path934-1"
+         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:15.9517;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="52.307292"
+         inkscape:transform-center-y="-30.507298"
+         d="m -1271.3027,539.24805 a 230.90158,351.27067 39.033767 0 0 -47.4551,15.23828 l -4.9453,2.04687 a 230.90158,351.27067 39.033767 0 0 -284.7949,403.92774 230.90158,351.27067 39.033767 0 0 3.3886,43.60936 357.64939,357.64942 0 0 0 350.2364,-362.2285 357.64939,357.64942 0 0 0 -16.4297,-102.59375 z"
+         transform="scale(0.26458333)" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Bg Github"
+     style="display:inline">
+    <rect
+       style="fill:none;fill-opacity:1;stroke:none;stroke-width:1.74731;stroke-linecap:round;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+       id="rect916-9"
+       width="285.75"
+       height="59.53125"
+       x="-76.875"
+       y="-180.4088"
+       rx="0"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png" />
+    <g
+       id="g1108-1"
+       inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96"
+       style="stroke-width:1.47315"
+       transform="matrix(0.30769137,0,0,0.30668926,197.28901,-203.20028)">
+      <path
+         id="circle918-6-7-8"
+         style="fill:#a38300;fill-opacity:1;stroke:#000000;stroke-width:4.22059;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="1.3415927"
+         inkscape:transform-center-y="-96.188035"
+         d="m -426.63831,265.68093 c -99.49717,5.81497 -130.77327,-148.35742 -36.87576,-181.775365 89.98601,-44.05613 176.17216,87.237045 104.7969,153.035015 -17.16272,17.83078 -41.53119,28.39265 -66.27791,28.72608"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96" />
+      <path
+         style="fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.953322;paint-order:stroke fill markers;stop-color:#000000"
+         id="path920-7-0-7"
+         sodipodi:type="arc"
+         sodipodi:cx="186.40424"
+         sodipodi:cy="-427.75949"
+         sodipodi:rx="76.308685"
+         sodipodi:ry="76.308685"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         transform="rotate(-137.57694)"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96"
+         d="m 262.71292,-427.75949 a 76.308685,76.308685 0 0 1 -75.97739,76.30797 76.308685,76.308685 0 0 1 -76.6371,-75.64539 76.308685,76.308685 0 0 1 75.31195,-76.96479 76.308685,76.308685 0 0 1 77.29103,74.9771" />
+      <circle
+         style="fill:#a38300;fill-opacity:1;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.768627;paint-order:stroke fill markers;stop-color:#000000"
+         id="circle922-5-9-9"
+         sodipodi:type="arc"
+         sodipodi:cx="210.88533"
+         sodipodi:cy="426.08273"
+         sodipodi:rx="54.409859"
+         sodipodi:ry="54.409859"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         inkscape:transform-center-x="0.7713937"
+         inkscape:transform-center-y="-55.30682"
+         transform="rotate(90)"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96"
+         d="m 265.29519,426.08273 a 54.409859,54.409859 0 0 1 -54.17364,54.40935 54.409859,54.409859 0 0 1 -54.64403,-53.93691 54.409859,54.409859 0 0 1 53.69917,-54.87768 54.409859,54.409859 0 0 1 55.11029,53.46041" />
+      <circle
+         style="fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+         id="circle924-3-3-2"
+         sodipodi:type="arc"
+         sodipodi:cx="231.46411"
+         sodipodi:cy="426.16702"
+         sodipodi:rx="33.817448"
+         sodipodi:ry="33.817448"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         inkscape:transform-center-x="33.745939"
+         inkscape:transform-center-y="-0.55051861"
+         transform="rotate(90)"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96"
+         d="m 265.28156,426.16702 a 33.817448,33.817448 0 0 1 -33.67063,33.81713 33.817448,33.817448 0 0 1 -33.96299,-33.52349 33.817448,33.817448 0 0 1 33.37573,-34.10822 33.817448,33.817448 0 0 1 34.25279,33.22734" />
+      <text
+         xml:space="preserve"
+         style="font-size:28.2223px;line-height:1.25;font-family:Righteous;-inkscape-font-specification:Righteous;letter-spacing:0px;word-spacing:0px;fill:#e3dbdb;stroke-width:0.389771"
+         id="text930-5-6-0"
+         transform="translate(-530.26513,77.773868)"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96"><textPath
+           xlink:href="#path885"
+           id="textPath928-6-0-2"
+           style="stroke-width:0.389771"><tspan
+             id="tspan926-2-6-3"
+             style="fill:#e3dbdb;stroke-width:0.389771">LibreVNA</tspan></textPath></text>
+      <path
+         id="path932-9-2-7"
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:4.22214;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.9;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="52.307292"
+         inkscape:transform-center-y="30.507302"
+         d="m -516.75553,142.18512 c -21.03599,57.98506 28.5429,126.28944 90.55158,123.49181 5.95167,-54.73702 -38.23646,-110.58217 -90.55158,-123.49181 z"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96" />
+      <path
+         id="path934-1-6-5"
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:4.22055;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.9;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="52.307292"
+         inkscape:transform-center-y="-30.507298"
+         d="m -336.3655,142.67604 c -51.84548,14.28877 -93.69605,68.56274 -88.31969,122.98422 61.20358,0.53747 108.31028,-65.0335 88.31969,-122.98422 z"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer5"
+     inkscape:label="LibreVNA">
+    <g
+       id="g1280"
+       inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/librevna.png"
+       inkscape:export-xdpi="76"
+       inkscape:export-ydpi="76"
+       style="display:inline;stroke-width:1.47315"
+       transform="matrix(0.70016687,0,0,0.69788844,364.71817,-451.74826)">
+      <path
+         id="path1262"
+         style="fill:#a38300;fill-opacity:1;stroke:#000000;stroke-width:4.22059;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="1.3415927"
+         inkscape:transform-center-y="-96.188035"
+         d="m -426.63831,265.68093 a 94.628067,94.628075 0 0 1 -94.62717,-94.21725 94.628067,94.628075 0 0 1 93.80553,-95.035331 94.628067,94.628075 0 0 1 95.44169,93.392061 94.628067,94.628075 0 0 1 -92.97682,95.84625"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96" />
+      <path
+         style="fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.953322;paint-order:stroke fill markers;stop-color:#000000"
+         id="path1264"
+         sodipodi:type="arc"
+         sodipodi:cx="186.40424"
+         sodipodi:cy="-427.75949"
+         sodipodi:rx="76.308685"
+         sodipodi:ry="76.308685"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         transform="rotate(-137.57694)"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96"
+         d="m 262.71292,-427.75949 a 76.308685,76.308685 0 0 1 -75.97739,76.30797 76.308685,76.308685 0 0 1 -76.6371,-75.64539 76.308685,76.308685 0 0 1 75.31195,-76.96479 76.308685,76.308685 0 0 1 77.29103,74.9771" />
+      <circle
+         style="fill:#a38300;fill-opacity:1;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.768627;paint-order:stroke fill markers;stop-color:#000000"
+         id="circle1266"
+         sodipodi:type="arc"
+         sodipodi:cx="210.88533"
+         sodipodi:cy="426.08273"
+         sodipodi:rx="54.409859"
+         sodipodi:ry="54.409859"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         inkscape:transform-center-x="0.7713937"
+         inkscape:transform-center-y="-55.30682"
+         transform="rotate(90)"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96"
+         d="m 265.29519,426.08273 a 54.409859,54.409859 0 0 1 -54.17364,54.40935 54.409859,54.409859 0 0 1 -54.64403,-53.93691 54.409859,54.409859 0 0 1 53.69917,-54.87768 54.409859,54.409859 0 0 1 55.11029,53.46041" />
+      <circle
+         style="fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+         id="circle1268"
+         sodipodi:type="arc"
+         sodipodi:cx="231.46411"
+         sodipodi:cy="426.16702"
+         sodipodi:rx="33.817448"
+         sodipodi:ry="33.817448"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         inkscape:transform-center-x="33.745939"
+         inkscape:transform-center-y="-0.55051861"
+         transform="rotate(90)"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96"
+         d="m 265.28156,426.16702 a 33.817448,33.817448 0 0 1 -33.67063,33.81713 33.817448,33.817448 0 0 1 -33.96299,-33.52349 33.817448,33.817448 0 0 1 33.37573,-34.10822 33.817448,33.817448 0 0 1 34.25279,33.22734" />
+      <text
+         xml:space="preserve"
+         style="font-size:28.2223px;line-height:1.25;font-family:Righteous;-inkscape-font-specification:Righteous;letter-spacing:0px;word-spacing:0px;fill:#e3dbdb;stroke-width:0.389771"
+         id="text1274"
+         transform="translate(-530.26513,77.773868)"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96"><textPath
+           xlink:href="#path885"
+           id="textPath1272"
+           style="stroke-width:0.389771"><tspan
+             id="tspan1270"
+             style="fill:#e3dbdb;stroke-width:0.389771">LibreVNA</tspan></textPath></text>
+      <path
+         id="path1276"
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:4.22214;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.9;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="52.307292"
+         inkscape:transform-center-y="30.507302"
+         d="m -516.75553,142.18512 a 94.628067,94.628075 0 0 0 -4.5098,29.27831 94.628067,94.628075 0 0 0 94.62677,94.2175 l 0.43461,-0.004 a 92.940364,61.092709 50.966233 0 0 0.89347,-12.21218 92.940364,61.092709 50.966233 0 0 -76.00053,-106.48962 92.940364,61.092709 50.966233 0 0 -15.44452,-4.79041 z"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96" />
+      <path
+         id="path1278"
+         style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:4.22055;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.9;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="52.307292"
+         inkscape:transform-center-y="-30.507298"
+         d="m -336.3655,142.67604 a 61.092709,92.940364 39.033767 0 0 -12.55583,4.0318 l -1.30844,0.54157 a 61.092709,92.940364 39.033767 0 0 -75.35199,106.87254 61.092709,92.940364 39.033767 0 0 0.89657,11.53831 94.628067,94.628075 0 0 0 92.66671,-95.83962 94.628067,94.628075 0 0 0 -4.34702,-27.1446 z"
+         inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/banner.png"
+         inkscape:export-xdpi="96"
+         inkscape:export-ydpi="96" />
+    </g>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="LibreCAL">
+    <g
+       id="g14404"
+       transform="matrix(0.67910712,0,0,0.67852402,355.73306,-604.03769)"
+       style="stroke-width:1.47315"
+       inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/librevna.png"
+       inkscape:export-xdpi="76"
+       inkscape:export-ydpi="76">
+      <path
+         id="path14386"
+         style="opacity:1;fill:#a38300;fill-opacity:0.88;stroke:#000000;stroke-width:4.22059;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="1.3415927"
+         inkscape:transform-center-y="-96.188035"
+         transform="rotate(90)"
+         d="m 265.68093,426.63831 a 94.628075,94.628067 0 0 1 -94.21725,94.62717 94.628075,94.628067 0 0 1 -95.035331,-93.80553 94.628075,94.628067 0 0 1 93.392061,-95.44169 94.628075,94.628067 0 0 1 95.84625,92.97682" />
+      <path
+         style="opacity:1;fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.953322;paint-order:stroke fill markers;stop-color:#000000"
+         id="path14388"
+         sodipodi:type="arc"
+         sodipodi:cx="186.40424"
+         sodipodi:cy="-427.75949"
+         sodipodi:rx="76.308685"
+         sodipodi:ry="76.308685"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         transform="rotate(-137.57694)"
+         d="m 262.71292,-427.75949 a 76.308685,76.308685 0 0 1 -75.97739,76.30797 76.308685,76.308685 0 0 1 -76.6371,-75.64539 76.308685,76.308685 0 0 1 75.31195,-76.96479 76.308685,76.308685 0 0 1 77.29103,74.9771" />
+      <circle
+         style="opacity:1;fill:#a38300;fill-opacity:1;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.768627;paint-order:stroke fill markers;stop-color:#000000"
+         id="circle14390"
+         sodipodi:type="arc"
+         sodipodi:cx="210.88533"
+         sodipodi:cy="426.08273"
+         sodipodi:rx="54.409859"
+         sodipodi:ry="54.409859"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         inkscape:transform-center-x="0.7713937"
+         inkscape:transform-center-y="-55.30682"
+         transform="rotate(90)"
+         d="m 265.29519,426.08273 a 54.409859,54.409859 0 0 1 -54.17364,54.40935 54.409859,54.409859 0 0 1 -54.64403,-53.93691 54.409859,54.409859 0 0 1 53.69917,-54.87768 54.409859,54.409859 0 0 1 55.11029,53.46041" />
+      <circle
+         style="opacity:1;fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+         id="circle14392"
+         sodipodi:type="arc"
+         sodipodi:cx="231.46411"
+         sodipodi:cy="426.16702"
+         sodipodi:rx="33.817448"
+         sodipodi:ry="33.817448"
+         sodipodi:start="0"
+         sodipodi:end="6.2658193"
+         sodipodi:open="true"
+         sodipodi:arc-type="arc"
+         inkscape:transform-center-x="33.745939"
+         inkscape:transform-center-y="-0.55051861"
+         transform="rotate(90)"
+         d="m 265.28156,426.16702 a 33.817448,33.817448 0 0 1 -33.67063,33.81713 33.817448,33.817448 0 0 1 -33.96299,-33.52349 33.817448,33.817448 0 0 1 33.37573,-34.10822 33.817448,33.817448 0 0 1 34.25279,33.22734" />
+      <text
+         xml:space="preserve"
+         style="font-size:28.2223px;line-height:1.25;font-family:Righteous;-inkscape-font-specification:Righteous;letter-spacing:0px;word-spacing:0px;fill:#e3dbdb;stroke-width:0.389771"
+         id="text14398"
+         transform="translate(-530.26513,77.773868)"><textPath
+           xlink:href="#path885"
+           id="textPath14396"
+           style="stroke-width:0.389771"><tspan
+             id="tspan14394"
+             style="fill:#e3dbdb;stroke-width:0.389771">LibreCAL</tspan></textPath></text>
+      <path
+         id="path14400"
+         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:15.9517;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="52.307292"
+         inkscape:transform-center-y="30.507302"
+         d="m -1953.0918,537.39258 a 357.64939,357.64942 0 0 0 -17.0449,110.6582 357.64939,357.64942 0 0 0 357.6445,356.09762 l 1.6426,-0.014 a 351.27067,230.90158 50.966233 0 0 3.3769,-46.15628 351.27067,230.90158 50.966233 0 0 -287.2461,-402.48047 351.27067,230.90158 50.966233 0 0 -58.373,-18.10547 z"
+         transform="scale(0.26458333)" />
+      <path
+         id="path14402"
+         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:15.9517;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+         inkscape:transform-center-x="52.307292"
+         inkscape:transform-center-y="-30.507298"
+         d="m -1271.3027,539.24805 a 230.90158,351.27067 39.033767 0 0 -47.4551,15.23828 l -4.9453,2.04687 a 230.90158,351.27067 39.033767 0 0 -284.7949,403.92774 230.90158,351.27067 39.033767 0 0 3.3886,43.60936 357.64939,357.64942 0 0 0 350.2364,-362.2285 357.64939,357.64942 0 0 0 -16.4297,-102.59375 z"
+         transform="scale(0.26458333)" />
+    </g>
+    <g
+       id="g23976"
+       transform="matrix(0.67910712,0,0,0.67852402,355.73306,-50.278038)"
+       style="stroke-width:1.47315"
+       inkscape:export-filename="/home/kovalevsky/REPOSITORIES/qt-creator-docker/workspace/LibreVNA/Software/PC_Application/resources/librevna.png"
+       inkscape:export-xdpi="76"
+       inkscape:export-ydpi="76">
+      <g
+         id="g491">
+        <path
+           id="path23958"
+           style="opacity:1;fill:#a38300;fill-opacity:0.88;stroke:#000000;stroke-width:4.22059;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+           inkscape:transform-center-x="1.3415927"
+           inkscape:transform-center-y="-96.188035"
+           transform="rotate(90)"
+           d="m 265.68093,426.63831 a 94.628075,94.628067 0 0 1 -94.21725,94.62717 94.628075,94.628067 0 0 1 -95.035331,-93.80553 94.628075,94.628067 0 0 1 93.392061,-95.44169 94.628075,94.628067 0 0 1 95.84625,92.97682" />
+        <path
+           id="path23960"
+           style="opacity:1;fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-opacity:0.953322;paint-order:stroke fill markers;stop-color:#000000"
+           transform="rotate(-137.57694)"
+           d="m 262.71292,-427.75949 a 76.308685,76.308685 0 0 1 -75.97739,76.30797 76.308685,76.308685 0 0 1 -76.6371,-75.64539 76.308685,76.308685 0 0 1 75.31195,-76.96479 76.308685,76.308685 0 0 1 77.29103,74.9771" />
+        <path
+           id="circle23962"
+           style="opacity:1;fill:#a38300;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-opacity:0.768627;paint-order:stroke fill markers;stop-color:#000000"
+           inkscape:transform-center-x="0.7713937"
+           inkscape:transform-center-y="-55.30682"
+           transform="rotate(90)"
+           d="m 265.29519,426.08273 a 54.409859,54.409859 0 0 1 -54.17364,54.40935 54.409859,54.409859 0 0 1 -54.64403,-53.93691 54.409859,54.409859 0 0 1 53.69917,-54.87768 54.409859,54.409859 0 0 1 55.11029,53.46041" />
+        <path
+           id="circle23964"
+           style="opacity:1;fill:#cca300;fill-opacity:0.878431;stroke:#000000;stroke-width:4.22058;stroke-linecap:round;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+           inkscape:transform-center-x="33.745939"
+           inkscape:transform-center-y="-0.55051861"
+           transform="rotate(90)"
+           d="m 265.28156,426.16702 a 33.817448,33.817448 0 0 1 -33.67063,33.81713 33.817448,33.817448 0 0 1 -33.96299,-33.52349 33.817448,33.817448 0 0 1 33.37573,-34.10822 33.817448,33.817448 0 0 1 34.25279,33.22734" />
+        <g
+           aria-label="LibreCAL"
+           transform="translate(-530.26513,77.773868)"
+           id="text23970"
+           style="font-size:28.2223px;line-height:1.25;font-family:Righteous;-inkscape-font-specification:Righteous;letter-spacing:0px;word-spacing:0px;fill:#e3dbdb;stroke-width:0.389771">
+          <path
+             d="M 63.346657,39.075762 52.432606,47.579037 40.28749,31.990641 l 3.119853,-2.430717 9.714399,12.468543 7.794198,-6.072558 z"
+             id="path23981" />
+          <path
+             d="m 59.611191,19.980097 q 0.257415,0.456018 0.300953,0.953645 0.05554,0.490854 -0.07512,0.960218 -0.137434,0.457364 -0.443839,0.86769 -0.301179,0.391552 -0.757198,0.648968 -0.456018,0.257415 -0.958872,0.319727 -0.497627,0.04354 -0.960218,-0.07512 -0.457364,-0.137434 -0.860916,-0.431838 -0.391552,-0.301179 -0.648967,-0.757198 -0.250641,-0.444018 -0.306179,-0.934871 -0.05031,-0.509628 0.07512,-0.960218 0.13066,-0.469364 0.431839,-0.860916 0.306405,-0.410326 0.762424,-0.667742 0.456018,-0.257415 0.953646,-0.300953 0.502854,-0.06231 0.972218,0.06835 0.46259,0.11866 0.860916,0.431839 0.403552,0.294405 0.654194,0.738423 z m 8.662286,16.663045 -3.300134,1.862874 -7.255049,-12.852521 3.300134,-1.862875 z"
+             id="path23983" />
+          <path
+             d="m 81.912921,22.848473 q 0.609704,1.625766 0.558126,3.175741 -0.05158,1.549975 -0.643473,2.875773 -0.596735,1.312894 -1.688629,2.325805 -1.078992,1.008071 -2.549922,1.559708 -1.458028,0.546798 -2.951553,0.488768 -1.480621,-0.06287 -2.811258,-0.667668 -1.317733,-0.609638 -2.370966,-1.730563 -1.058073,-1.133828 -1.658098,-2.733788 l -4.60665,-12.283561 3.535395,-1.325864 2.419459,6.451451 q 0.148374,-0.467738 0.441908,-0.901608 0.306436,-0.438709 0.703196,-0.793551 0.409662,-0.35968 0.879003,-0.638718 0.464502,-0.291941 0.941909,-0.470981 1.470931,-0.551637 2.956391,-0.475865 1.493525,0.05803 2.816097,0.68057 1.322573,0.622541 2.380645,1.756369 1.053233,1.120926 1.64842,2.707982 z m -3.548298,1.330703 q -0.300013,-0.79998 -0.840339,-1.377378 -0.532263,-0.595139 -1.198388,-0.919312 -0.666125,-0.324173 -1.417726,-0.366091 -0.738698,-0.04676 -1.461261,0.224222 -0.722562,0.27098 -1.246734,0.835498 -0.516108,0.546777 -0.79512,1.254835 -0.283851,0.695156 -0.298349,1.480627 -0.01934,0.772568 0.251642,1.495131 0.300013,0.79998 0.827437,1.382216 0.527423,0.582237 1.193548,0.90641 0.666125,0.324173 1.409663,0.383833 0.751601,0.04192 1.474163,-0.229062 0.722563,-0.270979 1.248349,-0.79195 0.53385,-0.538712 0.822539,-1.220966 0.28869,-0.682253 0.303188,-1.467724 0.0274,-0.790309 -0.272612,-1.590289 z"
+             id="path23985" />
+          <path
+             d="m 90.380031,28.992471 -3.706359,0.644953 -2.530196,-14.540329 0.896042,-0.155922 1.521909,1.511581 q 0.754295,-0.970506 1.819114,-1.603398 1.062457,-0.646468 2.284333,-0.85909 l 3.271914,-0.569353 0.642589,3.692782 -3.271913,0.569353 q -0.583785,0.101586 -1.061889,0.408582 -0.478104,0.306996 -0.792095,0.753284 -0.31399,0.446288 -0.441439,0.999991 -0.127449,0.553703 -0.02586,1.137488 z"
+             id="path23987" />
+          <path
+             d="m 103.82063,24.149419 q 0.22057,0.06863 0.44109,0.09593 0.22051,0.01351 0.44099,0.01325 0.55122,-6.67e-4 1.06091,-0.152868 0.50969,-0.152202 0.95033,-0.428343 0.45441,-0.289939 0.79843,-0.689988 0.35779,-0.413846 0.57768,-0.910207 l 2.75943,2.766528 q -0.52275,0.744775 -1.21106,1.338167 -0.67452,0.593374 -1.47328,1.007753 -0.78499,0.414363 -1.66668,0.622136 -0.8679,0.221537 -1.79119,0.222654 -1.55718,0.0019 -2.93593,-0.575226 -1.36496,-0.577126 -2.399737,-1.609407 -1.021001,-1.032297 -1.615276,-2.450962 -0.594292,-1.432446 -0.596359,-3.141216 -0.0021,-1.750112 0.588689,-3.197772 0.590807,-1.44766 1.609324,-2.468644 1.032299,-1.021001 2.395869,-1.587648 1.37736,-0.566664 2.93455,-0.568548 0.92329,-0.0011 1.8055,0.218302 0.88221,0.219419 1.6682,0.631881 0.79976,0.412446 1.48951,1.01795 0.68974,0.591724 1.2143,1.335233 z m 1.91987,-7.760705 q -0.26194,-0.09615 -0.5238,-0.12339 -0.24808,-0.02726 -0.52369,-0.02693 -0.7717,9.33e-4 -1.46037,0.291155 -0.67491,0.276426 -1.18415,0.800698 -0.49546,0.524256 -0.78395,1.268748 -0.28851,0.730712 -0.28739,1.653999 2.5e-4,0.206707 0.0144,0.468518 0.0279,0.261794 0.0695,0.537352 0.0554,0.261761 0.12464,0.509725 0.0692,0.247964 0.17968,0.440757 z"
+             id="path23989" />
+          <path
+             d="m 129.05914,29.308081 q -1.5969,0.867986 -3.4009,1.127423 -1.804,0.259436 -3.59561,-0.126926 -1.37402,-0.296308 -2.5753,-0.935992 -1.19073,-0.623308 -2.16936,-1.511017 -0.96226,-0.898275 -1.68073,-2.011825 -0.71847,-1.113549 -1.14033,-2.360495 -0.40548,-1.257511 -0.49612,-2.602196 -0.0743,-1.35525 0.22204,-2.729267 0.29631,-1.374016 0.92252,-2.578207 0.63968,-1.201287 1.52449,-2.166449 0.90118,-0.975728 2.01473,-1.6942 1.11355,-0.718472 2.35759,-1.12686 1.26041,-0.418953 2.60219,-0.496124 1.35816,-0.08774 2.73218,0.208571 1.79161,0.386363 3.32835,1.366235 1.53965,0.966401 2.63399,2.428855 l -2.7738,2.926129 q -0.65112,-1.099024 -1.70502,-1.8338 -1.051,-0.748246 -2.31725,-1.021314 -1.27972,-0.275973 -2.50238,-0.03214 -1.22265,0.243833 -2.23794,0.898911 -1.01239,0.641607 -1.74136,1.66857 -0.72606,1.013493 -0.99913,2.279743 -0.27307,1.26625 -0.0292,2.488902 0.24674,1.209181 0.90181,2.224476 0.65508,1.015295 1.66857,1.741355 1.0135,0.726061 2.29322,1.002034 1.26625,0.273068 2.52931,0.03795 1.26597,-0.248589 2.31217,-0.981586 z"
+             id="path23991" />
+          <path
+             d="m 144.74889,30.196386 1.74207,-3.550643 q 0.35813,-0.729923 0.38922,-1.512854 0.0495,-0.789232 -0.19624,-1.50845 -0.24576,-0.719219 -0.76792,-1.3131 -0.50371,-0.600182 -1.23364,-0.958308 -0.72992,-0.358125 -1.52522,-0.395285 -0.77686,-0.04346 -1.49608,0.202304 -0.71922,0.245764 -1.32547,0.76185 -0.58781,0.509783 -0.94594,1.239707 l -1.74206,3.550643 z m 0.0726,8.830984 -3.55064,-1.742068 1.74206,-3.550644 -7.10128,-3.484136 -1.74207,3.550643 -3.53827,-1.735998 5.22013,-10.639559 q 0.72232,-1.472218 1.91032,-2.485715 1.19406,-1.02587 2.62012,-1.523469 1.43844,-0.491529 2.99823,-0.416978 1.57217,0.08062 3.04438,0.802942 1.47222,0.722321 2.48572,1.910314 1.02587,1.194063 1.5174,2.6325 0.49153,1.438438 0.41091,3.0106 -0.0746,1.559791 -0.79688,3.032009 z"
+             id="path23993" />
+          <path
+             d="m 158.34741,49.85041 -10.70728,-8.762222 12.51497,-15.293056 3.06074,2.504739 -10.01022,12.232312 7.64653,6.257483 z"
+             id="path23995" />
+        </g>
+        <path
+           id="path23972"
+           style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:15.9517;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+           inkscape:transform-center-x="52.307292"
+           inkscape:transform-center-y="30.507302"
+           d="m -1953.0918,537.39258 c -11.4559,35.76248 -17.208,73.10604 -17.0449,110.6582 0.8544,196.91613 160.7265,356.09682 357.6445,356.09762 l 1.6426,-0.014 c 2.4544,-14.70149 3.584,-30.14107 3.3769,-46.15628 -2.0425,-157.65625 -130.4457,-337.57096 -287.2461,-402.48047 -19.632,-8.12667 -37.2316,-13.78307 -56.4109,-17.69444 z"
+           transform="scale(0.26458333)"
+           sodipodi:nodetypes="cccccccc" />
+        <path
+           id="path23974"
+           style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:15.9517;stroke-linecap:square;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:0.769055;paint-order:stroke fill markers;stop-color:#000000"
+           inkscape:transform-center-x="52.307292"
+           inkscape:transform-center-y="-30.507298"
+           d="m -1271.3027,539.24805 a 230.90158,351.27067 39.033767 0 0 -47.4551,15.23828 l -4.9453,2.04687 a 230.90158,351.27067 39.033767 0 0 -284.7949,403.92774 230.90158,351.27067 39.033767 0 0 3.3886,43.60936 357.64939,357.64942 0 0 0 350.2364,-362.2285 357.64939,357.64942 0 0 0 -16.4297,-102.59375 z"
+           transform="scale(0.26458333)" />
+      </g>
+    </g>
+  </g>
+</svg>

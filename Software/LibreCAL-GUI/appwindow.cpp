@@ -20,6 +20,8 @@ AppWindow::AppWindow() :
     ui = new Ui::MainWindow;
     ui->setupUi(this);
 
+    setWindowIcon(QIcon(":/librecal.svg"));
+
     deviceActionGroup = new QActionGroup(this);
 
     status = new QLabel("No device connected");
