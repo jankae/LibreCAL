@@ -3,9 +3,14 @@
 ![LibreVNA](Software/LibreCAL-GUI/resources/banner.png)
 
 # LibreCAL
-**??MHz to 6GHz eCal module for VNAs**
+**4-port, 9kHz to 6GHz eCal module for VNAs**
 
-![](Hardware/LibreCAL.png)
+![](Hardware/Pictures/WithLibreVNA.JPG)
+
+<p float="center">
+  <img src="Hardware/Pictures/PCB_Bottom.JPG" width="49.5%" />
+  <img src="Hardware/Pictures/PCB_Top.JPG" width="49.5%" /> 
+</p>
 
 ## Quick Start
 * You can find released versions of the GUI application and the device firmware [here](https://github.com/jankae/LibreCAL/releases).
