@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>frontpanel.qrc</file>
+        <file>FrontPanel.svg</file>
+        <file>librecal.svg</file>
+    </qresource>
+</RCC>

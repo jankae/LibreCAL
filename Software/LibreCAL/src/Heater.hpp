@@ -15,10 +15,13 @@ namespace Heater {
 static constexpr uint8_t PWMPin = 28;
 static constexpr uint8_t ADCPin = 29;
 
+static constexpr float maxPower = 1.9f;
+
 void Init();
 void SetTarget(uint8_t celsius);
 float GetTemp();
-bool isStable();
+bool IsStable();
+float GetPower();
 
 };
 

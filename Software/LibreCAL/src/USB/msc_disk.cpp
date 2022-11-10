@@ -23,9 +23,12 @@
  *
  */
 
-#include <ramdisk.h>
+#include <flashdisk.h>
 #include "bsp/board.h"
 #include "tusb.h"
+#include "Flash.hpp"
+
+extern "C" {
 
 #if CFG_TUD_MSC
 
@@ -38,11 +41,7 @@
 If you find any bugs or get any questions, feel free to file an\r\n\
 issue at github.com/hathach/tinyusb"
 
-enum
-{
-  DISK_BLOCK_NUM  = FF_RAM_SECTORS, // 8KB is the smallest size that windows allow to mount
-  DISK_BLOCK_SIZE = FF_RAM_SECTOR_SIZE
-};
+extern Flash flash;
 
 //#ifdef CFG_EXAMPLE_MSC_READONLY
 //const
@@ -119,7 +118,7 @@ enum
 
 uint8_t tud_msc_get_maxlun_cb(void)
 {
-  return 2; // dual LUN
+  return FF_FLASH_DISKS; // dual LUN
 }
 
 // Invoked when received SCSI_CMD_INQUIRY
@@ -153,8 +152,12 @@ void tud_msc_capacity_cb(uint8_t lun, uint32_t* block_count, uint16_t* block_siz
   (void) lun;
 //  printf("LUN: %d\r\n", lun);
 
-  *block_count = DISK_BLOCK_NUM;
-  *block_size  = DISK_BLOCK_SIZE;
+  if(lun == 0) {
+	  *block_count = FF_FLASH_DISK0_SECTORS;
+  } else {
+	  *block_count = FF_FLASH_DISK1_SECTORS;
+  }
+  *block_size  = FF_FLASH_SECTOR_SIZE;
 }
 
 // Invoked when received Start Stop Unit command
@@ -186,10 +189,14 @@ int32_t tud_msc_read10_cb(uint8_t lun, uint32_t lba, uint32_t offset, void* buff
   (void) lun;
 
   // out of ramdisk
-  if ( lba >= DISK_BLOCK_NUM ) return -1;
+  if ( lba >= (lun ? FF_FLASH_DISK1_SECTORS : FF_FLASH_DISK0_SECTORS) ) return -1;
+
+  if(lun == 1) {
+	  offset += FF_FLASH_DISK0_SIZE;
+  }
 
 //  uint8_t const* addr = msc_disk[lba] + offset;
-  memcpy(buffer, &ramdisk[lun][lba * FF_RAM_SECTOR_SIZE + offset], bufsize);
+  flash.read(lba * FF_FLASH_SECTOR_SIZE + offset, bufsize, buffer);
 
   return bufsize;
 }
@@ -201,12 +208,13 @@ int32_t tud_msc_write10_cb(uint8_t lun, uint32_t lba, uint32_t offset, uint8_t* 
   (void) lun;
 
   // out of ramdisk
-  if ( lba >= DISK_BLOCK_NUM ) return -1;
+  if ( lba >= (lun ? FF_FLASH_DISK1_SECTORS : FF_FLASH_DISK0_SECTORS) ) return -1;
 
 #ifndef CFG_EXAMPLE_MSC_READONLY
 //  uint8_t* addr = msc_disk[lba] + offset;
   if(lun == 0) {
-	  memcpy(&ramdisk[lun][lba * FF_RAM_SECTOR_SIZE + offset], buffer, bufsize);
+	  flash.eraseRange(lba * FF_FLASH_SECTOR_SIZE + offset, bufsize);
+	  flash.write(lba * FF_FLASH_SECTOR_SIZE + offset, bufsize, buffer);
   }
 #else
   (void) lba; (void) offset; (void) buffer;
@@ -254,6 +262,8 @@ int32_t tud_msc_scsi_cb (uint8_t lun, uint8_t const scsi_cmd[16], void* buffer, 
   }
 
   return resplen;
+}
+
 }
 
 #endif

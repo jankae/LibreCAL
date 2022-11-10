@@ -6,37 +6,46 @@
 
 #include "pico/stdlib.h"
 #include "pico/unique_id.h"
+#include "hardware/spi.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "Switch.hpp"
 #include "SCPI.hpp"
+#include "Flash.hpp"
+#include "UserInterface.hpp"
 
-#define LED_PIN   (25)
+#define LED_PIN   		25
+#define FLASH_CLK_PIN	2
+#define FLASH_MISO_PIN	0
+#define FLASH_MOSI_PIN	3
+#define FLASH_CS_PIN	1
 
 FATFS fs0, fs1;
 FIL fil;
 FRESULT fr;
 
+static char usb_buffer[256];
+static uint16_t usb_len;
+static usb_interface_t usb_interface;
+static xTaskHandle handle;
 
-static void defaultTask(void* ptr) {
-	while(true) {
-		vTaskDelay(1);
-	}
-}
+Flash flash(spi0, FLASH_CLK_PIN, FLASH_MOSI_PIN, FLASH_MISO_PIN, FLASH_CS_PIN);
 
 static void usb_rx(const uint8_t *buf, uint16_t len, usb_interface_t i) {
-	printf("USB RX\r\n");
-	SCPI::Input((const char*) buf, len, i);
+	if(len > sizeof(usb_buffer)) {
+		// line too long
+		return;
+	}
+	memcpy(usb_buffer, buf, len);
+	usb_len = len;
+	usb_interface = i;
+	xTaskNotify(handle, 0x00, eNoAction);
 }
 
-int main(void) {
-	stdio_init_all();
-	gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
-    gpio_put(LED_PIN, 1);
-
-    SCPI::Init(usb_transmit);
+static void defaultTask(void* ptr) {
+	handle = xTaskGetCurrentTaskHandle();
 
     printf("Unique ID: %s\r\n", getSerial());
 
@@ -65,31 +74,44 @@ int main(void) {
         }
     }
     /* Create a file as new */
-    fr = f_open(&fil, "1:serial.txt", FA_CREATE_NEW | FA_WRITE);
+    fr = f_open(&fil, "1:info.txt", FA_CREATE_ALWAYS | FA_WRITE);
     if (fr) {
     	printf("f_open: %d\r\n", fr);
     }
 
     /* Write a message */
     UINT bw;
+    f_printf(&fil, "Serial: ");
     f_write(&fil, getSerial(), strlen(getSerial()), &bw);
-    /* Close the file */
-    f_close(&fil);
-
-    fr = f_open(&fil, "0:readwrite.txt", FA_CREATE_NEW | FA_WRITE);
-    if (fr) {
-    	printf("f_open: %d\r\n", fr);
-    }
-
-    /* Write a message */
-    const char *str = "You can change this";
-    f_write(&fil, str, strlen(str), &bw);
+    f_printf(&fil, "\r\nFirmware: %d.%d.%d\r\n", FW_MAJOR, FW_MINOR, FW_PATCH);
+    f_printf(&fil, "Number of populated ports: %d", 4);
     /* Close the file */
     f_close(&fil);
 
     usb_init(usb_rx);
 
-    xTaskCreate(defaultTask, "defaultTask", 1024, NULL, 3, NULL);
+	while(true) {
+		uint32_t notification;
+		if(xTaskNotifyWait(0, 0, &notification, portMAX_DELAY)) {
+			SCPI::Input(usb_buffer, usb_len, usb_interface);
+		}
+	}
+}
+
+int main(void) {
+    spi_init(spi0, 20000 * 1000);
+    gpio_set_function(FLASH_CLK_PIN, GPIO_FUNC_SPI);
+    gpio_set_function(FLASH_MOSI_PIN, GPIO_FUNC_SPI);
+    gpio_set_function(FLASH_MISO_PIN, GPIO_FUNC_SPI);
+    gpio_init(FLASH_CS_PIN);
+    gpio_set_dir(FLASH_CS_PIN, GPIO_OUT);
+    gpio_put(FLASH_CS_PIN, true);
+
+    Switch::Init();
+    UserInterface::Init();
+    SCPI::Init(usb_transmit);
+
+    xTaskCreate(defaultTask, "defaultTask", 16384, NULL, 3, NULL);
 
     vTaskStartScheduler();
     return 0;

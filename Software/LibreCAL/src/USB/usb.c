@@ -2,6 +2,9 @@
 #include <usb_descriptors.h>
 #include "tusb.h"
 
+#include "FreeRTOS.h"
+#include "task.h"
+
 static usbd_recv_callback_t callback;
 
 // Invoked when a control transfer occurred on an interface of this class
@@ -41,30 +44,62 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
   return false;
 }
 
-// Invoked when CDC interface received data from host
-void tud_cdc_rx_cb(uint8_t itf)
-{
-	printf("CDC RX CB\r\n");
-	(void) itf;
-	if(tud_cdc_available()) {
-		uint8_t buf[64];
-		uint32_t count = tud_cdc_read(buf, sizeof(buf));
+//static char *strnstr(const char *s1, const char *s2, int length) {
+//	if(!s1 || !s2) {
+//		return NULL;
+//	}
+//	int cmpLen = strlen(s2);
+//	for(int i=0;i<=length-cmpLen;i++) {
+//		if(strncmp(&s[i], s2, cmpLen) == 0) {
+//			return &s[i];
+//		}
+//	}
+//	return NULL;
+//}
+
+static void handleIncoming(char *buf, uint16_t *recCnt, uint8_t interface) {
+	uint16_t cnt = 0;
+	if(interface == USB_INTERFACE_CDC) {
+		if(tud_cdc_available()) {
+			cnt = tud_cdc_read(&buf[*recCnt], USB_REC_BUFFER_SIZE - *recCnt);
+		}
+	} else {
+		if(tud_vendor_available()) {
+			cnt = tud_vendor_read(&buf[*recCnt], USB_REC_BUFFER_SIZE - *recCnt);
+		}
+	}
+	*recCnt += cnt;
+	char *lineEnd;
+	while(lineEnd = strnstr(buf, "\r\n", *recCnt)) {
+		uint16_t bytes = lineEnd - buf + 2;
 		if(callback) {
-			callback(buf, count, USB_INTERFACE_CDC);
+			callback(buf, bytes, interface);
+		}
+		if(*recCnt > bytes) {
+			// got more bytes already received
+			memmove(buf, &buf[bytes], *recCnt - bytes);
+			*recCnt -= bytes;
+		} else {
+			*recCnt = 0;
 		}
 	}
 }
 
+// Invoked when CDC interface received data from host
+void tud_cdc_rx_cb(uint8_t itf)
+{
+	static uint8_t buf[USB_REC_BUFFER_SIZE];
+	static uint16_t recCnt = 0;
+
+	handleIncoming(buf, &recCnt, USB_INTERFACE_CDC);
+}
+
 void tud_vendor_rx_cb(uint8_t itf)
 {
-	printf("CDC VENDOR CB\r\n");
-	if(tud_vendor_available()) {
-		uint8_t buf[64];
-		uint32_t count = tud_vendor_read(buf, sizeof(buf));
-		if(callback) {
-			callback(buf, count, USB_INTERFACE_VENDOR);
-		}
-	}
+	static uint8_t buf[USB_REC_BUFFER_SIZE];
+	static uint16_t recCnt = 0;
+
+	handleIncoming(buf, &recCnt, USB_INTERFACE_VENDOR);
 }
 
 static void tinyUSB_task(void* ptr) {
@@ -76,16 +111,19 @@ static void tinyUSB_task(void* ptr) {
 void usb_init(usbd_recv_callback_t receive_callback) {
 	callback = receive_callback;
 	tud_init(0);
-	xTaskCreate(tinyUSB_task, "TinyUSB", 1024, NULL, 5, NULL);
+	xTaskCreate(tinyUSB_task, "TinyUSB", 1024, NULL, 1, NULL);
 }
 bool usb_transmit(const uint8_t *data, uint16_t length, uint8_t i) {
-	printf("USB TX\r\n");
 	if(i == USB_INTERFACE_CDC) {
-		printf("CDC TX\r\n");
+		while(tud_cdc_write_available() < length) {
+			vTaskDelay(1);
+		}
 		tud_cdc_write(data, length);
 		tud_cdc_write_flush();
 	} else if(i == USB_INTERFACE_VENDOR) {
-		printf("VENDOR TX\r\n");
+		while(tud_vendor_write_available() < length) {
+			vTaskDelay(1);
+		}
 		tud_vendor_write(data, length);
 	}
     return true;

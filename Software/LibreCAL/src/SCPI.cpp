@@ -10,6 +10,7 @@
 
 #include "Heater.hpp"
 #include "Switch.hpp"
+#include "Touchstone.hpp"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -26,6 +27,18 @@ static scpi_tx_callback tx_data;
 
 static void tx_string(const char *s, uint8_t interface) {
 	tx_data((const uint8_t*) s, strlen(s), interface);
+}
+
+static void tx_int(int i, uint8_t interface) {
+	char s[20];
+	snprintf(s, sizeof(s), "%d", i);
+	tx_string(s, interface);
+}
+
+static void tx_double(double d, uint8_t interface) {
+	char s[20];
+	snprintf(s, sizeof(s), "%f", d);
+	tx_string(s, interface);
 }
 
 class Command {
@@ -124,6 +137,42 @@ static bool arg_to_int(const char* arg, int &i)
 	}
 }
 
+static const char* coefficientOptionEnding(const char *option) {
+	const char *s1p[] = {
+			"P1_OPEN",
+			"P1_SHORT",
+			"P1_LOAD",
+			"P2_OPEN",
+			"P2_SHORT",
+			"P2_LOAD",
+			"P3_OPEN",
+			"P3_SHORT",
+			"P3_LOAD",
+			"P4_OPEN",
+			"P4_SHORT",
+			"P4_LOAD",
+	};
+	const char *s2p[] = {
+			"P12_THROUGH",
+			"P13_THROUGH",
+			"P14_THROUGH",
+			"P23_THROUGH",
+			"P24_THROUGH",
+			"P34_THROUGH",
+	};
+	for(uint8_t i=0;i<ARRAY_SIZE(s1p);i++) {
+		if(strcmp(option, s1p[i]) == 0) {
+			return "s1p";
+		}
+	}
+	for(uint8_t i=0;i<ARRAY_SIZE(s2p);i++) {
+		if(strcmp(option, s2p[i]) == 0) {
+			return "s2p";
+		}
+	}
+	return nullptr;
+}
+
 static const Command commands[] = {
 		Command("*IDN", nullptr,
 		[](char *argv[], int argc, int interface){
@@ -132,6 +181,14 @@ static const Command commands[] = {
 			tx_string("\r\n", interface);
 		}),
 		Command("*LST", nullptr, scpi_lst),
+		Command(":FIRMWARE", nullptr, [](char *argv[], int argc, int interface){
+			char resp[20];
+			snprintf(resp, sizeof(resp), "%d.%d.%d\r\n", FW_MAJOR, FW_MINOR, FW_PATCH);
+			tx_string(resp, interface);
+		}),
+		Command(":PORTS", nullptr, [](char *argv[], int argc, int interface){
+			tx_string("4\r\n", interface);
+		}),
 		Command(":TEMPerature", [](char *argv[], int argc, int interface){
 			int target;
 			if(!arg_to_int(argv[1], target)) {
@@ -148,11 +205,16 @@ static const Command commands[] = {
 		}, 1),
 		Command(":TEMPerature:STABLE", nullptr,
 		[](char *argv[], int argc, int interface){
-			if(Heater::isStable()) {
+			if(Heater::IsStable()) {
 				tx_string("TRUE\r\n", interface);
 			} else {
 				tx_string("FALSE\r\n", interface);
 			}
+		}),
+		Command(":HEATer:POWer", nullptr, [](char *argv[], int argc, int interface){
+			char resp[20];
+			snprintf(resp, sizeof(resp), "%f\r\n", Heater::GetPower());
+			tx_string(resp, interface);
 		}),
 		Command(":PORT", [](char *argv[], int argc, int interface){
 			int port;
@@ -189,6 +251,128 @@ static const Command commands[] = {
 			tx_string(Switch::StandardName(Switch::GetStandard(port - 1)), interface);
 			tx_string("\r\n", interface);
 		}, 2, 1),
+		Command(":PORT:VALID", nullptr, [](char *argv[], int argc, int interface){
+			if(Switch::isValid()) {
+				tx_string("TRUE\r\n", interface);
+			} else {
+				tx_string("FALSE\r\n", interface);
+			}
+		}),
+		Command(":COEFFicient:LIST", nullptr, [](char *argv[], int argc, int interface){
+			tx_string("FACTORY", interface);
+			uint8_t i=0;
+			char name[50];
+			while(Touchstone::GetUserCoefficientName(i, name, sizeof(name))) {
+				tx_string(",", interface);
+				tx_string(name, interface);
+				i++;
+			}
+			tx_string("\r\n", interface);
+		}),
+		Command(":COEFFicient:CREATE", [](char *argv[], int argc, int interface){
+			if(!coefficientOptionEnding(argv[2])) {
+				// invalid coefficient name
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			char filename[50];
+			snprintf(filename, sizeof(filename), "%s.%s", argv[2], coefficientOptionEnding(argv[2]));
+			if(!Touchstone::StartNewFile(argv[1], filename)) {
+				// failed to create file
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			// file started
+			tx_string("\r\n", interface);
+		}, nullptr, 2),
+		Command(":COEFFicient:DELete", [](char *argv[], int argc, int interface){
+			if(!coefficientOptionEnding(argv[2])) {
+				// invalid coefficient name
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			char filename[50];
+			snprintf(filename, sizeof(filename), "%s.%s", argv[2], coefficientOptionEnding(argv[2]));
+			if(!Touchstone::DeleteFile(argv[1], filename)) {
+				// failed to delete file
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			// file deleted
+			tx_string("\r\n", interface);
+		}, nullptr, 2),
+		Command(":COEFFicient:ADD", [](char *argv[], int argc, int interface){
+			double freq = strtod(argv[1], NULL);
+			double values[argc - 2];
+			for(uint8_t i=0;i<argc - 2;i++) {
+				values[i] = strtod(argv[i+2], NULL);
+			}
+			if(!Touchstone::AddPoint(freq, values, argc - 2)) {
+				// failed to add points
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			// point added
+			tx_string("\r\n", interface);
+		}, nullptr, 3),
+		Command(":COEFFicient:FINish", [](char *argv[], int argc, int interface){
+			if(!Touchstone::FinishFile()) {
+				// failed to finish file
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			// file finished
+			tx_string("\r\n", interface);
+		}),
+		Command(":COEFFicient:NUMber", nullptr, [](char *argv[], int argc, int interface){
+			if(!coefficientOptionEnding(argv[2])) {
+				// invalid coefficient name
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			char filename[50];
+			snprintf(filename, sizeof(filename), "%s.%s", argv[2], coefficientOptionEnding(argv[2]));
+			auto points = Touchstone::GetPointNum(argv[1], filename);
+			tx_int(points, interface);
+			tx_string("\r\n", interface);
+		}, 0, 2),
+		Command(":COEFFicient:GET", nullptr, [](char *argv[], int argc, int interface){
+			if(!coefficientOptionEnding(argv[2])) {
+				// invalid coefficient name
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			char filename[50];
+			snprintf(filename, sizeof(filename), "%s.%s", argv[2], coefficientOptionEnding(argv[2]));
+			uint32_t point = strtoul(argv[3], NULL, 10);
+			double values[9];
+			int decoded = Touchstone::GetPoint(argv[1], filename, point, values);
+			if(decoded == 0) {
+				tx_string("ERROR\r\n", interface);
+				return;
+			} else {
+				char response[200] = "";
+				for(int i=0;i<decoded;i++) {
+					char val[20];
+					auto len = strlen(response);
+					len += snprintf(&response[len], sizeof(response)-len, "%f",values[i]);
+					if(i<decoded - 1) {
+						// not the last entry
+						response[len] = ',';
+						response[len+1] = '\0';
+					}
+				}
+				strcat(response, "\r\n");
+				tx_string(response, interface);
+			}
+		}, 0, 3),
+		Command(":FACTory:ENABLEWRITE", [](char *argv[], int argc, int interface){
+			if(strcmp("I_AM_SURE", argv[1]) != 0) {
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			tx_string("\r\n", interface);
+		}, nullptr, 1),
 };
 
 static void scpi_lst(char *argv[], int argc, int interface) {

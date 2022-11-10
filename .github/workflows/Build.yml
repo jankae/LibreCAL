@@ -1,0 +1,200 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  PC_Application_Ubuntu:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libusb-1.0-0-dev qt5-default qt5-qmake qtbase5-dev libqt5charts5-dev
+
+      - name: Get build timestamp
+        id: id_date
+        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+
+      - name: Get app version
+        id: id_version
+        run: |
+          cd Software/LibreCAL-GUI
+          fw_major=`grep -oP '(?<=FW_MAJOR=)[0-9]+' LibreCAL-GUI.pro`
+          fw_minor=`grep -oP '(?<=FW_MINOR=)[0-9]+' LibreCAL-GUI.pro`
+          fw_patch=`grep -oP '(?<=FW_PATCH=)[0-9]+' LibreCAL-GUI.pro` 
+          echo "::set-output name=app_version::v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
+
+      - name: Build application
+        run: |
+          cd Software/LibreCAL-GUI
+          qmake LibreCAL-GUI.pro
+          make -j9
+        shell: bash
+
+      - name: Upload artifact
+        env: 
+          LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
+        uses: actions/upload-artifact@v2
+        with:
+          name: LibreCAL-GUI-Ubuntu-${{env.LIBRECAL_VERSION}}
+          path: Software/LibreCAL-GUI/LibreCAL-GUI
+          
+  PC_Application_Windows:
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v1
+      - uses: msys2/setup-msys2@v2
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v2
+        with:
+          version: '5.15.1'
+          arch: 'win64_mingw81'
+          modules: 'qtcharts'
+      
+      - name: Download libusb
+        run: |
+          curl -o libusb.7z -L https://github.com/libusb/libusb/releases/download/v1.0.23/libusb-1.0.23.7z
+          7z x libusb.7z -r -olibusb
+          Xcopy /E /I /Y libusb\include ..\Qt\5.15.1\mingw81_64\include
+          Xcopy /E /I /Y libusb\MinGW64\static Software\LibreCAL-GUI
+        shell: cmd
+
+      - name: Get build timestamp
+        shell: msys2 {0}
+        id: id_date
+        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+
+      - name: Get app version
+        id: id_version
+        shell: msys2 {0}
+        run: |
+          cd Software/LibreCAL-GUI
+          fw_major=`grep -oP '(?<=FW_MAJOR=)[0-9]+' LibreCAL-GUI.pro`
+          fw_minor=`grep -oP '(?<=FW_MINOR=)[0-9]+' LibreCAL-GUI.pro`
+          fw_patch=`grep -oP '(?<=FW_PATCH=)[0-9]+' LibreCAL-GUI.pro` 
+          echo "::set-output name=app_version::v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
+
+      - name: Build application
+        run: |
+          cd Software/LibreCAL-GUI
+          qmake LibreCAL-GUI.pro
+          make -j9
+        shell: cmd
+
+      - name: Deploy application
+        run: |
+          cd Software/LibreCAL-GUI/release
+          del *.o *.cpp
+          windeployqt.exe .
+          copy ..\..\..\..\Qt\5.15.1\mingw81_64\bin\libwinpthread-1.dll .
+          copy ..\..\..\..\Qt\5.15.1\mingw81_64\bin\libgcc_s_seh-1.dll .
+          copy "..\..\..\..\Qt\5.15.1\mingw81_64\bin\libstdc++-6.dll" .
+          copy ..\..\..\..\Qt\5.15.1\mingw81_64\bin\Qt5OpenGL.dll .
+        shell: cmd
+        
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        env: 
+          LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
+        with:
+          name: GUI_Windows-${{env.LIBRECAL_VERSION}}
+          path: Software/LibreCAL-GUI/release
+
+  PC_Application_OSX:
+    runs-on: macos-10.15
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Install dependencies
+        run: |
+          brew install qt@5 libusb
+          
+      - name: Set Environment
+        run: |
+          echo "/usr/local/opt/qt@5/bin" >> $GITHUB_PATH
+          
+      - name: Get build timestamp
+        id: id_date
+        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+
+      - name: Get app version
+        id: id_version
+        run: |
+          cd Software/LibreCAL-GUI
+          fw_major=`pcregrep -o '(?<=FW_MAJOR=)[0-9]+' LibreCAL-GUI.pro`
+          fw_minor=`pcregrep -o '(?<=FW_MINOR=)[0-9]+' LibreCAL-GUI.pro`
+          fw_patch=`pcregrep -o '(?<=FW_PATCH=)[0-9]+' LibreCAL-GUI.pro` 
+          echo "::set-output name=app_version::v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
+
+      - name: Build application
+        run: |
+          cd Software/LibreCAL-GUI
+          qmake LibreCAL-GUI.pro
+          make -j9
+          macdeployqt LibreCAL-GUI.app
+          zip -ry LibreCAL-GUI.zip LibreCAL-GUI.app
+        shell: bash
+
+      - name: Upload artifact
+        env: 
+          LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
+        uses: actions/upload-artifact@v2
+        with:
+          name: LibreCAL-GUI-OSX-${{env.LIBRECAL_VERSION}}
+          path: Software/LibreCAL-GUI/LibreCAL-GUI.zip
+
+  Embedded_Firmware:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt install -y build-essential gcc-arm-none-eabi binutils-arm-none-eabi 
+          sudo git clone https://github.com/raspberrypi/pico-sdk.git /opt/pico-sdk
+          sudo git -C /opt/pico-sdk submodule update --init
+          echo 'export PICO_SDK_PATH=/opt/pico-sdk' | sudo tee -a /etc/profile.d/pico-sdk.sh
+          source /etc/profile
+        
+      - name: Get build timestamp
+        id: id_date
+        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+
+      - name: Get app version
+        id: id_version
+        run: |
+          cd Software/LibreCAL
+          fw_major=`grep -oP '(?<=FW_MAJOR=)[0-9]+' CMakeLists.txt`
+          fw_minor=`grep -oP '(?<=FW_MINOR=)[0-9]+' CMakeLists.txt`
+          fw_patch=`grep -oP '(?<=FW_PATCH=)[0-9]+' CMakeLists.txt`
+          echo "::set-output name=app_version::-v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
+
+      - name: Build application
+        run: |
+          export PICO_SDK_PATH=/opt/pico-sdk
+          cd Software/LibreCAL
+          mkdir build && cd build
+          cmake ..
+          make -j9
+          make -j9
+        shell: bash
+
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        env: 
+          LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
+        with:
+          name: EmbeddedFirmware-${{env.LIBRECAL_VERSION}}
+          path: |
+            Software/LibreCAL/build/LibreCAL.uf2
+

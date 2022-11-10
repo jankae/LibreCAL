@@ -29,6 +29,12 @@ target_include_directories(FreeRTOS PUBLIC
     ${FREERTOS_SRC_DIRECTORY}/portable/GCC/ARM_CM0
 )
 
+add_definitions(
+-DFW_MAJOR=0
+-DFW_MINOR=1
+-DFW_PATCH=0
+)
+
 add_executable(LibreCAL 
 	src/main.cpp
 	src/Switch.cpp
@@ -36,13 +42,16 @@ add_executable(LibreCAL
 	src/SCPI.cpp
 	src/serial.c
 	src/freertos.c
-	src/USB/msc_disk.c
+	src/Touchstone.cpp
+	src/Flash.cpp
+	src/UserInterface.cpp
+	src/USB/msc_disk.cpp
 	src/USB/usb_descriptors.c
 	src/USB/usb.c
 	src/fatfs/ff.c
 	src/fatfs/ffsystem.c
 	src/fatfs/ffunicode.c
-	src/fatfs/ramdisk.c
+	src/fatfs/flashdisk.cpp
 )
 
 target_include_directories(LibreCAL PUBLIC
