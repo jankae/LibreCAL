@@ -1435,13 +1435,13 @@
       (reference "R36") (unit 1) (value "100") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/8ae04189-9a62-4c2c-b6af-68aaa5063c12/476cf3d9-ec54-47f2-860e-91e4569602ea"
-      (reference "SW1") (unit 1) (value "TL3301CF160QG") (footprint "LibreCAL:TL3301-J")
+      (reference "SW1") (unit 1) (value "TL3301NF160QG") (footprint "LibreCAL:TL3301N-J")
     )
     (path "/7cda3f62-10ef-4aa0-b16d-0105fed08f28/69a4c63c-1afb-4b53-857a-861b4389005a"
-      (reference "SW2") (unit 1) (value "TL3301CF160QG") (footprint "LibreCAL:TL3301-J")
+      (reference "SW2") (unit 1) (value "TL3301CF160QG") (footprint "LibreCAL:TL3301C-J")
     )
     (path "/7cda3f62-10ef-4aa0-b16d-0105fed08f28/a12dd2f8-1a81-4509-8bb0-07609c6f2a54"
-      (reference "SW3") (unit 1) (value "TL3301CF160QG") (footprint "LibreCAL:TL3301-J")
+      (reference "SW3") (unit 1) (value "TL3301CF160QG") (footprint "LibreCAL:TL3301C-J")
     )
     (path "/964ae28e-f607-41fc-a426-1e07a5300055/f0de0f03-6a58-4c47-be55-0af1cc247f41"
       (reference "TH1") (unit 1) (value "ERT-J0ER103J") (footprint "Resistor_SMD:R_0402_1005Metric")

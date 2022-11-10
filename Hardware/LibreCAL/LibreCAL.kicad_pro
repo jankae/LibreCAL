@@ -418,7 +418,7 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "../LibreCAL.step",
+      "step": "../PCB.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""

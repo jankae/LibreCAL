@@ -2073,14 +2073,10 @@
     (uuid ff0d741f-30de-48b0-b46c-16f1793ddcbc)
   )
 
-  (text "Connection | P_{1}V_{1} | P_{1}V_{2} | P_{1}V_{3} | P_{2}V_{1} | P_{2}V_{2} | P_{2}V_{3} | P_{3}V_{1} | P_{3}V_{2} | P_{3}V_{3} | P_{4}V_{1} | P_{4}V_{2} | P_{4}V_{3} |\nThrough_21    0       1       1      0       0      1      X       X       X      X      X       X    \nThrough_24    0       0       1      X       X      X      0       1       1      X      X       X    \nThrough_23    0       1       0      X       X      X      X       X       X      0      1       0    \nThrough_14    X       X       X      0       1      0      0       1       0      X      X       X    \nThrough_13    X       X       X      0       1      1      X       X       X      0      0       1    \nThrough_43    X       X       X      X       X      X      0       0       1      0      1       1    "
+  (text "Connection | P_{1}V_{1} | P_{1}V_{2} | P_{1}V_{3} | P_{2}V_{1} | P_{2}V_{2} | P_{2}V_{3} | P_{3}V_{1} | P_{3}V_{2} | P_{3}V_{3} | P_{4}V_{1} | P_{4}V_{2} | P_{4}V_{3} |\nThrough_12    0       1       0      0       1      1      X       X       X      X      X       X    \nThrough_13    0       1       1      X       X      X      0       0       1      X      X       X    \nThrough_14    0       0       1      X       X      X      X       X       X      0      0       1    \nThrough_23    X       X       X      0       1      0      0       1       0      X      X       X    \nThrough_24    X       X       X      0       0      1      X       X       X      0      1       1    \nThrough_34    X       X       X      X       X      X      0       1       1      0      1       0    "
     (at 33.02 173.99 0)
     (effects (font (size 1.27 1.27)) (justify left bottom))
     (uuid 0036cadd-45b5-4448-aeba-c20476be23a8)
-  )
-  (text "TODO" (at 58.42 175.26 0)
-    (effects (font (size 10 10) (thickness 2) bold) (justify left bottom))
-    (uuid 81e2f335-1281-4116-a7bb-7ecc54a7abca)
   )
   (text "Connection | V_{1} | V_{2} | V_{3} |\nOpen         0     0     0 \nShort         1     0     0 \nLoad         1     0     1\nOff           1     1     0 "
     (at 33.02 189.23 0)
