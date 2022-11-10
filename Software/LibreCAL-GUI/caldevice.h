@@ -38,6 +38,8 @@ public:
     QString getFirmware() const;
     int getNumPorts() const;
 
+    bool enterBootloader();
+
     class CoefficientSet {
     public:
         QString name;
@@ -78,6 +80,8 @@ signals:
     void updateCoefficientsPercent(int percent);
     // emitted when all coefficients have been received and it is safe to call all functions again
     void updateCoefficientsDone(bool success);
+
+    void disconnected();
 
 private:
     void loadCoefficientSetsThread(QStringList names = QStringList());

@@ -1184,6 +1184,7 @@
     <addaction name="actionUpdate_Device_List"/>
     <addaction name="menuConnect_to"/>
     <addaction name="actionDisconnect"/>
+    <addaction name="actionEnter_Bootloader_Mode"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -1231,6 +1232,14 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="actionEnter_Bootloader_Mode">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Enter Bootloader Mode</string>
    </property>
   </action>
  </widget>

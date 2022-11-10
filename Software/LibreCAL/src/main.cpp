@@ -15,6 +15,7 @@
 #include "SCPI.hpp"
 #include "Flash.hpp"
 #include "UserInterface.hpp"
+#include "Heater.hpp"
 
 #define LED_PIN   		25
 #define FLASH_CLK_PIN	2
@@ -109,6 +110,8 @@ int main(void) {
 
     Switch::Init();
     UserInterface::Init();
+    Heater::Init();
+    Heater::SetTarget(35);
     SCPI::Init(usb_transmit);
 
     xTaskCreate(defaultTask, "defaultTask", 16384, NULL, 3, NULL);

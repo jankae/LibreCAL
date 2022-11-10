@@ -12,6 +12,8 @@
 #include "Switch.hpp"
 #include "Touchstone.hpp"
 
+#include <pico/bootrom.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -373,6 +375,11 @@ static const Command commands[] = {
 			}
 			tx_string("\r\n", interface);
 		}, nullptr, 1),
+		Command(":BOOTloader", [](char *argv[], int argc, int interface){
+			tx_string("\r\n", interface);
+			vTaskDelay(100);
+			reset_usb_boot(0, 0);
+		}),
 };
 
 static void scpi_lst(char *argv[], int argc, int interface) {

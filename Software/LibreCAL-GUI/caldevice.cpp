@@ -23,6 +23,7 @@ CalDevice::CalDevice(QString serial) :
     if(!okay) {
         numPorts = 0;
     }
+    connect(usb, &USBDevice::communicationFailure, this, &CalDevice::disconnected);
 }
 
 CalDevice::~CalDevice()
@@ -115,6 +116,11 @@ QString CalDevice::getFirmware() const
 int CalDevice::getNumPorts() const
 {
     return numPorts;
+}
+
+bool CalDevice::enterBootloader()
+{
+    return usb->Cmd(":BOOTloader");
 }
 
 void CalDevice::loadCoefficientSets(QStringList names)

@@ -78,11 +78,12 @@ bool USBDevice::Cmd(QString cmd)
 {
     QString rcv;
     bool success = send(cmd) && receive(&rcv);
-    if(success) {
+    if(success && rcv == "") {
         // empty response expected by commad
-        return rcv == "";
+        return true;
     } else {
         // failed to send/receive
+        emit communicationFailure();
         return false;
     }
 }
@@ -93,7 +94,11 @@ QString USBDevice::Query(QString query)
         QString rcv;
         if(receive(&rcv)) {
             return rcv;
+        } else {
+            emit communicationFailure();
         }
+    } else {
+        emit communicationFailure();
     }
     return QString();
 }

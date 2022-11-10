@@ -73,6 +73,11 @@ AppWindow::AppWindow() :
 
     connect(ui->actionUpdate_Device_List, &QAction::triggered, this, &AppWindow::UpdateDeviceList);
     connect(ui->actionDisconnect, &QAction::triggered, this, &AppWindow::DisconnectDevice);
+    connect(ui->actionEnter_Bootloader_Mode, &QAction::triggered, [=](){
+        if(InformationBox::AskQuestion("Enter Bootloader?", "Do you want to enter the bootloader mode? The device will disconnect and reboot as a mass storage device for the firmware update.", true)) {
+            EnterBootloader();
+        }
+    });
     connect(ui->actionAbout, &QAction::triggered, [=](){
         About::getInstance().about();
     });
@@ -136,8 +141,18 @@ bool AppWindow::ConnectToDevice(QString serial)
         qDebug() << "Attempting to connect to device...";
         device = new CalDevice(serial);
         ui->actionDisconnect->setEnabled(true);
+        ui->actionEnter_Bootloader_Mode->setEnabled(true);
         ui->loadCoefficients->setEnabled(true);
         ui->newCoefficient->setEnabled(true);
+
+        // this needs to be a queued connection because connection problems are only discovered during communication.
+        // Deleting the device (in the DeviceConnectionLost slot) mustn't happen before the current communication has finished)
+        auto conn = connect(device, &CalDevice::disconnected, this, &AppWindow::DeviceConnectionLost, Qt::QueuedConnection);
+        // However, we only want to trigger the device disconnect once (additional communication attempts might send the
+        // CalDevice::disconnected signal again -> disconnect with a direct connection
+        connect(device, &CalDevice::disconnected, [=](){
+            disconnect(conn);
+        });
 
         for(auto d : deviceActionGroup->actions()) {
             if(d->text() == device->serial()) {
@@ -164,6 +179,7 @@ bool AppWindow::ConnectToDevice(QString serial)
 
 //        loadCoefficients();
 
+        qDebug() << "Creating timer";
         updateTimer = new QTimer(this);
         connect(updateTimer, &QTimer::timeout, this, &AppWindow::updateStatus);
         updateTimer->start(updateInterval * 1000);
@@ -179,7 +195,9 @@ bool AppWindow::ConnectToDevice(QString serial)
 
 void AppWindow::DisconnectDevice()
 {
+    qDebug() << "Destroying timer";
     delete updateTimer;
+    updateTimer = nullptr;
     delete device;
     device = nullptr;
 
@@ -194,6 +212,7 @@ void AppWindow::DisconnectDevice()
         deviceActionGroup->checkedAction()->setChecked(false);
     }
     ui->actionDisconnect->setEnabled(false);
+    ui->actionEnter_Bootloader_Mode->setEnabled(false);
     ui->loadCoefficients->setEnabled(false);
     ui->newCoefficient->setEnabled(false);
     tempSeries->clear();
@@ -207,6 +226,25 @@ void AppWindow::DisconnectDevice()
         p->setEnabled(false);
     }
     qDebug() << "Disconnected device";
+}
+
+void AppWindow::DeviceConnectionLost()
+{
+    DisconnectDevice();
+    InformationBox::ShowError("Disconnected", "The USB connection to the device has been lost");
+    UpdateDeviceList();
+}
+
+void AppWindow::EnterBootloader()
+{
+    if(!device) {
+        return;
+    }
+    if(device->enterBootloader()) {
+        DisconnectDevice();
+    } else {
+        InformationBox::ShowError("Error", "Failed to enter bootloader mode");
+    }
 }
 
 void AppWindow::updateStatus()

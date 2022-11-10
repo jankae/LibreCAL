@@ -32,8 +32,8 @@ enum class Button : uint8_t {
 constexpr uint8_t Buttonpins[] = {4,27};
 
 constexpr uint32_t editTime = 3000;
-constexpr uint32_t ledBlinkPeriod = 500;
-constexpr uint32_t ledBlinkOnTime = 250;
+constexpr uint32_t ledBlinkPeriod = 200;
+constexpr uint32_t ledBlinkOnTime = 100;
 
 void setLED(LED led, bool on) {
 	gpio_put(LEDpins[(int) led], !on);
@@ -64,7 +64,7 @@ void Task(void*) {
 		// Handle button presses
 		if(buttonClicked[(int) Button::PORT]) {
 			lastButtonPress = xTaskGetTickCount();
-			if(editing) {
+			if(!editing) {
 				// start editing process
 				editing = true;
 			} else {
@@ -117,7 +117,7 @@ void Task(void*) {
 			setLED(LED::LOAD, false);
 			setLED(LED::THROUGH, false);
 			for(int i=0;i<Switch::NumPorts;i++) {
-				auto state = Switch::GetStandard(selectedPort);
+				auto state = Switch::GetStandard(i);
 				setLED((LED)((int) LED::PORT1 + i), state != Switch::Standard::None);
 				switch(state) {
 				case Switch::Standard::Open: setLED(LED::OPEN, true); break;
@@ -127,7 +127,7 @@ void Task(void*) {
 				}
 			}
 		}
-		vTaskDelay(20);
+		vTaskDelay(10);
 	}
 }
 

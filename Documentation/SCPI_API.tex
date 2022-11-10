@@ -124,6 +124,9 @@ Some commands are both events and queries, depending on whether the question mar
 \query{Lists all available commands}{*LST?}{None}{List of commands, separated by newline}
 \subsubsection{:FIRMWARE}
 \query{Returns the firmware version}{:FIRMWARE?}{None}{<major>.<minor>.<patch>}
+\subsubsection{:BOOTloader}
+\event{Reboots and enters the bootloader mode}{:BOOTloader}{None}
+This is equivalent to pressing the "BOOTSEL" button when applying power.
 
 \subsection{Port Control Commands}
 This section contains commands to control and check the configuration of the ports.

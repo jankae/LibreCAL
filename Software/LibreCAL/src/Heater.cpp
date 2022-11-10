@@ -26,14 +26,14 @@ void HeaterTask(void*) {
 	// Controller parameters
 	constexpr float assumed_ambient = 22.0f; // in °C
 	constexpr float thermal_resistance = 30.0f; // in °C/W
-	constexpr float P = 0.2f; // in W/delta°C
-	constexpr float I = 0.001f; // in W/delta°C/s
+	constexpr float P = 0.4f; // in W/delta°C
+	constexpr float I = 0.05f; // in W/delta°C/s
 	constexpr float I_limit = 1.0f;
 	constexpr float ControllerPeriod = 0.05;
 
 	// Stable check paramters
-	constexpr float allowedDeviation = 1.0f;
-	constexpr uint16_t minStableTime = 30000;
+	constexpr float allowedDeviation = 0.25f;
+	constexpr uint16_t minStableTime = 60000;
 
 	static constexpr float alpha = 0.95;
 	float adc_avg = adc_read();
@@ -54,7 +54,10 @@ void HeaterTask(void*) {
 
 		float basePower = (temp - assumed_ambient) / thermal_resistance; // required power to hold current temperature
 		float deviation = target - temp;
-		integral += deviation * I * ControllerPeriod;
+		if(power < maxPower || power > 0) {
+			// only update integral term when not already at control limit
+			integral += deviation * I * ControllerPeriod;
+		}
 		// anti windup
 		if(integral > I_limit) {
 			integral = I_limit;
@@ -94,12 +97,14 @@ void Heater::Init() {
 	gpio_set_function(PWMPin, GPIO_FUNC_PWM);
 	uint slice = pwm_gpio_to_slice_num(PWMPin);
 	uint channel = pwm_gpio_to_channel(PWMPin);
+	pwm_set_clkdiv(slice, 95.38f); // for 20Hz PWM
 	pwm_set_wrap(slice, UINT16_MAX);
 	setPWM(0);
 	pwm_set_enabled(slice, true);
 
 	adc_init();
 	adc_gpio_init(ADCPin);
+	adc_select_input(ADCPin - 26);
 
 	xTaskCreate(HeaterTask, "Heater", 512, NULL, 1, NULL);
 }

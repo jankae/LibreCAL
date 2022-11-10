@@ -20,6 +20,8 @@ private slots:
     int UpdateDeviceList();
     bool ConnectToDevice(QString serial = QString());
     void DisconnectDevice();
+    void DeviceConnectionLost();
+    void EnterBootloader();
 
     void updateStatus();
     void loadCoefficients();
