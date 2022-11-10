@@ -1,5 +1,5 @@
-### Module positions - created on Tue Aug 30 14:09:53 2022 ###
-### Printed by Pcbnew version (6.0.7)
+### Module positions - created on Do 10 Nov 2022 22:35:02 CET ###
+### Printed by Pcbnew version 6.0.7-f9a2dced07~116~ubuntu20.04.1
 ## Unit = mm, Angle = deg.
 ## Side : bottom
 # Ref     Val            Package                   PosX       PosY       Rot  Side
@@ -28,8 +28,8 @@ R21       330            R_0402_1005Metric     -38.0000    24.0000  -90.0000  bo
 R22       330            R_0402_1005Metric     -41.0000    24.0000  -90.0000  bottom
 R23       330            R_0402_1005Metric     -30.2000    27.5000  180.0000  bottom
 R24       330            R_0402_1005Metric     -35.0000    24.0000  -90.0000  bottom
-SW1       TL3301CF160QG  TL3301-J              -37.0000    10.0000  -90.0000  bottom
-SW2       TL3301CF160QG  TL3301-J              -45.0000    10.0000   90.0000  bottom
-SW3       TL3301CF160QG  TL3301-J              -10.0000    10.0000   90.0000  bottom
+SW1       TL3301NF160QG  TL3301N-J             -37.0000    10.0000  -90.0000  bottom
+SW2       TL3301CF160QG  TL3301C-J             -45.0000    10.0000   90.0000  bottom
+SW3       TL3301CF160QG  TL3301C-J             -10.0000    10.0000   90.0000  bottom
 TH1       ERT-J0ER103J   R_0402_1005Metric     -22.5000    55.0000   90.0000  bottom
 ## End
