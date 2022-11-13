@@ -6,8 +6,6 @@
 
 extern Flash flash;
 
-#define FF_FLASH_SECTOR_SIZE	4096
-
 #define FF_FLASH_DISKS			2
 // DISK0 is writable
 #define FF_FLASH_DISK1_SIZE		1048576

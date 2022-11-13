@@ -45,11 +45,11 @@ static void usb_rx(const uint8_t *buf, uint16_t len, usb_interface_t i) {
 	xTaskNotify(handle, 0x00, eNoAction);
 }
 
-static bool createInfoFile() {
+bool createInfoFile() {
     /* Create a file as new */
     fr = f_open(&fil, "1:info.txt", FA_CREATE_ALWAYS | FA_WRITE);
     if (fr) {
-    	printf("f_open: %d\r\n", fr);
+//    	printf("f_open: %d\r\n", fr);
     	return false;
     }
 
@@ -67,31 +67,19 @@ static bool createInfoFile() {
 static void defaultTask(void* ptr) {
 	handle = xTaskGetCurrentTaskHandle();
 
-    printf("Unique ID: %s\r\n", getSerial());
-
     fr = f_mount(&fs0, "0:", 1);
     if(fr != FR_OK) {
-    	printf("mount error disk0 %d\r\n", fr);
     	BYTE work[FF_MAX_SS];
-    	fr = f_mkfs("0:", 0, work, sizeof(work));
+    	f_mkfs("0:", 0, work, sizeof(work));
     	f_setlabel("0:LibreCAL_RW");
-    	printf("Formatted disk0: %d\r\n", fr);
-        fr = f_mount(&fs0, "0:", 1);
-        if(fr != FR_OK) {
-        	printf("mount error disk0 %d\r\n", fr);
-        }
+    	f_mount(&fs0, "0:", 1);
     }
     fr = f_mount(&fs1, "1:", 1);
     if(fr != FR_OK) {
-    	printf("mount error disk1 %d\r\n", fr);
     	BYTE work[FF_MAX_SS];
-    	fr = f_mkfs("1:", 0, work, sizeof(work));
+    	f_mkfs("1:", 0, work, sizeof(work));
     	f_setlabel("1:LibreCAL_R");
-    	printf("Formatted disk1: %d\r\n", fr);
-        fr = f_mount(&fs1, "1:", 1);
-        if(fr != FR_OK) {
-        	printf("mount error disk1 %d\r\n", fr);
-        }
+    	f_mount(&fs1, "1:", 1);
     }
     // Check info file
     fr = f_open(&fil, "1:info.txt", FA_OPEN_EXISTING | FA_READ);

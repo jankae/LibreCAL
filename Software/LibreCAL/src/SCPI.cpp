@@ -373,8 +373,16 @@ static const Command commands[] = {
 				tx_string("ERROR\r\n", interface);
 				return;
 			}
+			Touchstone::EnableFactoryWriting();
 			tx_string("\r\n", interface);
 		}, nullptr, 1),
+		Command(":FACTory:DELete", [](char *argv[], int argc, int interface){
+			if(Touchstone::clearFactory()) {
+				tx_string("\r\n", interface);
+			} else {
+				tx_string("ERROR\r\n", interface);
+			}
+		}),
 		Command(":BOOTloader", [](char *argv[], int argc, int interface){
 			tx_string("\r\n", interface);
 			vTaskDelay(100);

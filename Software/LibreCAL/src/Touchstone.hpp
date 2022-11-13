@@ -21,6 +21,7 @@ int GetPoint(const char *folder, const char *filename, uint32_t point, double *v
 bool GetUserCoefficientName(uint8_t index, char *name, uint16_t maxlen);
 
 void EnableFactoryWriting();
+bool clearFactory();
 
 };
 

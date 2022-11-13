@@ -7,8 +7,8 @@
 #include <stdio.h>
 
 #define LOG_DEBUG(s, ...) //printf(s, __VA_ARGS__)
-#define LOG_INFO(s...) printf(s)
-#define LOG_ERR(s...) printf(s)
+#define LOG_INFO(s...) //printf(s)
+#define LOG_ERR(s...) //printf(s)
 //#define LOG_ERR(s, ...) printf(s, __VA_ARGS__)
 //#define LOG_ERR(s, ...) printf(s, __VA_ARGS__)
 //#define LOG_ERR(s, ...) printf(s, __VA_ARGS__)
@@ -22,7 +22,7 @@ bool Flash::isPresent() {
 	spi_write_read_blocking(spi, send, recv, 4);
 	CS(true);
 	// Check against valid manufacturer IDs
-	constexpr uint8_t valid_ids[] = {0xEF};
+	constexpr uint8_t valid_ids[] = {0xEF, 0x68};
 	bool valid = false;
 	for (uint8_t i = 0; i < sizeof(valid_ids); i++) {
 		if (recv[1] == valid_ids[i]) {

@@ -52,8 +52,8 @@ DRESULT disk_read (
 	if (drv >= FF_FLASH_DISKS || !count) return RES_PARERR;		/* Check parameter */
 	if (Stat[drv] & STA_NOINIT) return RES_NOTRDY;	/* Check if drive is ready */
 
-	uint32_t address = sector * FF_FLASH_SECTOR_SIZE;
-	uint32_t size = count * FF_FLASH_SECTOR_SIZE;
+	uint32_t address = sector * Flash::SectorSize;
+	uint32_t size = count * Flash::SectorSize;
 	if(drv) {
 		address += FF_FLASH_DISK0_SIZE;
 	}
@@ -84,8 +84,8 @@ DRESULT disk_write (
 	if (Stat[drv] & STA_NOINIT) return RES_NOTRDY;	/* Check drive status */
 	if (Stat[drv] & STA_PROTECT) return RES_WRPRT;	/* Check write protect */
 
-	uint32_t address = sector * FF_FLASH_SECTOR_SIZE;
-	uint32_t size = count * FF_FLASH_SECTOR_SIZE;
+	uint32_t address = sector * Flash::SectorSize;
+	uint32_t size = count * Flash::SectorSize;
 	if(drv) {
 		address += FF_FLASH_DISK0_SIZE;
 	}

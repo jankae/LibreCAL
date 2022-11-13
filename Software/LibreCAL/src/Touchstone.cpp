@@ -129,11 +129,20 @@ bool Touchstone::AddPoint(double frequency, double *values, uint8_t num_values) 
 	if(!writeFileOpen) {
 		return false;
 	}
-	f_printf(&writeFile, "%f", frequency);
-	while(num_values--) {
-		f_printf(&writeFile, " %f", *values++);
+	auto res = f_printf(&writeFile, "%f", frequency);
+	if(res < 0) {
+		return false;
 	}
-	f_printf(&writeFile, "\r\n");
+	while(num_values--) {
+		res = f_printf(&writeFile, " %f", *values++);
+		if(res < 0) {
+			return false;
+		}
+	}
+	res = f_printf(&writeFile, "\r\n");
+	if(res < 0) {
+		return false;
+	}
 	return true;
 }
 
@@ -251,4 +260,29 @@ bool Touchstone::GetUserCoefficientName(uint8_t index, char *name, uint16_t maxl
 	}
 	f_closedir(&dir);
 	return false;
+}
+
+// Implemented in main.cpp
+bool createInfoFile();
+extern FATFS fs1;
+
+bool Touchstone::clearFactory() {
+	if(!writeFactory) {
+		return false;
+	}
+
+	// format the factory drive
+	BYTE work[FF_MAX_SS];
+	if(f_mkfs("1:", 0, work, sizeof(work)) != FR_OK) {
+		return false;
+	}
+	if(f_setlabel("1:LibreCAL_R") != FR_OK) {
+		return false;
+	}
+	if(f_mount(&fs1, "1:", 1) != FR_OK) {
+		return false;
+	}
+
+    // needs to recreate the information file
+    return createInfoFile();
 }

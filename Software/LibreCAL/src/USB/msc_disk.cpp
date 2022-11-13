@@ -155,7 +155,7 @@ void tud_msc_capacity_cb(uint8_t lun, uint32_t* block_count, uint16_t* block_siz
   } else {
 	  *block_count = FF_FLASH_DISK1_SECTORS;
   }
-  *block_size  = FF_FLASH_SECTOR_SIZE;
+  *block_size  = Flash::SectorSize;
 }
 
 // Invoked when received Start Stop Unit command
@@ -194,7 +194,7 @@ int32_t tud_msc_read10_cb(uint8_t lun, uint32_t lba, uint32_t offset, void* buff
   }
 
 //  uint8_t const* addr = msc_disk[lba] + offset;
-  flash.read(lba * FF_FLASH_SECTOR_SIZE + offset, bufsize, buffer);
+  flash.read(lba * Flash::SectorSize + offset, bufsize, buffer);
 
   return bufsize;
 }
@@ -211,8 +211,8 @@ int32_t tud_msc_write10_cb(uint8_t lun, uint32_t lba, uint32_t offset, uint8_t* 
 #ifndef CFG_EXAMPLE_MSC_READONLY
 //  uint8_t* addr = msc_disk[lba] + offset;
   if(lun == 0) {
-	  flash.eraseRange(lba * FF_FLASH_SECTOR_SIZE + offset, bufsize);
-	  flash.write(lba * FF_FLASH_SECTOR_SIZE + offset, bufsize, buffer);
+	  flash.eraseRange(lba * Flash::SectorSize + offset, bufsize);
+	  flash.write(lba * Flash::SectorSize + offset, bufsize, buffer);
   }
 #else
   (void) lba; (void) offset; (void) buffer;
