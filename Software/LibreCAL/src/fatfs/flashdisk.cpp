@@ -7,8 +7,6 @@
 
 extern "C" {
 
-extern Flash flash;
-
 static volatile
 DSTATUS Stat[FF_FLASH_DISKS] = {STA_NOINIT, STA_NOINIT};
 

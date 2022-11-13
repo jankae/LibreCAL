@@ -45,6 +45,25 @@ static void usb_rx(const uint8_t *buf, uint16_t len, usb_interface_t i) {
 	xTaskNotify(handle, 0x00, eNoAction);
 }
 
+static bool createInfoFile() {
+    /* Create a file as new */
+    fr = f_open(&fil, "1:info.txt", FA_CREATE_ALWAYS | FA_WRITE);
+    if (fr) {
+    	printf("f_open: %d\r\n", fr);
+    	return false;
+    }
+
+    /* Write a message */
+    UINT bw;
+    f_printf(&fil, "Serial: ");
+    f_write(&fil, getSerial(), strlen(getSerial()), &bw);
+    f_printf(&fil, "\r\nFirmware: %d.%d.%d\r\n", FW_MAJOR, FW_MINOR, FW_PATCH);
+    f_printf(&fil, "Number of populated ports: %d", 4);
+    /* Close the file */
+    f_close(&fil);
+    return true;
+}
+
 static void defaultTask(void* ptr) {
 	handle = xTaskGetCurrentTaskHandle();
 
@@ -74,20 +93,29 @@ static void defaultTask(void* ptr) {
         	printf("mount error disk1 %d\r\n", fr);
         }
     }
-    /* Create a file as new */
-    fr = f_open(&fil, "1:info.txt", FA_CREATE_ALWAYS | FA_WRITE);
+    // Check info file
+    fr = f_open(&fil, "1:info.txt", FA_OPEN_EXISTING | FA_READ);
     if (fr) {
-    	printf("f_open: %d\r\n", fr);
+    	// failed to open, probably does not exist
+    	createInfoFile();
+    } else {
+    	bool correctFirmware = false;
+    	char line[128];
+    	while(f_gets(line, sizeof(line), &fil)) {
+    		int major, minor, patch;
+    		if(sscanf(line, "Firmware: %d.%d.%d", &major, &minor, &patch) == 3) {
+    			// check firmware
+    			if(major == FW_MAJOR && minor == FW_MINOR && patch == FW_PATCH) {
+    				correctFirmware = true;
+    			}
+    			break;
+    		}
+    	}
+    	if(!correctFirmware) {
+    		f_close(&fil);
+    		createInfoFile();
+    	}
     }
-
-    /* Write a message */
-    UINT bw;
-    f_printf(&fil, "Serial: ");
-    f_write(&fil, getSerial(), strlen(getSerial()), &bw);
-    f_printf(&fil, "\r\nFirmware: %d.%d.%d\r\n", FW_MAJOR, FW_MINOR, FW_PATCH);
-    f_printf(&fil, "Number of populated ports: %d", 4);
-    /* Close the file */
-    f_close(&fil);
 
     usb_init(usb_rx);
 

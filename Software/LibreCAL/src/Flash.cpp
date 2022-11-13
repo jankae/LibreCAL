@@ -22,11 +22,18 @@ bool Flash::isPresent() {
 	spi_write_read_blocking(spi, send, recv, 4);
 	CS(true);
 	// Check against valid manufacturer IDs
-	constexpr uint8_t valid_ids[] = {0xEF, 0x68, 0x9D};
+	constexpr uint8_t valid_ids[] = {0xEF};
 	bool valid = false;
 	for (uint8_t i = 0; i < sizeof(valid_ids); i++) {
 		if (recv[1] == valid_ids[i]) {
 			valid = true;
+			totalSize = 0;
+			switch(recv[3]) {
+			case 0x18: totalSize = 16777216; break;
+			case 0x17: totalSize = 8388608; break;
+			case 0x16: totalSize = 4194304; break;
+			case 0x15: totalSize = 2097152; break;
+			}
 			break;
 		}
 	}
@@ -196,7 +203,7 @@ bool Flash::WaitBusy(uint32_t timeout) {
 	} while (xTaskGetTickCount() - starttime < timeout);
 	// timed out
 	CS(true);
-	LOG_ERR("Timeout occured");
+	LOG_ERR("Timeout occurred");
 	return false;
 }
 
@@ -237,4 +244,8 @@ bool Flash::eraseRange(uint32_t start, uint32_t len) {
 	}
 	xSemaphoreGiveRecursive(mutex);
 	return true;
+}
+
+uint32_t Flash::size() {
+	return totalSize;
 }

@@ -41,8 +41,6 @@ extern "C" {
 If you find any bugs or get any questions, feel free to file an\r\n\
 issue at github.com/hathach/tinyusb"
 
-extern Flash flash;
-
 //#ifdef CFG_EXAMPLE_MSC_READONLY
 //const
 //#endif

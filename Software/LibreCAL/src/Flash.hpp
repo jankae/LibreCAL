@@ -19,6 +19,7 @@ public:
 	Flash(spi_inst_t *spi, uint8_t SCLK_pin, uint8_t MOSI_pin, uint8_t MISO_pin, uint8_t CS_pin)
 	: spi(spi),SCLK_pin(SCLK_pin),MOSI_pin(MOSI_pin),MISO_pin(MISO_pin),CS_pin(CS_pin){
 		mutex = xSemaphoreCreateMutex();
+		totalSize = 0;
 	};
 
 	bool isPresent();
@@ -29,6 +30,7 @@ public:
 	bool erase32Block(uint32_t address);
 	bool erase64Block(uint32_t address);
 	bool eraseRange(uint32_t start, uint32_t len);
+	uint32_t size();
 	const spi_inst_t* const getSpi() const {
 		return spi;
 	}
@@ -48,6 +50,7 @@ private:
 	spi_inst_t * const spi;
 	const uint8_t CS_pin, MISO_pin, MOSI_pin, SCLK_pin;
 	SemaphoreHandle_t mutex;
+	uint32_t totalSize;
 };
 
 
