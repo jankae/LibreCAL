@@ -232,7 +232,16 @@ static const Command commands[] = {
 			for(auto s : standards) {
 				if(Switch::NameMatched(argv[2], s)) {
 					// found the correct standard
-					Switch::SetStandard(port - 1, s);
+					if(s == Switch::Standard::Through) {
+						// also needs the destination port
+						int dest;
+						if(argc < 4 || !arg_to_int(argv[3], dest) || !Switch::SetThrough(port - 1, dest - 1)) {
+							// either no/invalid argument or failed to set standard
+							break;
+						}
+					} else {
+						Switch::SetStandard(port - 1, s);
+					}
 					tx_string("\r\n", interface);
 					return;
 				}
@@ -250,16 +259,15 @@ static const Command commands[] = {
 				tx_string("ERROR\r\n", interface);
 				return;
 			}
-			tx_string(Switch::StandardName(Switch::GetStandard(port - 1)), interface);
+			auto standard = Switch::GetStandard(port - 1);
+			tx_string(Switch::StandardName(standard), interface);
+			if(standard == Switch::Standard::Through) {
+				// also print the destination port
+				tx_string(" ", interface);
+				tx_int(Switch::GetThroughDestination(port - 1) + 1, interface);
+			}
 			tx_string("\r\n", interface);
 		}, 2, 1),
-		Command(":PORT:VALID", nullptr, [](char *argv[], int argc, int interface){
-			if(Switch::isValid()) {
-				tx_string("TRUE\r\n", interface);
-			} else {
-				tx_string("FALSE\r\n", interface);
-			}
-		}),
 		Command(":COEFFicient:LIST", nullptr, [](char *argv[], int argc, int interface){
 			tx_string("FACTORY", interface);
 			uint8_t i=0;

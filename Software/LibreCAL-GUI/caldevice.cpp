@@ -33,23 +33,24 @@ CalDevice::~CalDevice()
 
 QString CalDevice::StandardToString(CalDevice::Standard s)
 {
-    switch(s) {
-    case Standard::Open: return "OPEN";
-    case Standard::Short: return "SHORT";
-    case Standard::Load: return "LOAD";
-    case Standard::Through: return "THROUGH";
-    case Standard::None: return "NONE";
+    switch(s.type) {
+    case Standard::Type::Open: return "OPEN";
+    case Standard::Type::Short: return "SHORT";
+    case Standard::Type::Load: return "LOAD";
+    case Standard::Type::Through: return "THROUGH "+QString::number(s.throughDest);
+    case Standard::Type::None: return "NONE";
     }
+    return "Invalid";
 }
 
 CalDevice::Standard CalDevice::StandardFromString(QString s)
 {
-    for(int i=0;i<=(int) Standard::None;i++) {
-        if(s == StandardToString((Standard) i)) {
-            return (Standard) i;
+    for(auto standard : availableStandards()) {
+        if(s == StandardToString(standard)) {
+            return standard;
         }
     }
-    return Standard::None;
+    return Standard(Standard::Type::None);
 }
 
 CalDevice::Standard CalDevice::getStandard(int port)
@@ -65,14 +66,9 @@ bool CalDevice::setStandard(int port, CalDevice::Standard s)
     return usb->Cmd(cmd);
 }
 
-bool CalDevice::portConfigValid()
-{
-    return usb->Query(":PORT:VALID?") == "TRUE";
-}
-
 std::vector<CalDevice::Standard> CalDevice::availableStandards()
 {
-    return {Standard::None, Standard::Open, Standard::Short, Standard::Load, Standard::Through};
+    return {Standard(Standard::Type::None), Standard(Standard::Type::Open), Standard(Standard::Type::Short), Standard(Standard::Type::Load), Standard(1), Standard(2), Standard(3), Standard(4)};
 }
 
 double CalDevice::getTemperature()
@@ -113,7 +109,7 @@ QString CalDevice::getFirmware() const
     return firmware;
 }
 
-int CalDevice::getNumPorts() const
+unsigned int CalDevice::getNumPorts() const
 {
     return numPorts;
 }
@@ -210,6 +206,7 @@ void CalDevice::loadCoefficientSetsThread(QStringList names)
                         emit updateCoefficientsPercent(newPercentage);
                     }
                 }
+                c->t.setFilename("LibreCAL/"+paramName);
                 return c;
             };
             set.opens.push_back(createCoefficient(name, "P"+QString::number(i)+"_OPEN"));
@@ -265,7 +262,7 @@ void CalDevice::saveCoefficientSetsThread()
                 if(!usb->Cmd(":COEFF:CREATE "+setName+" "+paramName)) {
                     return false;
                 }
-                for(unsigned int i=0;i<points;i++) {
+                for(int i=0;i<points;i++) {
                     auto point = t.point(i);
                     if(point.S.size() == 4) {
                         // S parameters in point are in S11 S12 S21 S22 order but the LibreCAL expects
@@ -360,6 +357,7 @@ bool CalDevice::hasModifiedCoefficients()
             }
         }
     }
+    return false;
 }
 
 CalDevice::CoefficientSet::Coefficient *CalDevice::CoefficientSet::getThrough(int port1, int port2) const

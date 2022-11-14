@@ -24,8 +24,9 @@ enum class Standard {
 
 void Init();
 void SetStandard(uint8_t port, Standard s);
+bool SetThrough(uint8_t port, uint8_t dest);
 Standard GetStandard(uint8_t port);
-bool isValid();
+uint8_t GetThroughDestination(uint8_t port);
 
 const char* StandardName(Standard s);
 bool NameMatched(const char *name, Standard s);

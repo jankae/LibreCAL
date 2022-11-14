@@ -168,6 +168,10 @@ bool AppWindow::ConnectToDevice(QString serial)
         for(int i=0;i<device->getNumPorts();i++) {
             portCBs[i]->setEnabled(true);
             for(auto s : CalDevice::availableStandards()) {
+                if(s.type == CalDevice::Standard::Type::Through && s.throughDest == i+1) {
+                    // do not add through to the port itself
+                    continue;
+                }
                 portCBs[i]->addItem(CalDevice::StandardToString(s));
             }
             portCBs[i]->setCurrentText(CalDevice::StandardToString(device->getStandard(i+1)));
@@ -256,7 +260,6 @@ void AppWindow::updateStatus()
             portCBs[i]->setCurrentText(CalDevice::StandardToString(device->getStandard(i+1)));
             portCBs[i]->blockSignals(false);
         }
-        ui->portInvalidLabel->setVisible(!device->portConfigValid());
         // update temperature
         auto temp = device->getTemperature();
         auto power = device->getHeaterPower();

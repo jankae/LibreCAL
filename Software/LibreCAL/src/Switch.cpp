@@ -14,11 +14,36 @@ static const uint8_t VxPins[Switch::NumPorts][3] {
 };
 
 static Standard portStandards[Switch::NumPorts];
+static uint8_t throughDestinations[Switch::NumPorts];
 
-static bool configValid = false;
+static bool throughMap[4][4][3] = {
+		{
+				{true,true,false},	// P1->1, invalid, turn off
+				{false,true,false}, // P1->2
+				{false,true,true},	// P1->3
+				{false,false,true},	// P1->4
+		},
+		{
+				{false,true,true},	// P2->1
+				{true,true,false},  // P2->2, invalid, turn off
+				{false,true,false},	// P2->3
+				{false,false,true},	// P2->4
+		},
+		{
+				{false,false,true},	// P3->1
+				{false,true,false}, // P3->2
+				{true,true,false},	// P3->3, invalid, turn off
+				{false,true,true},	// P3->4
+		},
+		{
+				{false,false,true},	// P4->1
+				{false,true,true},  // P4->2
+				{false,true,false},	// P4->3
+				{true,true,false},	// P4->4, invalid, turn off
+		},
+};
 
 static void UpdatePins() {
-	configValid = true;
 	uint8_t through = 0x00;
 	for(uint8_t i=0;i<Switch::NumPorts;i++) {
 		switch(portStandards[i]) {
@@ -38,80 +63,14 @@ static void UpdatePins() {
 			gpio_put(VxPins[i][2], 1);
 			break;
 		case Standard::Through:
-			if((through & 0x0F) == 0x00) {
-				// this is the first port set to through
-				through |= (i+1); // indicate the port in the lower nibble
-				break;
-			} else if((through & 0xF0) == 0x00) {
-				// this is the second port set to through
-				through |= (i+1) << 4; // indicate the second port in the upper nibble
-				break;
-			} else {
-				// both throughs already set
-				configValid = false;
-				// fallthrough to 'None' setting
-			}
-			/* no break */
+			gpio_put(VxPins[i][0], throughMap[i][throughDestinations[i]][0]);
+			gpio_put(VxPins[i][1], throughMap[i][throughDestinations[i]][1]);
+			gpio_put(VxPins[i][2], throughMap[i][throughDestinations[i]][2]);
+			break;
 		case Standard::None:
 			gpio_put(VxPins[i][0], 1);
 			gpio_put(VxPins[i][1], 1);
 			gpio_put(VxPins[i][2], 0);
-			break;
-		}
-	}
-	if(((through & 0x0F) == 0x00) ^ ((through & 0xF0) == 0x00)) {
-		// only one port is set to through
-		configValid = false;
-	} else {
-		// configure the through, see schematic for pin settings
-		switch(through) {
-		case 0x21:
-			gpio_put(VxPins[0][0], 0);
-			gpio_put(VxPins[0][1], 1);
-			gpio_put(VxPins[0][2], 0);
-			gpio_put(VxPins[1][0], 0);
-			gpio_put(VxPins[1][1], 1);
-			gpio_put(VxPins[1][2], 1);
-			break;
-		case 0x31:
-			gpio_put(VxPins[0][0], 0);
-			gpio_put(VxPins[0][1], 1);
-			gpio_put(VxPins[0][2], 1);
-			gpio_put(VxPins[2][0], 0);
-			gpio_put(VxPins[2][1], 0);
-			gpio_put(VxPins[2][2], 1);
-			break;
-		case 0x41:
-			gpio_put(VxPins[0][0], 0);
-			gpio_put(VxPins[0][1], 0);
-			gpio_put(VxPins[0][2], 1);
-			gpio_put(VxPins[3][0], 0);
-			gpio_put(VxPins[3][1], 0);
-			gpio_put(VxPins[3][2], 1);
-			break;
-		case 0x32:
-			gpio_put(VxPins[1][0], 0);
-			gpio_put(VxPins[1][1], 1);
-			gpio_put(VxPins[1][2], 0);
-			gpio_put(VxPins[2][0], 0);
-			gpio_put(VxPins[2][1], 1);
-			gpio_put(VxPins[2][2], 0);
-			break;
-		case 0x42:
-			gpio_put(VxPins[1][0], 0);
-			gpio_put(VxPins[1][1], 0);
-			gpio_put(VxPins[1][2], 1);
-			gpio_put(VxPins[3][0], 0);
-			gpio_put(VxPins[3][1], 1);
-			gpio_put(VxPins[3][2], 1);
-			break;
-		case 0x43:
-			gpio_put(VxPins[2][0], 0);
-			gpio_put(VxPins[2][1], 1);
-			gpio_put(VxPins[2][2], 1);
-			gpio_put(VxPins[3][0], 0);
-			gpio_put(VxPins[3][1], 1);
-			gpio_put(VxPins[3][2], 0);
 			break;
 		}
 	}
@@ -120,6 +79,7 @@ static void UpdatePins() {
 void Switch::Init() {
 	for(uint8_t i=0;i<Switch::NumPorts;i++) {
 		portStandards[i] = Standard::None;
+		throughDestinations[i] = 0;
 		for(uint8_t j=0;j<3;j++) {
 			gpio_init(VxPins[i][j]);
 			gpio_set_dir(VxPins[i][j], GPIO_OUT);
@@ -129,7 +89,17 @@ void Switch::Init() {
 }
 
 void Switch::SetStandard(uint8_t port, Standard s) {
+	if(s == Standard::Through) {
+		// must be set by SetThrough
+		return;
+	}
 	if(port < Switch::NumPorts) {
+		if(portStandards[port] == Standard::Through) {
+			// also reset the destination port
+			portStandards[throughDestinations[port]] = Standard::None;
+			throughDestinations[throughDestinations[port]] = 0;
+			throughDestinations[port] = 0;
+		}
 		portStandards[port] = s;
 		UpdatePins();
 	}
@@ -139,10 +109,7 @@ Standard Switch::GetStandard(uint8_t port) {
 	if(port < Switch::NumPorts) {
 		return portStandards[port];
 	}
-}
-
-bool Switch::isValid() {
-	return configValid;
+	return Standard::None;
 }
 
 const char* Switch::StandardName(Standard s) {
@@ -151,7 +118,9 @@ const char* Switch::StandardName(Standard s) {
 	case Standard::Short: return "SHORT";
 	case Standard::Load: return "LOAD";
 	case Standard::Through: return "THROUGH";
-	case Standard::None: return "NONE";
+	case Standard::None:
+	default:
+		return "NONE";
 	}
 }
 
@@ -160,4 +129,29 @@ bool Switch::NameMatched(const char *name, Standard s) {
 	return strcmp(name, compare) == 0;
 }
 
+bool Switch::SetThrough(uint8_t port, uint8_t dest) {
+	if(port == dest) {
+		// can't set a through to itself
+		return false;
+	}
+	if(port >= Switch::NumPorts || dest >= Switch::NumPorts) {
+		// invalid number
+		return false;
+	}
+	// Reset first, this also takes care of the destination port if this port was set to through
+	SetStandard(port, Standard::None);
+	SetStandard(dest, Standard::None);
+	portStandards[port] = Standard::Through;
+	portStandards[dest] = Standard::Through;
+	throughDestinations[port] = dest;
+	throughDestinations[dest] = port;
+	UpdatePins();
+	return true;
+}
 
+uint8_t Switch::GetThroughDestination(uint8_t port) {
+	if(port < Switch::NumPorts) {
+		return throughDestinations[port];
+	}
+	return 0;
+}

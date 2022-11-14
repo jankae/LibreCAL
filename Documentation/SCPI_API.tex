@@ -133,10 +133,26 @@ This section contains commands to control and check the configuration of the por
 \subsubsection{:PORTS}
 \query{Returns the number of available ports}{:PORTS?}{None}{Number of ports, usually 4}
 \subsubsection{:PORT}
-\event{Set a port standard}{:PORT <port> <standard>}{<port> Port number, 1-4\\<standard> Selected standard, one of:\\OPEN\\SHORT\\LOAD\\THROUGH\\NONE}
-\query{Returns the currently used standard at a port}{:PORT? <port>}{<port> Port number}{Standard, one of:\\OPEN\\SHORT\\LOAD\\THROUGH\\NONE}
-\subsubsection{:PORT:VALID}
-\query{Checks whether the current port configuration is valid (either none or exactly two ports set to THROUGH)}{:PORT:VALID?}{None}{TRUE or FALSE}
+\event{Set a port standard}{:PORT <port> <standard> [<dest>]}{<port> Port number, 1-4\\<standard> Selected standard, one of:\\OPEN\\SHORT\\LOAD\\THROUGH\\NONE\\<dest> Destination port of other the end, 1-4 (only required for THROUGH)\\}
+When a port is set to through, <dest> is automatically also set to through (with <port> as its <dest>). Setting a port that is currently set to through to any other standard, sets the <dest> of that port to NONE.
+
+Example:
+\begin{lstlisting}
+# Sets port 1 to LOAD standard
+:PORT 1 LOAD
+# Creates a through between port 2 and 3. This configures both ports
+# as THROUGH with each other as the destination ports
+:PORT 2 THROUGH 3 
+# Returns "THROUGH 2" because port 3 was also configured by the
+# previous command
+:PORT? 3
+# Sets port 2 to SHORT standard. Because it was previously
+# configured as THROUGH to port 3, port 3 will be set to NONE
+:PORT 2 SHORT
+# Returns "NONE"
+:PORT? 3
+\end{lstlisting}
+\query{Returns the currently used standard at a port}{:PORT? <port>}{<port> Port number}{Standard, one of:\\OPEN\\SHORT\\LOAD\\THROUGH <dest>\\NONE}
 
 \subsection{Temperature Control Commands}
 This section contains commands related to the temperature regulation of the \dev{}. While it is possible to change the target temperature, this is not recommended as calibration coefficients will no longer be accurate due to temperature drift.

@@ -22,6 +22,7 @@ SOURCES += \
         appwindow.cpp \
         caldevice.cpp \
         main.cpp \
+        savable.cpp \
         touchstone.cpp \
         touchstoneimportdialog.cpp \
         unit.cpp \
@@ -46,10 +47,13 @@ HEADERS += \
     CustomWidgets/informationbox.h \
     CustomWidgets/siunitedit.h \
     CustomWidgets/touchstoneimport.h \
+    Util/qpointervariant.h \
     Util/util.h \
     about.h \
     appwindow.h \
     caldevice.h \
+    json.hpp \
+    savable.h \
     touchstone.h \
     touchstoneimportdialog.h \
     unit.h \

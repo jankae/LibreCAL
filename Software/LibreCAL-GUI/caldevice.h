@@ -14,12 +14,19 @@ public:
     CalDevice(QString serial);
     ~CalDevice();
 
-    enum class Standard {
-        Open,
-        Short,
-        Load,
-        Through,
-        None
+    class Standard {
+    public:
+        enum class Type {
+            Open,
+            Short,
+            Load,
+            Through,
+            None
+        };
+        Standard(Type type) : type(type), throughDest(0){}
+        Standard(int throughDest) : type(Type::Through), throughDest(throughDest){}
+        Type type;
+        int throughDest;
     };
 
     static QString StandardToString(Standard s);
@@ -27,7 +34,6 @@ public:
 
     Standard getStandard(int port);
     bool setStandard(int port, Standard s);
-    bool portConfigValid();
     static std::vector<Standard> availableStandards();
 
     double getTemperature();
@@ -36,7 +42,7 @@ public:
 
     QString serial();
     QString getFirmware() const;
-    int getNumPorts() const;
+    unsigned int getNumPorts() const;
 
     bool enterBootloader();
 

@@ -1,14 +1,14 @@
 #ifndef TOUCHSTONE_H
 #define TOUCHSTONE_H
 
-//#include "savable.h"
+#include "savable.h"
 
 #include <complex>
 #include <vector>
 #include <string>
 #include <QString>
 
-class Touchstone //: public Savable
+class Touchstone : public Savable
 {
 public:
     enum class Scale {
@@ -47,12 +47,14 @@ public:
     void reduceTo1Port(unsigned int port);
     unsigned int ports() { return m_ports; }
     QString getFilename() const;
+    void setFilename(const QString &value);
 
-//    virtual nlohmann::json toJSON();
-//    virtual void fromJSON(nlohmann::json j);
+    virtual nlohmann::json toJSON();
+    virtual void fromJSON(nlohmann::json j);
 
     double getReferenceImpedance() const;
     void setReferenceImpedance(double value);
+
 
 private:
     unsigned int m_ports;
