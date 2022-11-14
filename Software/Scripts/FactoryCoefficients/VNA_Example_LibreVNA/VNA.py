@@ -38,7 +38,7 @@ def checkIfReady() -> bool:
     vna.cmd(":DEV:MODE VNA")
     vna.cmd(":VNA:SWEEP FREQUENCY")
     vna.cmd(":VNA:STIM:LVL -10")
-    vna.cmd(":VNA:ACQ:IFBW 1000")
+    vna.cmd(":VNA:ACQ:IFBW 100")
     vna.cmd(":VNA:ACQ:AVG 1")
     vna.cmd(":VNA:ACQ:POINTS 501")
     vna.cmd(":VNA:FREQuency:START 1000000")

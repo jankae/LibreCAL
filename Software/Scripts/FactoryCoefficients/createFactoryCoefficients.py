@@ -185,8 +185,7 @@ def takeMeasurements(portmapping : dict):
             if Throughs.get(name) is None:
                 # Take this through measurement
                 resetLibreCALPorts()
-                SCPICommand(ser, ":PORT "+str(p1)+" THROUGH")
-                SCPICommand(ser, ":PORT "+str(p2)+" THROUGH")
+                SCPICommand(ser, ":PORT "+str(p1)+" THROUGH "+str(p2))
                 print("Taking THROUGH_"+name+" measurement...")
                 measure = VNA.measure()
                 print("...measurement done.")
