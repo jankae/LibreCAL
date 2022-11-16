@@ -89,10 +89,6 @@ void Switch::Init() {
 }
 
 void Switch::SetStandard(uint8_t port, Standard s) {
-	if(s == Standard::Through) {
-		// must be set by SetThrough
-		return;
-	}
 	if(port < Switch::NumPorts) {
 		if(portStandards[port] == Standard::Through) {
 			// also reset the destination port
@@ -101,6 +97,23 @@ void Switch::SetStandard(uint8_t port, Standard s) {
 			throughDestinations[port] = 0;
 		}
 		portStandards[port] = s;
+		if(s == Standard::Through) {
+			// set the destination to itself (invalid)
+			throughDestinations[port] = port;
+			// check if there is any other invalid port and connect these
+			for(uint8_t i=0;i<Switch::NumPorts;i++) {
+				if(i==port) {
+					// skip this
+					continue;
+				}
+				if(portStandards[i] == Standard::Through && throughDestinations[i] == i) {
+					// connect this with port
+					throughDestinations[port] = i;
+					throughDestinations[i] = port;
+					break;
+				}
+			}
+		}
 		UpdatePins();
 	}
 }
