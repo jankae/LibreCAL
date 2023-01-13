@@ -4,6 +4,12 @@
 
   (paper "A4")
 
+  (title_block
+    (title "LibreCAL")
+    (date "2023-01-07")
+    (rev "A+")
+  )
+
   (lib_symbols
     (symbol "LibreCAL:Cover" (in_bom no) (on_board yes)
       (property "Reference" "COVER" (id 0) (at -1.27 -2.54 0)
@@ -333,6 +339,9 @@
     (property "Datasheet" "" (id 3) (at 72.39 154.94 0)
       (effects (font (size 1.27 1.27)) hide)
     )
+    (property "LCSC_Part" "NA" (id 4) (at 72.39 154.94 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
   )
 
   (symbol (lib_id "Mechanical:MountingHole_Pad") (at 149.86 176.53 0) (unit 1)
@@ -348,6 +357,9 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 149.86 176.53 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "LCSC_Part" "NA" (id 4) (at 149.86 176.53 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid d766b741-645a-4a55-b281-4f5e00cbfb17))
@@ -384,6 +396,9 @@
     (property "Datasheet" "~" (id 3) (at 78.74 176.53 0)
       (effects (font (size 1.27 1.27)) hide)
     )
+    (property "LCSC_Part" "NA" (id 4) (at 78.74 176.53 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
     (pin "1" (uuid 8ea7adbe-8cce-46ba-8262-03f026958715))
   )
 
@@ -400,6 +415,9 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 102.87 176.53 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "LCSC_Part" "NA" (id 4) (at 102.87 176.53 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid 792b4d65-b57a-4f2e-a08d-924669696507))
@@ -434,6 +452,9 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 125.73 176.53 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "LCSC_Part" "NA" (id 4) (at 125.73 176.53 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid bba0f71f-0379-44a6-960a-dcd1059abf1b))
@@ -486,6 +507,9 @@
     (property "Datasheet" "" (id 3) (at 46.99 154.94 0)
       (effects (font (size 1.27 1.27)) hide)
     )
+    (property "LCSC_Part" "NA" (id 4) (at 46.99 154.94 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
   )
 
   (symbol (lib_id "Mechanical:MountingHole_Pad") (at 54.61 176.53 0) (unit 1)
@@ -501,6 +525,9 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 54.61 176.53 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "LCSC_Part" "NA" (id 4) (at 54.61 176.53 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid 774f840d-2c14-41a6-b8cc-f2780c6739ee))
@@ -519,6 +546,9 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 30.48 176.53 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "LCSC_Part" "NA" (id 4) (at 30.48 176.53 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid 824b1552-4364-4190-a424-dfcc90aa30fc))
@@ -1305,16 +1335,16 @@
     (path "/4ec40c81-f8d9-4799-8f76-f9a7bdb2375e"
       (reference "H6") (unit 1) (value "MountingHole_Pad") (footprint "MountingHole:MountingHole_3.2mm_M3_ISO14580_Pad_TopBottom")
     )
-    (path "/b660bab9-7028-47fa-8717-20664ec48a2d/c4c4b9fd-653b-42a2-a6d7-d3104868ddd8"
+    (path "/b660bab9-7028-47fa-8717-20664ec48a2d/eedd732f-bc34-40b5-93ce-5ec25d6b8d91"
       (reference "J1") (unit 1) (value "901-10510-2") (footprint "LibreCAL:901-10510-2")
     )
-    (path "/b660bab9-7028-47fa-8717-20664ec48a2d/4b460ffd-1e31-4f25-8b61-70acf1f7a519"
+    (path "/b660bab9-7028-47fa-8717-20664ec48a2d/c4c4b9fd-653b-42a2-a6d7-d3104868ddd8"
       (reference "J2") (unit 1) (value "901-10510-2") (footprint "LibreCAL:901-10510-2")
     )
-    (path "/b660bab9-7028-47fa-8717-20664ec48a2d/eedd732f-bc34-40b5-93ce-5ec25d6b8d91"
+    (path "/b660bab9-7028-47fa-8717-20664ec48a2d/39a5cbeb-3a92-45be-a413-ca98d7475e60"
       (reference "J3") (unit 1) (value "901-10510-2") (footprint "LibreCAL:901-10510-2")
     )
-    (path "/b660bab9-7028-47fa-8717-20664ec48a2d/39a5cbeb-3a92-45be-a413-ca98d7475e60"
+    (path "/b660bab9-7028-47fa-8717-20664ec48a2d/4b460ffd-1e31-4f25-8b61-70acf1f7a519"
       (reference "J4") (unit 1) (value "901-10510-2") (footprint "LibreCAL:901-10510-2")
     )
     (path "/8ae04189-9a62-4c2c-b6af-68aaa5063c12/59c91531-e902-42d7-91c6-ee4521be1d10"
@@ -1327,16 +1357,16 @@
       (reference "Q1") (unit 1) (value "IRLML2060") (footprint "Package_TO_SOT_SMD:SOT-23")
     )
     (path "/b660bab9-7028-47fa-8717-20664ec48a2d/cd1b9f15-d921-4037-a512-0f5441bb33c5"
-      (reference "R1") (unit 1) (value "49R9") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R1") (unit 1) (value "CH0402-50RGFTA") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/b660bab9-7028-47fa-8717-20664ec48a2d/cc17f03b-4abd-4310-bf7c-9776f9183981"
-      (reference "R2") (unit 1) (value "49R9") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R2") (unit 1) (value "CH0402-50RGFTA") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/b660bab9-7028-47fa-8717-20664ec48a2d/0ac4026e-cd83-430f-8205-8259072b6065"
-      (reference "R3") (unit 1) (value "49R9") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R3") (unit 1) (value "CH0402-50RGFTA") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/b660bab9-7028-47fa-8717-20664ec48a2d/841e6434-1104-4dd6-b0d3-9344d1358c68"
-      (reference "R4") (unit 1) (value "49R9") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R4") (unit 1) (value "CH0402-50RGFTA") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/8ae04189-9a62-4c2c-b6af-68aaa5063c12/b1924762-6311-472e-a458-ad91d9625da7"
       (reference "R5") (unit 1) (value "5k1") (footprint "Resistor_SMD:R_0402_1005Metric")

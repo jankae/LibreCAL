@@ -200,7 +200,10 @@ void USBDevice::SearchDevices(std::function<bool (libusb_device_handle *, QStrin
 bool USBDevice::send(const QString &s)
 {
 //    qDebug() << "Send:"<<s;
-    unsigned char data[s.size()+2];
+    //unsigned char data[s.size()+2];
+    unsigned char data[512];
+    if(s.size()+2 >= 512)
+        return false;
     memcpy(data, s.toLatin1().data(), s.size());
     memcpy(&data[s.size()], "\r\n", 2);
     int actual;
@@ -249,6 +252,7 @@ bool USBDevice::flushRX()
 {
     char data[512];
 //    libusb_bulk_transfer(m_handle, LIBUSB_ENDPOINT_IN | 0x03, (unsigned char*) data, sizeof(data), &actual, 1);
+    return true;
 }
 
 

@@ -2,6 +2,7 @@
 #define UTILH_H
 
 #include <complex>
+#define _USE_MATH_DEFINES
 #include <math.h>
 #include <limits>
 #include <vector>
