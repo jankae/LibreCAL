@@ -1,6 +1,6 @@
 CONFIG += c++17
 
-QT += core gui widgets charts
+QT += core gui widgets charts svg
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -33,6 +33,20 @@ unix:LIBS += -L/usr/lib/
 win32:LIBS += -L"$$_PRO_FILE_PWD_" # Github actions placed libusb here
 osx:INCPATH += /usr/local/include
 osx:LIBS += $(shell pkg-config --libs libusb-1.0)
+
+# libusb-1.0.23 shall be extracted in same directory as this file
+windows{
+    INCLUDEPATH += ./libusb-1.0.23/include
+    contains(QMAKE_CC, gcc){
+        # MingW64 libusb static lib
+        LIBS += -L"$$_PRO_FILE_PWD_"/libusb-1.0.23/MinGW64/static
+    }
+    contains(QMAKE_CC, cl){
+        # Visual Studio 2019 64bits libusb DLL
+        LIBS = -L"$$_PRO_FILE_PWD_"/libusb-1.0.23/MS64/dll
+        LIBS += -llibusb-1.0
+    }
+}
 
 REVISION = $$system(git rev-parse HEAD)
 DEFINES += GITHASH=\\"\"$$REVISION\\"\"
