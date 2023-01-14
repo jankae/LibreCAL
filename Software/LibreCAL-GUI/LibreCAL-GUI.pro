@@ -1,6 +1,6 @@
 CONFIG += c++17
 
-QT += core gui widgets charts svg
+QT += core gui widgets charts
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -36,6 +36,7 @@ osx:LIBS += $(shell pkg-config --libs libusb-1.0)
 
 # libusb-1.0.23 shall be extracted in same directory as this file
 windows{
+    QT += svg
     INCLUDEPATH += ./libusb-1.0.23/include
     contains(QMAKE_CC, gcc){
         # MingW64 libusb static lib
