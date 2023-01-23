@@ -52,6 +52,10 @@ public:
 		name(name), cmd(cmd), query(query), min_args_cmd(min_args_cmd), min_args_query(min_args_query) {}
 
 	bool parse(char *argv[], int argc, uint8_t interface) const {
+		if(argv[0][0] == ':') {
+			// remove possible leading colon
+			argv[0]++;
+		}
 		// check if command matches name
 		auto cmd_len = strlen(argv[0]);
 		auto name_len = strlen(name);
@@ -178,20 +182,22 @@ static const char* coefficientOptionEnding(const char *option) {
 static const Command commands[] = {
 		Command("*IDN", nullptr,
 		[](char *argv[], int argc, int interface){
-			tx_string("LibreCAL_", interface);
+			tx_string("LibreCAL,LibreCAL,", interface);
 			tx_string(getSerial(), interface);
-			tx_string("\r\n", interface);
+			char resp[20];
+			snprintf(resp, sizeof(resp), ",%d.%d.%d\r\n", FW_MAJOR, FW_MINOR, FW_PATCH);
+			tx_string(resp, interface);
 		}),
 		Command("*LST", nullptr, scpi_lst),
-		Command(":FIRMWARE", nullptr, [](char *argv[], int argc, int interface){
+		Command("FIRMWARE", nullptr, [](char *argv[], int argc, int interface){
 			char resp[20];
 			snprintf(resp, sizeof(resp), "%d.%d.%d\r\n", FW_MAJOR, FW_MINOR, FW_PATCH);
 			tx_string(resp, interface);
 		}),
-		Command(":PORTS", nullptr, [](char *argv[], int argc, int interface){
+		Command("PORTS", nullptr, [](char *argv[], int argc, int interface){
 			tx_string("4\r\n", interface);
 		}),
-		Command(":TEMPerature", [](char *argv[], int argc, int interface){
+		Command("TEMPerature", [](char *argv[], int argc, int interface){
 			int target;
 			if(!arg_to_int(argv[1], target)) {
 				tx_string("ERROR\r\n", interface);
@@ -205,7 +211,7 @@ static const Command commands[] = {
 			snprintf(resp, sizeof(resp), "%f\r\n", Heater::GetTemp());
 			tx_string(resp, interface);
 		}, 1),
-		Command(":TEMPerature:STABLE", nullptr,
+		Command("TEMPerature:STABLE", nullptr,
 		[](char *argv[], int argc, int interface){
 			if(Heater::IsStable()) {
 				tx_string("TRUE\r\n", interface);
@@ -213,12 +219,12 @@ static const Command commands[] = {
 				tx_string("FALSE\r\n", interface);
 			}
 		}),
-		Command(":HEATer:POWer", nullptr, [](char *argv[], int argc, int interface){
+		Command("HEATer:POWer", nullptr, [](char *argv[], int argc, int interface){
 			char resp[20];
 			snprintf(resp, sizeof(resp), "%f\r\n", Heater::GetPower());
 			tx_string(resp, interface);
 		}),
-		Command(":PORT", [](char *argv[], int argc, int interface){
+		Command("PORT", [](char *argv[], int argc, int interface){
 			int port;
 			if(!arg_to_int(argv[1], port)) {
 				tx_string("ERROR\r\n", interface);
@@ -268,7 +274,7 @@ static const Command commands[] = {
 			}
 			tx_string("\r\n", interface);
 		}, 2, 1),
-		Command(":COEFFicient:LIST", nullptr, [](char *argv[], int argc, int interface){
+		Command("COEFFicient:LIST", nullptr, [](char *argv[], int argc, int interface){
 			tx_string("FACTORY", interface);
 			uint8_t i=0;
 			char name[50];
@@ -279,7 +285,7 @@ static const Command commands[] = {
 			}
 			tx_string("\r\n", interface);
 		}),
-		Command(":COEFFicient:CREATE", [](char *argv[], int argc, int interface){
+		Command("COEFFicient:CREATE", [](char *argv[], int argc, int interface){
 			if(!coefficientOptionEnding(argv[2])) {
 				// invalid coefficient name
 				tx_string("ERROR\r\n", interface);
@@ -295,7 +301,7 @@ static const Command commands[] = {
 			// file started
 			tx_string("\r\n", interface);
 		}, nullptr, 2),
-		Command(":COEFFicient:DELete", [](char *argv[], int argc, int interface){
+		Command("COEFFicient:DELete", [](char *argv[], int argc, int interface){
 			if(!coefficientOptionEnding(argv[2])) {
 				// invalid coefficient name
 				tx_string("ERROR\r\n", interface);
@@ -311,7 +317,7 @@ static const Command commands[] = {
 			// file deleted
 			tx_string("\r\n", interface);
 		}, nullptr, 2),
-		Command(":COEFFicient:ADD", [](char *argv[], int argc, int interface){
+		Command("COEFFicient:ADD", [](char *argv[], int argc, int interface){
 			double freq = strtod(argv[1], NULL);
 			double values[argc - 2];
 			for(uint8_t i=0;i<argc - 2;i++) {
@@ -325,7 +331,7 @@ static const Command commands[] = {
 			// point added
 			tx_string("\r\n", interface);
 		}, nullptr, 3),
-		Command(":COEFFicient:FINish", [](char *argv[], int argc, int interface){
+		Command("COEFFicient:FINish", [](char *argv[], int argc, int interface){
 			if(!Touchstone::FinishFile()) {
 				// failed to finish file
 				tx_string("ERROR\r\n", interface);
@@ -334,7 +340,7 @@ static const Command commands[] = {
 			// file finished
 			tx_string("\r\n", interface);
 		}),
-		Command(":COEFFicient:NUMber", nullptr, [](char *argv[], int argc, int interface){
+		Command("COEFFicient:NUMber", nullptr, [](char *argv[], int argc, int interface){
 			if(!coefficientOptionEnding(argv[2])) {
 				// invalid coefficient name
 				tx_string("ERROR\r\n", interface);
@@ -346,7 +352,7 @@ static const Command commands[] = {
 			tx_int(points, interface);
 			tx_string("\r\n", interface);
 		}, 0, 2),
-		Command(":COEFFicient:GET", nullptr, [](char *argv[], int argc, int interface){
+		Command("COEFFicient:GET", nullptr, [](char *argv[], int argc, int interface){
 			if(!coefficientOptionEnding(argv[2])) {
 				// invalid coefficient name
 				tx_string("ERROR\r\n", interface);
@@ -376,7 +382,7 @@ static const Command commands[] = {
 				tx_string(response, interface);
 			}
 		}, 0, 3),
-		Command(":FACTory:ENABLEWRITE", [](char *argv[], int argc, int interface){
+		Command("FACTory:ENABLEWRITE", [](char *argv[], int argc, int interface){
 			if(strcmp("I_AM_SURE", argv[1]) != 0) {
 				tx_string("ERROR\r\n", interface);
 				return;
@@ -384,14 +390,14 @@ static const Command commands[] = {
 			Touchstone::EnableFactoryWriting();
 			tx_string("\r\n", interface);
 		}, nullptr, 1),
-		Command(":FACTory:DELete", [](char *argv[], int argc, int interface){
+		Command("FACTory:DELete", [](char *argv[], int argc, int interface){
 			if(Touchstone::clearFactory()) {
 				tx_string("\r\n", interface);
 			} else {
 				tx_string("ERROR\r\n", interface);
 			}
 		}),
-		Command(":BOOTloader", [](char *argv[], int argc, int interface){
+		Command("BOOTloader", [](char *argv[], int argc, int interface){
 			tx_string("\r\n", interface);
 			vTaskDelay(100);
 			reset_usb_boot(0, 0);
@@ -433,15 +439,16 @@ static void parse(char *s, uint8_t interface) {
 	if(s - argv[argc] > 0) {
 		argc++;
 	}
-	if(argv[0][0] != ':' && argv[0][0] != '*') {
-		// remove leave from last_cmd and append argv[0] instead
-		auto leafStart = strrchr(last_cmd, ':');
-		leafStart++;
-		*leafStart = '\0';
-		strncat(last_cmd, argv[0], sizeof(last_cmd) - strlen(last_cmd));
-		// replace argv[0] with newly assembled string
-		argv[0] = last_cmd;
-	}
+	// not required by the spec - only when using multiple commands per line (which this implementation does not support)
+//	if(argv[0][0] != ':' && argv[0][0] != '*') {
+//		// remove leave from last_cmd and append argv[0] instead
+//		auto leafStart = strrchr(last_cmd, ':');
+//		leafStart++;
+//		*leafStart = '\0';
+//		strncat(last_cmd, argv[0], sizeof(last_cmd) - strlen(last_cmd));
+//		// replace argv[0] with newly assembled string
+//		argv[0] = last_cmd;
+//	}
 	for(auto i=0;i<ARRAY_SIZE(commands);i++) {
 		if(commands[i].parse(argv, argc, interface)) {
 			strncpy(last_cmd, argv[0], sizeof(last_cmd));

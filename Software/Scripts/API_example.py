@@ -4,7 +4,7 @@ from libreCAL import libreCAL
 
 # Connect to the first detected LibreCAL
 cal = libreCAL()
-print("Conencted to LibreCAL with serial "+cal.getSerial())
+print("Connected to LibreCAL with serial "+cal.getSerial())
 
 # Reset all ports
 cal.reset()
