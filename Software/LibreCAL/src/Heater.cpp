@@ -28,7 +28,7 @@ void HeaterTask(void*) {
 	constexpr float thermal_resistance = 30.0f; // in °C/W
 	constexpr float P = 0.4f; // in W/delta°C
 	constexpr float I = 0.05f; // in W/delta°C/s
-	constexpr float I_limit = 1.0f;
+	constexpr float I_limit = 2.0f;
 	constexpr float ControllerPeriod = 0.05;
 
 	// Stable check paramters
