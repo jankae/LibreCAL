@@ -11,7 +11,7 @@ CalDevice::CalDevice(QString serial) :
 {
     // Check device identification
     auto id = usb->Query("*IDN?");
-    if(!id.startsWith("LibreCAL_")) {
+    if(!id.startsWith("LibreCAL,")) {
         delete usb;
         throw std::runtime_error("Invalid response to *IDN?: "+id.toStdString());
     }
