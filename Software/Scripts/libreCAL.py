@@ -8,10 +8,11 @@ class libreCAL:
         for p in serial.tools.list_ports.comports():
             if p.vid == 0x0483 and p.pid == 0x4122:
                 self.ser = serial.Serial(p.device, timeout = 1)
-                idn = self.SCPICommand("*IDN?").split("_")
+                idn = self.SCPICommand("*IDN?").split(",")
                 if idn[0] != "LibreCAL":
+                    self.ser = None
                     continue
-                self.serial = idn[1]
+                self.serial = idn[2]
                 if len(serialnum) > 0:
                     # serial number specified, compare
                     if self.serial != serialnum:

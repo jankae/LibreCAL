@@ -85,15 +85,10 @@ Only one of these options should be used at a time. The advantage of the VCP is 
 \section{General Syntax}
 The syntax follows most SCPI rules:
 \begin{itemize}
-\item Commands are case \textbf{sensitive}. While non-standard, this allows for more flexibility when naming coefficients. Only upper case characters must be used for the events and queries, lower case characters are only allowed for the arguments.
+\item Arguments are case \textbf{sensitive}. While non-standard, this allows for more flexibility when naming coefficients. The command is still case \textbf{insensitive}.
 \item The command tree is organized in branches, separated by a colon:
 \begin{lstlisting}
 :TEMPerature:STABLE?
-\end{lstlisting}
-\item If a command starts with a colon it is evaluated from the root branch, otherwise the last used branch is assumed:
-\begin{lstlisting}
-:TEMPerature:STABLE?
-STABLE? #No colon, TEMPerature branch was used before
 \end{lstlisting}
 \item Branches and commands can be abbreviated by using only the uppercase part of their name, the following commands are identical:
 \begin{lstlisting}
@@ -115,11 +110,12 @@ Some commands are both events and queries, depending on whether the question mar
 :PORT? 1 # Returns the currently used standard at port 1
 :PORT 1 OPEN # Configures port 1 to use the OPEN standard
 \end{lstlisting}
+\item Multiple commands per line (separated by a semicolon) are \textbf{not} supported.
 \end{itemize}
 \section{Commands}
 \subsection{General Commands}
 \subsubsection{*IDN}
-\query{Returns the identifications string}{*IDN?}{None}{LibreCAL\_<serial>}
+\query{Returns the identifications string}{*IDN?}{None}{LibreCAL,LibreCAL,<serial>,<firmware\_version>}
 \subsubsection{*LST}
 \query{Lists all available commands}{*LST?}{None}{List of commands, separated by newline}
 \subsubsection{:FIRMWARE}
