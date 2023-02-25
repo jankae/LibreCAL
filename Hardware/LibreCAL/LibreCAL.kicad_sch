@@ -6,7 +6,7 @@
 
   (title_block
     (title "LibreCAL")
-    (date "2023-01-07")
+    (date "2023-02-01")
     (rev "A+")
   )
 
@@ -277,7 +277,6 @@
       )
     )
   )
-
 
 
   (wire (pts (xy 124.46 154.94) (xy 124.46 157.48))
@@ -1358,16 +1357,16 @@
       (reference "Q1") (unit 1) (value "IRLML2060") (footprint "Package_TO_SOT_SMD:SOT-23")
     )
     (path "/b660bab9-7028-47fa-8717-20664ec48a2d/cd1b9f15-d921-4037-a512-0f5441bb33c5"
-      (reference "R1") (unit 1) (value "CH0402-50RGFTA") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R1") (unit 1) (value "CH0402-50RGFPT") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/b660bab9-7028-47fa-8717-20664ec48a2d/cc17f03b-4abd-4310-bf7c-9776f9183981"
-      (reference "R2") (unit 1) (value "CH0402-50RGFTA") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R2") (unit 1) (value "CH0402-50RGFPT") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/b660bab9-7028-47fa-8717-20664ec48a2d/0ac4026e-cd83-430f-8205-8259072b6065"
-      (reference "R3") (unit 1) (value "CH0402-50RGFTA") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R3") (unit 1) (value "CH0402-50RGFPT") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/b660bab9-7028-47fa-8717-20664ec48a2d/841e6434-1104-4dd6-b0d3-9344d1358c68"
-      (reference "R4") (unit 1) (value "CH0402-50RGFTA") (footprint "Resistor_SMD:R_0402_1005Metric")
+      (reference "R4") (unit 1) (value "CH0402-50RGFPT") (footprint "Resistor_SMD:R_0402_1005Metric")
     )
     (path "/8ae04189-9a62-4c2c-b6af-68aaa5063c12/b1924762-6311-472e-a458-ad91d9625da7"
       (reference "R5") (unit 1) (value "5k1") (footprint "Resistor_SMD:R_0402_1005Metric")

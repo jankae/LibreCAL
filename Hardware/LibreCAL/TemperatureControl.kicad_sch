@@ -6,7 +6,7 @@
 
   (title_block
     (title "LibreCAL")
-    (date "2023-01-07")
+    (date "2023-02-01")
     (rev "A+")
   )
 
@@ -625,7 +625,6 @@
       )
     )
   )
-
 
   (junction (at 55.88 64.77) (diameter 0) (color 0 0 0 0)
     (uuid 0b1fc16c-057b-4618-9b23-ea0fafbb3661)

@@ -135,6 +135,7 @@
       },
       "track_widths": [
         0.0,
+        0.15,
         0.18,
         0.2,
         0.295,
@@ -163,9 +164,7 @@
     "equivalence_files": []
   },
   "erc": {
-    "erc_exclusions": [
-      "pin_to_pin|1600200|901700|36fce99c-8929-49e1-884d-f72b2ffcffc2|00b64e92-5e25-436d-b57b-b1a59f4f3e47"
-    ],
+    "erc_exclusions": [],
     "meta": {
       "version": 0
     },
@@ -420,7 +419,7 @@
         ],
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
-        "track_width": 0.295,
+        "track_width": 0.34,
         "via_diameter": 0.5,
         "via_drill": 0.25,
         "wire_width": 6.0

@@ -6,7 +6,7 @@
 
   (title_block
     (title "LibreCAL")
-    (date "2023-01-07")
+    (date "2023-02-01")
     (rev "A+")
   )
 
@@ -927,7 +927,6 @@
       )
     )
   )
-
 
   (junction (at 113.03 142.24) (diameter 0) (color 0 0 0 0)
     (uuid 0011ebac-abbc-4c29-b565-b77fc3ec6af2)
@@ -2241,7 +2240,7 @@
     (property "Reference" "R3" (id 0) (at 166.37 71.1199 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "CH0402-50RGFTA" (id 1) (at 166.37 73.6599 0)
+    (property "Value" "CH0402-50RGFPT" (id 1) (at 166.37 73.6599 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (id 2) (at 170.688 72.39 90)
@@ -2960,7 +2959,7 @@
     (property "Reference" "R4" (id 0) (at 166.37 137.1599 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "CH0402-50RGFTA" (id 1) (at 166.37 139.6999 0)
+    (property "Value" "CH0402-50RGFPT" (id 1) (at 166.37 139.6999 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (id 2) (at 170.688 138.43 90)
@@ -3565,7 +3564,7 @@
     (property "Reference" "R2" (id 0) (at 128.27 137.1599 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "CH0402-50RGFTA" (id 1) (at 128.27 139.6999 0)
+    (property "Value" "CH0402-50RGFPT" (id 1) (at 128.27 139.6999 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (id 2) (at 123.952 138.43 90)
@@ -3603,7 +3602,7 @@
     (property "Reference" "R1" (id 0) (at 128.27 71.1199 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
-    (property "Value" "CH0402-50RGFTA" (id 1) (at 128.27 73.6599 0)
+    (property "Value" "CH0402-50RGFPT" (id 1) (at 128.27 73.6599 0)
       (effects (font (size 1.27 1.27)) (justify left))
     )
     (property "Footprint" "Resistor_SMD:R_0402_1005Metric" (id 2) (at 123.952 72.39 90)
