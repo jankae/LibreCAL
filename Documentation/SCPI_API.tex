@@ -203,6 +203,10 @@ The first value returned is the frequency (in GHz), followed by the S parameters
 If the coefficient already exists, it will be deleted first (along with all its coefficient data). Afterwards, a new and empty coefficient will be created.
 
 This command should be used in conjunction with :COEFFicient:ADD and :COEFFicient:FINish.
+\subsubsection{:COEFFicient:ADD\_COMMENT}
+\event{Add ASCII text comment before to add coefficient datapoint}{:COEFFicient:ADD\_COMMENT <ASCII text comment>}{<ASCII text comment> add an ASCII text comment with size up to 120chars\\if the comment exceed 120 characters it will be truncated to 120 characters}
+
+This command should be used only after :COEFFicient:CREATE as it is intended to add comment before to add any datapoint(:COEFFicient:ADD).
 \subsubsection{:COEFFicient:ADD}
 \event{Add a datapoint to an existing coefficient}{:COEFFicient:ADD <frequency> <S parameters>}{<frequency> Frequency of the datapoint, in GHz\\
 <S parameters> S parameters, split into real and imaginary parts}
