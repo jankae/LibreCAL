@@ -14,6 +14,7 @@ namespace Touchstone {
 
 uint32_t GetPointNum(const char *folder, const char *filename);
 bool StartNewFile(const char *folder, const char *filename);
+bool AddComment(const char* comment);
 bool AddPoint(double frequency, double *values, uint8_t num_values);
 bool FinishFile();
 bool DeleteFile(const char *folder, const char *filename);
