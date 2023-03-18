@@ -19,6 +19,10 @@
 
 using namespace SCPI;
 
+constexpr int CommentMaxSize = 120;
+constexpr int ParseLastCmdMaxSize = CommentMaxSize+1;
+constexpr int ParseArgumentsMax = CommentMaxSize+1;
+
 constexpr int NumInterfaces = 2;
 constexpr int BufferSize = 256;
 
@@ -317,6 +321,30 @@ static const Command commands[] = {
 			// file deleted
 			tx_string("\r\n", interface);
 		}, nullptr, 2),
+		Command("COEFFicient:ADD_COMMENT", [](char *argv[], int argc, int interface){
+			char comment[CommentMaxSize+1];
+			memset(comment, 0, sizeof(comment));
+			// Concatenate all argv(words) adding a space between each word to create the full comment
+			for(uint8_t i=0;i<argc - 1;i++) {
+				strncat(comment, argv[i+1], (CommentMaxSize-strlen(comment)));
+				if(strlen(comment) == CommentMaxSize-1)
+					break;
+				strncat(comment, " ", (CommentMaxSize-strlen(comment)));
+			}
+			// Remove last space at end if it exist
+			int len = strlen(comment);
+			if(comment[len-1] == ' ')
+				comment[len-1] = 0;	
+			if(comment[len] == ' ')
+				comment[len] = 0;
+			if(!Touchstone::AddComment(comment)) {
+				// failed to add comment
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			// comment added
+			tx_string("\r\n", interface);
+		}, nullptr, 1),
 		Command("COEFFicient:ADD", [](char *argv[], int argc, int interface){
 			double freq = strtod(argv[1], NULL);
 			double values[argc - 2];
@@ -420,9 +448,9 @@ static void scpi_lst(char *argv[], int argc, int interface) {
 }
 
 static void parse(char *s, uint8_t interface) {
-	static char last_cmd[50] = ":";
+	static char last_cmd[ParseLastCmdMaxSize] = ":";
 	// split strings into args
-	char *argv[20];
+	char *argv[ParseArgumentsMax];
 	int argc = 0;
 	argv[argc] = s;
 	while(*s) {
