@@ -124,6 +124,15 @@ Some commands are both events and queries, depending on whether the question mar
 \event{Reboots and enters the bootloader mode}{:BOOTloader}{None}
 This is equivalent to pressing the "BOOTSEL" button when applying power.
 
+\subsubsection{:DATE\_TIME}
+\event{Sets local Date Time with UTC offset}{:DATE\_TIME <DATE> <TIME> <UTC>}{<DATE>Format YYYY/MM/DD\\<TIME>Format hh:mm:ss\\<UTC>Format UTC+/-hh:mm}
+\query{Returns the local Date Time with UTC offset}{:DATE\_TIME?}{NONE}{local Date Time with UTC offset}
+
+Example: Date Time with UTC offset(France):
+\begin{lstlisting}
+2023/03/20 17:06:58 UTC+01:00
+\end{lstlisting}
+
 \subsection{Port Control Commands}
 This section contains commands to control and check the configuration of the ports.
 \subsubsection{:PORTS}
