@@ -31,7 +31,7 @@ target_include_directories(FreeRTOS PUBLIC
 
 add_definitions(
 -DFW_MAJOR=0
--DFW_MINOR=1
+-DFW_MINOR=2
 -DFW_PATCH=0
 )
 
@@ -62,4 +62,4 @@ target_include_directories(LibreCAL PUBLIC
 )
 
 pico_add_extra_outputs(LibreCAL)
-target_link_libraries(LibreCAL pico_stdlib pico_unique_id hardware_spi hardware_pwm hardware_adc FreeRTOS tinyusb_device tinyusb_board)
+target_link_libraries(LibreCAL pico_stdlib pico_unique_id hardware_rtc hardware_spi hardware_pwm hardware_adc FreeRTOS tinyusb_device tinyusb_board)
