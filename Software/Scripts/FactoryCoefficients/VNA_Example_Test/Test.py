@@ -62,6 +62,9 @@ class SocketStreamReader:
         return 0
 
 class Test:
+    # By default measure return 2 data points
+    measure_nb_points = 2
+
     def __init__(self, host='localhost', port=19542):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # try:
@@ -91,9 +94,19 @@ class Test:
         # return self.__read_response()
         return ""
 
-    @staticmethod
-    def parse_trace_data(data):
+    def measure_set_nb_points(self, nb_points):
+        """
+        For test purpose set number of points to create during measure()
+        """
+        self.measure_nb_points = nb_points
+        return
+
+    def parse_trace_data(self, data):
         ret = []
+        start_freq = 30000.0 # Start freq in Hz
+        stop_freq = 6000000000.0 # Stop freq in Hz
+        freq_offset = (stop_freq - start_freq) / (self.measure_nb_points - 1)
+        freq = start_freq
         # Remove brackets (order of data implicitly known)
         # data = data.replace(']','').replace('[','')
         # values = data.split(',')
@@ -105,8 +118,10 @@ class Test:
             # real = float(values[i+1])
             # imag = float(values[i+2])
             # ret.append((freq, complex(real, imag)))
-        freq = float(0.1)
-        real = float(0.2)
-        imag = float(0.3)
-        ret.append((freq, complex(real, imag)))
+        for i in range(0, self.measure_nb_points):
+            freq = freq
+            real = float(0.1)
+            imag = float(0.2)
+            ret.append((freq, complex(real, imag)))
+            freq = freq + freq_offset
         return ret

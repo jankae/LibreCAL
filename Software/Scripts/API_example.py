@@ -26,3 +26,6 @@ else:
     print("The temperature ("+str(temp)+") is unstable.")
 
 print("The heater currently uses "+str(cal.getHeaterPower())+"W.")
+
+
+print("The Date+Time+UTC "+cal.getDateTimeUTC())

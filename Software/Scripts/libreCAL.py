@@ -71,7 +71,13 @@ class libreCAL:
         
     def getHeaterPower(self):
         return float(self.SCPICommand(":HEAT:POW?"))
-        
+
+    def getDateTimeUTC(self):
+        return self.SCPICommand(":DATE_TIME?")
+
+    def setDateTimeUTC(self, date_time_utc):
+        return self.SCPICommand(":DATE_TIME "+ date_time_utc)
+
     def SCPICommand(self, cmd: str) -> str:
         self.ser.write((cmd+"\r\n").encode())
         resp = self.ser.readline().decode("ascii")

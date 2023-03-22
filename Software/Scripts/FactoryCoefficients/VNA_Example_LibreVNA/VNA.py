@@ -57,6 +57,13 @@ def getPorts() -> int:
     """
     return 2
 
+def measure_set_nb_points(nb_points):
+    """
+    For test purpose set number of points to create during measure()
+    """
+    vna.measure_set_nb_points(nb_points)
+    return
+
 def measure():
     """
     measure starts a measurement and returns the S parameter data
