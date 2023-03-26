@@ -163,8 +163,19 @@ bool AppWindow::ConnectToDevice(QString serial)
             }
         }
 
-        status->setText("Connected to "+device->serial()+", firmware version "+device->getFirmware()+", "+QString::number(device->getNumPorts())+" ports");
-
+        QString LibreCAL_DateTimeUTC = device->getDateTimeUTC();
+        if(LibreCAL_DateTimeUTC.isEmpty())
+        {
+            status->setText("Connected to "+device->serial()+
+                            ", firmware version "+device->getFirmware()+
+                            ", "+QString::number(device->getNumPorts())+" ports");
+        }else
+        {
+            status->setText("Connected to "+device->serial()+
+                            ", firmware version "+device->getFirmware()+
+                            ", "+QString::number(device->getNumPorts())+" ports"+
+                            ", "+LibreCAL_DateTimeUTC);
+        }
         for(int i=0;i<device->getNumPorts();i++) {
             portCBs[i]->setEnabled(true);
             for(auto s : CalDevice::availableStandards()) {
@@ -292,9 +303,28 @@ void AppWindow::updateStatus()
         auto stable = device->stabilized();
         if(!stable) {
             ui->temperatureStatus->setStyleSheet("QLabel { color : red; }");
-            ui->temperatureStatus->setText("Temperature unstable, please wait before taking measurements");
+            QString date_time_utc = device->getDateTimeUTC();
+            QString temperature;
+            temperature = QString("Temperature %1°C (min=%2°C max=%3°C) unstable, please wait before taking measurements")
+                          .arg(temp, 2, 'f', 2)
+                          .arg(minTemp, 2, 'f', 2)
+                          .arg(maxTemp, 2, 'f', 2);
+            if(!date_time_utc.isEmpty()) {
+                temperature = QString(date_time_utc+" "+temperature);
+            }
+            ui->temperatureStatus->setText(temperature);
         } else {
-            ui->temperatureStatus->clear();
+            ui->temperatureStatus->setStyleSheet("QLabel { color : black; }");
+            QString date_time_utc = device->getDateTimeUTC();
+            QString temperature;
+            temperature = QString("Temperature %1°C (min=%2°C max=%3°C)")
+                            .arg(temp, 2, 'f', 2)
+                            .arg(minTemp, 2, 'f', 2)
+                            .arg(maxTemp, 2, 'f', 2);
+            if(!date_time_utc.isEmpty()) {
+                temperature = QString(date_time_utc+" "+temperature);
+            }
+            ui->temperatureStatus->setText(temperature);
         }
     }
 }
