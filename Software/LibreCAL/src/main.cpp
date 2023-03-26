@@ -25,15 +25,15 @@ const char* time = __TIME__;
 					 (date[8] - '0') * 100 + (date[9] - '0') * 10 + \
 					 (date[10] - '0'))
 
-#define MONTH(date) (date[2] == 'n' ? (date[1] == 'a' ? 1 : 6) \
-					 : date[2] == 'b' ? 2 \
-					 : date[2] == 'r' ? 3 \
-					 : date[2] == 'l' ? 4 \
-					 : date[2] == 'y' ? 7 \
-					 : date[2] == 'g' ? 8 \
-					 : date[2] == 'p' ? 9 \
-					 : date[2] == 't' ? 10 \
-					 : date[2] == 'v' ? 11 : 12)
+#define MONTH(date) (date[2] == 'n' ? (date [1] == 'a' ? 1 : 6) \
+					: date[2] == 'b' ? 2 \
+					: date[2] == 'r' ? (date [0] == 'M' ? 3 : 4) \
+					: date[2] == 'y' ? 5 \
+					: date[2] == 'l' ? 7 \
+					: date[2] == 'g' ? 8 \
+					: date[2] == 'p' ? 9 \
+					: date[2] == 't' ? 10 \
+					: date[2] == 'v' ? 11 : 12)
 
 #define DAY(date)   ((date[4] - '0') * 10 + (date[5] - '0'))
 #define HOUR(time)  ((time[0] - '0') * 10 + (time[1] - '0'))
