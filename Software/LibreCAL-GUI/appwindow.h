@@ -15,6 +15,7 @@ class AppWindow : public QMainWindow
     Q_OBJECT
 public:
     AppWindow();
+    ~AppWindow();
 
 private slots:
     int UpdateDeviceList();
@@ -39,6 +40,8 @@ private:
 
     QActionGroup *deviceActionGroup;
     QLabel *status;
+
+    QProgressDialog *progress;
 
     std::array<QComboBox*, 4> portCBs;
 
