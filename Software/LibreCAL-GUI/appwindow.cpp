@@ -31,6 +31,14 @@ AppWindow::AppWindow() :
 
     portCBs = {ui->port1, ui->port2, ui->port3, ui->port4};
 
+    progress = new QProgressDialog();
+    progress->setLabelText("Loading calibration coefficients from device...");
+    progress->setWindowTitle("Updating");
+    progress->setWindowModality(Qt::ApplicationModal);
+    progress->setMinimumDuration(0);
+    progress->setCancelButton(nullptr);
+    progress->reset();
+
     // Set up the temperature chart
     auto chart = new QChart();
     ui->chartView->setChart(chart);
@@ -94,6 +102,18 @@ AppWindow::AppWindow() :
     if(UpdateDeviceList()) {
         ConnectToDevice();
     }
+}
+
+AppWindow::~AppWindow()
+{
+    delete device;
+    delete progress;
+    delete deviceActionGroup;
+    delete status;
+    delete updateTimer;
+    delete tempSeries;
+    delete heaterSeries;
+    delete ui;
 }
 
 int AppWindow::UpdateDeviceList()
@@ -341,17 +361,12 @@ void AppWindow::loadCoefficients()
         }
     }
     backgroundOperations = true;
-    auto d = new QProgressDialog();
-    d->setLabelText("Loading calibration coefficients from device...");
-    d->setWindowTitle("Updating");
-    d->setWindowModality(Qt::ApplicationModal);
-    d->setMinimumDuration(0);
-    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue);
-    connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
+    progress->setValue(0);
+    connect(device, &CalDevice::updateCoefficientsPercent, progress, &QProgressDialog::setValue, Qt::UniqueConnection);
+    connect(device, &CalDevice::updateCoefficientsDone, this, [=](){
         ui->saveCoefficients->setEnabled(false);
         backgroundOperations = false;
-        d->accept();
-        delete d;
+        progress->reset();
 
         ui->coeffList->clear();
         for(auto set : device->getCoefficientSets()) {
@@ -359,7 +374,7 @@ void AppWindow::loadCoefficients()
         }
         ui->coeffList->setCurrentRow(0);
     });
-    d->show();
+    progress->show();
     device->loadCoefficientSets();
 }
 

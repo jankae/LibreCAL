@@ -1,4 +1,7 @@
 /.metadata/
 /LibreCAL-Eclipse-build/
 /LibreCAL-GUI/build-*
+Software/build-*
+Software/.metadata/
+
 
