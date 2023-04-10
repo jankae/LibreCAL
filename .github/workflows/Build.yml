@@ -12,7 +12,7 @@ jobs:
   PC_Application_Ubuntu:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
@@ -42,7 +42,7 @@ jobs:
       - name: Upload artifact
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: LibreCAL-GUI-Ubuntu-${{env.LIBRECAL_VERSION}}
           path: Software/LibreCAL-GUI/LibreCAL-GUI
@@ -50,7 +50,7 @@ jobs:
   PC_Application_Windows:
     runs-on: windows-2019
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: msys2/setup-msys2@v2
 
       - name: Install Qt
@@ -102,7 +102,7 @@ jobs:
         shell: cmd
         
       - name: Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
         with:
@@ -112,7 +112,7 @@ jobs:
   PC_Application_OSX:
     runs-on: macos-10.15
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
@@ -147,7 +147,7 @@ jobs:
       - name: Upload artifact
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: LibreCAL-GUI-OSX-${{env.LIBRECAL_VERSION}}
           path: Software/LibreCAL-GUI/LibreCAL-GUI.zip
@@ -155,7 +155,7 @@ jobs:
   Embedded_Firmware:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: Install toolchain
         run: |
@@ -191,7 +191,7 @@ jobs:
         shell: bash
 
       - name: Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
         with:
