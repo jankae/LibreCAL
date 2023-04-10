@@ -21,7 +21,7 @@ jobs:
 
       - name: Get build timestamp
         id: id_date
-        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+        run: echo "timestamp=$(date +%Y-%m-%d-%H-%M-%S)" >> $GITHUB_OUTPUT
 
       - name: Get app version
         id: id_version
@@ -30,7 +30,7 @@ jobs:
           fw_major=`grep -oP '(?<=FW_MAJOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_minor=`grep -oP '(?<=FW_MINOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_patch=`grep -oP '(?<=FW_PATCH=)[0-9]+' LibreCAL-GUI.pro` 
-          echo "::set-output name=app_version::v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
+          echo "app_version=v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}" >> $GITHUB_OUTPUT
 
       - name: Build application
         run: |
@@ -71,7 +71,7 @@ jobs:
       - name: Get build timestamp
         shell: msys2 {0}
         id: id_date
-        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+        run: echo "timestamp=$(date +%Y-%m-%d-%H-%M-%S)" >> $GITHUB_OUTPUT
 
       - name: Get app version
         id: id_version
@@ -81,7 +81,7 @@ jobs:
           fw_major=`grep -oP '(?<=FW_MAJOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_minor=`grep -oP '(?<=FW_MINOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_patch=`grep -oP '(?<=FW_PATCH=)[0-9]+' LibreCAL-GUI.pro` 
-          echo "::set-output name=app_version::v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
+          echo "app_version=v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}" >> $GITHUB_OUTPUT
 
       - name: Build application
         run: |
@@ -124,7 +124,7 @@ jobs:
           
       - name: Get build timestamp
         id: id_date
-        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+        run: echo "timestamp=$(date +%Y-%m-%d-%H-%M-%S)" >> $GITHUB_OUTPUT
 
       - name: Get app version
         id: id_version
@@ -133,8 +133,8 @@ jobs:
           fw_major=`pcregrep -o '(?<=FW_MAJOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_minor=`pcregrep -o '(?<=FW_MINOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_patch=`pcregrep -o '(?<=FW_PATCH=)[0-9]+' LibreCAL-GUI.pro` 
-          echo "::set-output name=app_version::v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
-
+          echo "app_version=v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}" >> $GITHUB_OUTPUT
+          
       - name: Build application
         run: |
           cd Software/LibreCAL-GUI
@@ -169,7 +169,7 @@ jobs:
         
       - name: Get build timestamp
         id: id_date
-        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+        run: echo "timestamp=$(date +%Y-%m-%d-%H-%M-%S)" >> $GITHUB_OUTPUT
 
       - name: Get app version
         id: id_version
@@ -178,7 +178,7 @@ jobs:
           fw_major=`grep -oP '(?<=FW_MAJOR=)[0-9]+' CMakeLists.txt`
           fw_minor=`grep -oP '(?<=FW_MINOR=)[0-9]+' CMakeLists.txt`
           fw_patch=`grep -oP '(?<=FW_PATCH=)[0-9]+' CMakeLists.txt`
-          echo "::set-output name=app_version::-v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
+          echo "app_version=v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}" >> $GITHUB_OUTPUT
 
       - name: Build application
         run: |
