@@ -54,7 +54,7 @@ jobs:
       - uses: msys2/setup-msys2@v2
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2
+        uses: jurplel/install-qt-action@v3
         with:
           version: '5.15.1'
           arch: 'win64_mingw81'
