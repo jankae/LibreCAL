@@ -31,6 +31,14 @@ AppWindow::AppWindow() :
 
     portCBs = {ui->port1, ui->port2, ui->port3, ui->port4};
 
+    progress = new QProgressDialog();
+    progress->setLabelText("Loading calibration coefficients from device...");
+    progress->setWindowTitle("Updating");
+    progress->setWindowModality(Qt::ApplicationModal);
+    progress->setMinimumDuration(0);
+    progress->setCancelButton(nullptr);
+    progress->reset();
+
     // Set up the temperature chart
     auto chart = new QChart();
     ui->chartView->setChart(chart);
@@ -94,6 +102,18 @@ AppWindow::AppWindow() :
     if(UpdateDeviceList()) {
         ConnectToDevice();
     }
+}
+
+AppWindow::~AppWindow()
+{
+    delete device;
+    delete progress;
+    delete deviceActionGroup;
+    delete status;
+    delete updateTimer;
+    delete tempSeries;
+    delete heaterSeries;
+    delete ui;
 }
 
 int AppWindow::UpdateDeviceList()
@@ -163,8 +183,19 @@ bool AppWindow::ConnectToDevice(QString serial)
             }
         }
 
-        status->setText("Connected to "+device->serial()+", firmware version "+device->getFirmware()+", "+QString::number(device->getNumPorts())+" ports");
-
+        QString LibreCAL_DateTimeUTC = device->getDateTimeUTC();
+        if(LibreCAL_DateTimeUTC.isEmpty())
+        {
+            status->setText("Connected to "+device->serial()+
+                            ", firmware version "+device->getFirmware()+
+                            ", "+QString::number(device->getNumPorts())+" ports");
+        }else
+        {
+            status->setText("Connected to "+device->serial()+
+                            ", firmware version "+device->getFirmware()+
+                            ", "+QString::number(device->getNumPorts())+" ports"+
+                            ", "+LibreCAL_DateTimeUTC);
+        }
         for(int i=0;i<device->getNumPorts();i++) {
             portCBs[i]->setEnabled(true);
             for(auto s : CalDevice::availableStandards()) {
@@ -292,9 +323,28 @@ void AppWindow::updateStatus()
         auto stable = device->stabilized();
         if(!stable) {
             ui->temperatureStatus->setStyleSheet("QLabel { color : red; }");
-            ui->temperatureStatus->setText("Temperature unstable, please wait before taking measurements");
+            QString date_time_utc = device->getDateTimeUTC();
+            QString temperature;
+            temperature = QString("Temperature %1°C (min=%2°C max=%3°C) unstable, please wait before taking measurements")
+                          .arg(temp, 2, 'f', 2)
+                          .arg(minTemp, 2, 'f', 2)
+                          .arg(maxTemp, 2, 'f', 2);
+            if(!date_time_utc.isEmpty()) {
+                temperature = QString(date_time_utc+" "+temperature);
+            }
+            ui->temperatureStatus->setText(temperature);
         } else {
-            ui->temperatureStatus->clear();
+            ui->temperatureStatus->setStyleSheet("QLabel { color : black; }");
+            QString date_time_utc = device->getDateTimeUTC();
+            QString temperature;
+            temperature = QString("Temperature %1°C (min=%2°C max=%3°C)")
+                            .arg(temp, 2, 'f', 2)
+                            .arg(minTemp, 2, 'f', 2)
+                            .arg(maxTemp, 2, 'f', 2);
+            if(!date_time_utc.isEmpty()) {
+                temperature = QString(date_time_utc+" "+temperature);
+            }
+            ui->temperatureStatus->setText(temperature);
         }
     }
 }
@@ -311,17 +361,12 @@ void AppWindow::loadCoefficients()
         }
     }
     backgroundOperations = true;
-    auto d = new QProgressDialog();
-    d->setLabelText("Loading calibration coefficients from device...");
-    d->setWindowTitle("Updating");
-    d->setWindowModality(Qt::ApplicationModal);
-    d->setMinimumDuration(0);
-    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue);
-    connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
+    progress->setValue(0);
+    connect(device, &CalDevice::updateCoefficientsPercent, progress, &QProgressDialog::setValue, Qt::UniqueConnection);
+    connect(device, &CalDevice::updateCoefficientsDone, this, [=](){
         ui->saveCoefficients->setEnabled(false);
         backgroundOperations = false;
-        d->accept();
-        delete d;
+        progress->reset();
 
         ui->coeffList->clear();
         for(auto set : device->getCoefficientSets()) {
@@ -329,7 +374,7 @@ void AppWindow::loadCoefficients()
         }
         ui->coeffList->setCurrentRow(0);
     });
-    d->show();
+    progress->show();
     device->loadCoefficientSets();
 }
 

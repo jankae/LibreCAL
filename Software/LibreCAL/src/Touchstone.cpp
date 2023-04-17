@@ -16,6 +16,9 @@ static bool readFileOpen = false;
 static uint32_t nextReadPoint;
 static char readFileFolder[50];
 static char readFileName[50];
+static bool write_init_lines = false;
+const uint16_t add_comment_limit_per_file = 100;
+static uint16_t add_comment_nb = 0;
 
 static bool extract_double_values(const char *line, double *values, uint8_t expected_values) {
 	while(expected_values) {
@@ -112,22 +115,48 @@ bool Touchstone::StartNewFile(const char *folder, const char *filename) {
 		return false;
 	}
 	writeFileOpen = true;
-	// write initial lines
-	auto res = f_printf(&writeFile, "! Automatically created by LibreCAL firmware\r\n");
+	write_init_lines = false;
+	add_comment_nb = 0;
+
+	return true;
+}
+
+bool Touchstone::AddComment(const char* comment) {
+	if(!writeFileOpen) {
+		return false;
+	}
+	if(write_init_lines == true) {
+		// Add comment only allowed just after call of Touchstone::StartNewFile
+		return false;
+	}
+	if(add_comment_nb == add_comment_limit_per_file) {
+		// Add comment reached max limit per file allowed
+		return false;
+	}
+	auto res = f_printf(&writeFile, "! %s\r\n", comment);
 	if(res < 0) {
 		return false;
 	}
-	// write the option line (only these options are supported)
-	res = f_printf(&writeFile, "# GHz S RI R 50.0\r\n");
-	if(res < 0) {
-		return false;
-	}
+	add_comment_nb++;
 	return true;
 }
 
 bool Touchstone::AddPoint(double frequency, double *values, uint8_t num_values) {
 	if(!writeFileOpen) {
 		return false;
+	}
+	if(write_init_lines == false) {
+		// write initial lines
+		auto res = f_printf(&writeFile, "! Automatically created by LibreCAL firmware\r\n");
+		if(res < 0) {
+			return false;
+		}
+		// write the option line (only these options are supported)
+		res = f_printf(&writeFile, "# GHz S RI R 50.0\r\n");
+		if(res < 0) {
+			return false;
+		}
+		write_init_lines = true;
 	}
 	auto res = f_printf(&writeFile, "%f", frequency);
 	if(res < 0) {

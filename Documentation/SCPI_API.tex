@@ -124,6 +124,15 @@ Some commands are both events and queries, depending on whether the question mar
 \event{Reboots and enters the bootloader mode}{:BOOTloader}{None}
 This is equivalent to pressing the "BOOTSEL" button when applying power.
 
+\subsubsection{:DATE\_TIME}
+\event{Sets local Date Time with UTC offset}{:DATE\_TIME <DATE> <TIME> <UTC>}{<DATE>Format YYYY/MM/DD\\<TIME>Format hh:mm:ss\\<UTC>Format UTC+/-hh:mm}
+\query{Returns the local Date Time with UTC offset}{:DATE\_TIME?}{NONE}{local Date Time with UTC offset}
+
+Example: Date Time with UTC offset(France):
+\begin{lstlisting}
+2023/03/20 17:06:58 UTC+01:00
+\end{lstlisting}
+
 \subsection{Port Control Commands}
 This section contains commands to control and check the configuration of the ports.
 \subsubsection{:PORTS}
@@ -202,7 +211,13 @@ The first value returned is the frequency (in GHz), followed by the S parameters
 \event{Creates a new calibration coefficient}{:COEFFicient:CREATE <set name> <coefficient name>}{<set name> Name of the coefficient set\\<coefficient name> Name of the coefficient}
 If the coefficient already exists, it will be deleted first (along with all its coefficient data). Afterwards, a new and empty coefficient will be created.
 
-This command should be used in conjunction with :COEFFicient:ADD and :COEFFicient:FINish.
+This command should be used in conjunction with :COEFFicient:ADD\_COMMENT, :COEFFicient:ADD and :COEFFicient:FINish.
+\subsubsection{:COEFFicient:ADD\_COMMENT}
+\event{Add ASCII text comment before to add coefficient datapoint}{:COEFFicient:ADD\_COMMENT <ASCII text comment>}{<ASCII text comment> add an ASCII text comment with size up to 120chars\\if the comment exceed 120 characters it will be truncated to 120 characters}
+
+This command should be used only after :COEFFicient:CREATE as it is intended to add comment before to add any datapoint (:COEFFicient:ADD).
+
+There is a limitation of maximum 100 comments per calibration coefficient (:COEFFicient:CREATE)(if there is more comment the command will return an error and comment will be not added).
 \subsubsection{:COEFFicient:ADD}
 \event{Add a datapoint to an existing coefficient}{:COEFFicient:ADD <frequency> <S parameters>}{<frequency> Frequency of the datapoint, in GHz\\
 <S parameters> S parameters, split into real and imaginary parts}

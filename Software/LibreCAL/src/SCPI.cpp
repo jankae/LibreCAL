@@ -13,11 +13,16 @@
 #include "Touchstone.hpp"
 
 #include <pico/bootrom.h>
+#include "hardware/rtc.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
 
 using namespace SCPI;
+
+constexpr int CommentMaxSize = 120;
+constexpr int ParseLastCmdMaxSize = CommentMaxSize+1;
+constexpr int ParseArgumentsMax = CommentMaxSize+1;
 
 constexpr int NumInterfaces = 2;
 constexpr int BufferSize = 256;
@@ -26,6 +31,8 @@ static char buffer[NumInterfaces][BufferSize];
 static uint16_t rx_cnt[NumInterfaces];
 
 static scpi_tx_callback tx_data;
+
+static char scpi_date_time_utc[] = "UTC+00:00"; // Default UTC+00:00 shall be set by SCPI :DATE_TIME
 
 static void tx_string(const char *s, uint8_t interface) {
 	tx_data((const uint8_t*) s, strlen(s), interface);
@@ -41,6 +48,109 @@ static void tx_double(double d, uint8_t interface) {
 	char s[20];
 	snprintf(s, sizeof(s), "%f", d);
 	tx_string(s, interface);
+}
+
+static bool validate_date(const char *date, datetime_t *t) {
+	// Ensure the date has the correct length and format
+	if (strlen(date) != 10) {
+		return false;
+	}
+	// Parse the year, month, and day
+	const char* p = date;
+	t->year = 0;
+	while (isdigit(*p)) {
+		t->year = (t->year * 10) + (*p++ - '0');
+	}
+	if (*p++ != '/') {
+		return false;
+	}
+	t->month = 0;
+	while (isdigit(*p)) {
+		t->month = (t->month * 10) + (*p++ - '0');
+	}
+	if (*p++ != '/') {
+		return false;
+	}
+	t->day = 0;
+	while (isdigit(*p)) {
+		t->day = (t->day * 10) + (*p++ - '0');
+	}
+	// Ensure the parsed values are valid
+	if (t->year < 0 || t->month < 1 || t->month > 12 || t->day < 1 || t->day > 31) {
+		return false;
+	}
+	return true;
+}
+
+static bool validate_time(const char *time, datetime_t *t) {
+	// Ensure the time has the correct length and format
+	if (strlen(time) != 8) {
+		return false;
+	}
+	// Parse the hour, min, and sec
+	const char* p = time;
+	t->hour = 0;
+	while (isdigit(*p)) {
+		t->hour = (t->hour * 10) + (*p++ - '0');
+	}
+	if (*p++ != ':') {
+		return false;
+	}
+	t->min = 0;
+	while (isdigit(*p)) {
+		t->min = (t->min * 10) + (*p++ - '0');
+	}
+	if (*p++ != ':') {
+		return false;
+	}
+	t->sec = 0;
+	while (isdigit(*p)) {
+		t->sec = (t->sec * 10) + (*p++ - '0');
+	}
+	// Ensure the parsed values are valid
+	if (t->hour < 0 || t->hour > 23 || t->min <  0 || t->min > 59  || t->sec <  0 || t->sec > 59) {
+		return false;
+	}
+	return true;
+}
+
+static bool validate_utc(const char *utc) {
+	// Ensure the UTC has the correct length and format
+	// Example UTC correct format "UTC−10:00", "UTC+12:00"...
+	// See https://en.wikipedia.org/wiki/List_of_UTC_offsets
+	if (strlen(utc) != 9) {
+		return false;
+	}
+	if (strncmp(utc, "UTC", 3) != 0) {
+		return false;
+	}
+	// valid UTC offset in the format of "+/-HH:MM"
+	const char* p = &utc[3];
+	// Check the sign of the offset
+	if (*p == '+') {
+		p++;
+	} else if (*p == '-') {
+		p++;
+	} else {
+		return false;
+	}
+	// Parse the hour and min
+	int hour = 0;
+	while (isdigit(*p)) {
+		hour = (hour * 10) + (*p++ - '0');
+	}
+	if (*p++ != ':') {
+		return false;
+	}
+	int min = 0;
+	while (isdigit(*p)) {
+		min = (min * 10) + (*p++ - '0');
+	}
+	// Ensure the parsed values are valid
+	if (hour < 0 || hour > 14 || min <  0 || min > 59) {
+		return false;
+	}
+	return true;
 }
 
 class Command {
@@ -317,6 +427,30 @@ static const Command commands[] = {
 			// file deleted
 			tx_string("\r\n", interface);
 		}, nullptr, 2),
+		Command("COEFFicient:ADD_COMMENT", [](char *argv[], int argc, int interface){
+			char comment[CommentMaxSize+1];
+			memset(comment, 0, sizeof(comment));
+			// Concatenate all argv(words) adding a space between each word to create the full comment
+			for(uint8_t i=0;i<argc - 1;i++) {
+				strncat(comment, argv[i+1], (CommentMaxSize-strlen(comment)));
+				if(strlen(comment) == CommentMaxSize-1)
+					break;
+				strncat(comment, " ", (CommentMaxSize-strlen(comment)));
+			}
+			// Remove last space at end if it exist
+			int len = strlen(comment);
+			if(comment[len-1] == ' ')
+				comment[len-1] = 0;	
+			if(comment[len] == ' ')
+				comment[len] = 0;
+			if(!Touchstone::AddComment(comment)) {
+				// failed to add comment
+				tx_string("ERROR\r\n", interface);
+				return;
+			}
+			// comment added
+			tx_string("\r\n", interface);
+		}, nullptr, 1),
 		Command("COEFFicient:ADD", [](char *argv[], int argc, int interface){
 			double freq = strtod(argv[1], NULL);
 			double values[argc - 2];
@@ -402,6 +536,42 @@ static const Command commands[] = {
 			vTaskDelay(100);
 			reset_usb_boot(0, 0);
 		}),
+		Command("DATE_TIME", [](char *argv[], int argc, int interface){
+			int nb_match;
+			datetime_t t = { 0 };
+			
+			if(argc == 4) {
+				char* date = argv[1];
+				char* time = argv[2];
+				char* utc = argv[3];
+
+				if(validate_date(date, &t) == false) {
+					tx_string("ERROR date format invalid\r\n", interface);
+				} else if(validate_time(time, &t) == false) {
+					tx_string("ERROR time format invalid\r\n", interface);
+				} else if(validate_utc(utc) == false) {
+					tx_string("ERROR UTC format invalid\r\n", interface);
+				} else if(rtc_set_datetime(&t) == true) {
+					strcpy(scpi_date_time_utc, utc);
+					tx_string("\r\n", interface);
+				} else {
+					tx_string("ERROR rtc_set_datetime()\r\n", interface);
+				}
+			} else {
+				tx_string("ERROR 3 arguments 'DATE' 'TIME' 'UTC' are required\r\n", interface);
+			}
+		},
+		[](char *argv[], int argc, int interface){
+			char date_time_utc[32]; // Max 32chars including \r\n\0 char example "2023/03/01 10:05:48 UTC+01:00"
+			datetime_t t = { 0 };			
+			if(rtc_get_datetime(&t) == true) {
+				snprintf(date_time_utc, sizeof(date_time_utc), "%04d/%02d/%02d %02d:%02d:%02d %s\r\n", 
+						t.year, t.month, t.day, t.hour, t.min, t.sec, scpi_date_time_utc);
+				tx_string(date_time_utc, interface);
+			} else {
+				tx_string("ERROR\r\n", interface);
+			}
+		}, 3),
 };
 
 static void scpi_lst(char *argv[], int argc, int interface) {
@@ -420,9 +590,9 @@ static void scpi_lst(char *argv[], int argc, int interface) {
 }
 
 static void parse(char *s, uint8_t interface) {
-	static char last_cmd[50] = ":";
+	static char last_cmd[ParseLastCmdMaxSize] = ":";
 	// split strings into args
-	char *argv[20];
+	char *argv[ParseArgumentsMax];
 	int argc = 0;
 	argv[argc] = s;
 	while(*s) {
@@ -501,3 +671,4 @@ void SCPI::Input(const char *msg, uint16_t len, uint8_t interface) {
 		}
 	}
 }
+
