@@ -73,7 +73,7 @@ def measure():
     
     Measurements are returned as a dictionary:
         Key: S parameter name (e.g. "S11")
-        Value: List of tuples: [frequency, complex]
+        Value: List of tuples: (frequency, complex)
     
     :return: Measurements
     """
