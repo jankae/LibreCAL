@@ -110,7 +110,7 @@ jobs:
           path: Software/LibreCAL-GUI/release
 
   PC_Application_OSX:
-    runs-on: macos-10.15
+    runs-on: macos-12
     steps:
       - uses: actions/checkout@v3
 
