@@ -95,15 +95,15 @@ static void defaultTask(void* ptr) {
 	if(fr != FR_OK) {
 		BYTE work[FF_MAX_SS];
 		f_mkfs("0:", 0, work, sizeof(work));
-		f_setlabel("0:LibreCAL_RW");
 		f_mount(&fs0, "0:", 1);
+		f_setlabel("0:LibreCAL_RW");
 	}
 	fr = f_mount(&fs1, "1:", 1);
 	if(fr != FR_OK) {
 		BYTE work[FF_MAX_SS];
 		f_mkfs("1:", 0, work, sizeof(work));
-		f_setlabel("1:LibreCAL_R");
 		f_mount(&fs1, "1:", 1);
+		f_setlabel("1:LibreCAL_R");
 	}
 	// Check info file
 	fr = f_open(&fil, "1:info.txt", FA_OPEN_EXISTING | FA_READ);

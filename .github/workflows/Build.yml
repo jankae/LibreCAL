@@ -12,7 +12,7 @@ jobs:
   PC_Application_Ubuntu:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
@@ -21,7 +21,7 @@ jobs:
 
       - name: Get build timestamp
         id: id_date
-        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+        run: echo "timestamp=$(date +%Y-%m-%d-%H-%M-%S)" >> $GITHUB_OUTPUT
 
       - name: Get app version
         id: id_version
@@ -30,7 +30,7 @@ jobs:
           fw_major=`grep -oP '(?<=FW_MAJOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_minor=`grep -oP '(?<=FW_MINOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_patch=`grep -oP '(?<=FW_PATCH=)[0-9]+' LibreCAL-GUI.pro` 
-          echo "::set-output name=app_version::v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
+          echo "app_version=v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}" >> $GITHUB_OUTPUT
 
       - name: Build application
         run: |
@@ -42,7 +42,7 @@ jobs:
       - name: Upload artifact
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: LibreCAL-GUI-Ubuntu-${{env.LIBRECAL_VERSION}}
           path: Software/LibreCAL-GUI/LibreCAL-GUI
@@ -50,11 +50,11 @@ jobs:
   PC_Application_Windows:
     runs-on: windows-2019
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       - uses: msys2/setup-msys2@v2
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v2
+        uses: jurplel/install-qt-action@v3
         with:
           version: '5.15.1'
           arch: 'win64_mingw81'
@@ -71,7 +71,7 @@ jobs:
       - name: Get build timestamp
         shell: msys2 {0}
         id: id_date
-        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+        run: echo "timestamp=$(date +%Y-%m-%d-%H-%M-%S)" >> $GITHUB_OUTPUT
 
       - name: Get app version
         id: id_version
@@ -81,7 +81,7 @@ jobs:
           fw_major=`grep -oP '(?<=FW_MAJOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_minor=`grep -oP '(?<=FW_MINOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_patch=`grep -oP '(?<=FW_PATCH=)[0-9]+' LibreCAL-GUI.pro` 
-          echo "::set-output name=app_version::v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
+          echo "app_version=v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}" >> $GITHUB_OUTPUT
 
       - name: Build application
         run: |
@@ -102,7 +102,7 @@ jobs:
         shell: cmd
         
       - name: Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
         with:
@@ -110,13 +110,13 @@ jobs:
           path: Software/LibreCAL-GUI/release
 
   PC_Application_OSX:
-    runs-on: macos-10.15
+    runs-on: macos-12
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: Install dependencies
         run: |
-          brew install qt@5 libusb
+          brew install qt@5 libusb pcre
           
       - name: Set Environment
         run: |
@@ -124,7 +124,7 @@ jobs:
           
       - name: Get build timestamp
         id: id_date
-        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+        run: echo "timestamp=$(date +%Y-%m-%d-%H-%M-%S)" >> $GITHUB_OUTPUT
 
       - name: Get app version
         id: id_version
@@ -133,8 +133,8 @@ jobs:
           fw_major=`pcregrep -o '(?<=FW_MAJOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_minor=`pcregrep -o '(?<=FW_MINOR=)[0-9]+' LibreCAL-GUI.pro`
           fw_patch=`pcregrep -o '(?<=FW_PATCH=)[0-9]+' LibreCAL-GUI.pro` 
-          echo "::set-output name=app_version::v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
-
+          echo "app_version=v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}" >> $GITHUB_OUTPUT
+          
       - name: Build application
         run: |
           cd Software/LibreCAL-GUI
@@ -147,7 +147,7 @@ jobs:
       - name: Upload artifact
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: LibreCAL-GUI-OSX-${{env.LIBRECAL_VERSION}}
           path: Software/LibreCAL-GUI/LibreCAL-GUI.zip
@@ -155,7 +155,7 @@ jobs:
   Embedded_Firmware:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
       - name: Install toolchain
         run: |
@@ -169,7 +169,7 @@ jobs:
         
       - name: Get build timestamp
         id: id_date
-        run: echo "::set-output name=timestamp::$(date +%Y-%m-%d-%H-%M-%S)"
+        run: echo "timestamp=$(date +%Y-%m-%d-%H-%M-%S)" >> $GITHUB_OUTPUT
 
       - name: Get app version
         id: id_version
@@ -178,7 +178,7 @@ jobs:
           fw_major=`grep -oP '(?<=FW_MAJOR=)[0-9]+' CMakeLists.txt`
           fw_minor=`grep -oP '(?<=FW_MINOR=)[0-9]+' CMakeLists.txt`
           fw_patch=`grep -oP '(?<=FW_PATCH=)[0-9]+' CMakeLists.txt`
-          echo "::set-output name=app_version::-v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}"
+          echo "app_version=v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}" >> $GITHUB_OUTPUT
 
       - name: Build application
         run: |
@@ -191,7 +191,7 @@ jobs:
         shell: bash
 
       - name: Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
         with:

@@ -1,2 +1,2 @@
-SUBSYSTEMS=="usb", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="4122", MODE:="0666"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="1209", ATTRS{idProduct}=="4122", MODE:="0666"
 

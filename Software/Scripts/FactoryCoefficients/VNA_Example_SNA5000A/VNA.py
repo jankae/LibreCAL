@@ -2,6 +2,11 @@
 # This file contains the necessary function to extract data from this VNA.
 # Please implement all functions according to the VNA you are using.
 
+from VNA_Example_SNA5000A.SNA5000A import SNA5000A
+import time
+
+vna = None
+
 def checkIfReady() -> bool:
     """
     checkIfReady checks if the VNA is connected and ready to be used
@@ -10,8 +15,22 @@ def checkIfReady() -> bool:
     once at the beginning
        
     :return: True if VNA is ready. False otherwise
-    """   
-    return False;
+    """
+    global vna
+    try:
+        vna = SNA5000A()
+    except:
+        print("Failed to detect VNA")
+        return False
+        
+    vna.stop_sweep()
+    vna.set_start_freq(9000)
+    vna.set_stop_freq(8500000000)
+    vna.set_points(801)
+    vna.set_source_power(0)
+    vna.set_IF_bandwidth(10000)
+    
+    return True
 
 def getPorts() -> int:
     """
@@ -22,7 +41,7 @@ def getPorts() -> int:
     
     :return: Number of ports on the VNA
     """
-    return 0
+    return vna.num_ports
 
 def measure():
     """
@@ -33,8 +52,8 @@ def measure():
     
     Measurements are returned as a dictionary:
         Key: S parameter name (e.g. "S11")
-        Value: List of tuples: (frequency, complex S parameter)
+        Value: List of tuples: (frequency, complex)
     
     :return: Measurements
     """
-    return {}
+    return vna.blocking_single_sweep({"S11","S12","S13","S14","S21","S22","S23","S24","S31","S32","S33","S34","S41","S42","S43","S44"})

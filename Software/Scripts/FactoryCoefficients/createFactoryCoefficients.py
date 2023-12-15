@@ -4,7 +4,8 @@ import serial.tools.list_ports
 import subprocess
 import time
 #import VNA
-from VNA_Example_LibreVNA import VNA
+#from VNA_Example_LibreVNA import VNA
+from VNA_Example_SNA5000A import VNA
 
 def SCPICommand(ser, cmd: str) -> str:
     ser.write((cmd+"\r\n").encode())
@@ -47,10 +48,10 @@ if port is None:
 print("Found LibreCAL device on port " + port.device)
 
 ser = serial.Serial(port.device, timeout = 1)
-idn = SCPICommand(ser, "*IDN?").split("_")
+idn = SCPICommand(ser, "*IDN?").split(",")
 if idn[0] != "LibreCAL":
-    raise Exception("Invalid *IDN response: "+idn[0])
-print("Detected LibreCAL device has serial number "+idn[1])
+    raise Exception("Invalid *IDN response: "+idn)
+print("Detected LibreCAL device has serial number "+idn[2])
 
 # Enable writing of the factory partition
 SCPICommand(ser, ":FACT:ENABLEWRITE I_AM_SURE")

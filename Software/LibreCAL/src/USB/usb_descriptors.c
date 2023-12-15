@@ -47,7 +47,7 @@ tusb_desc_device_t const desc_device =
     .bDeviceProtocol    = MISC_PROTOCOL_IAD,
     .bMaxPacketSize0    = CFG_TUD_ENDPOINT0_SIZE,
 
-    .idVendor           = 0x0483,
+    .idVendor           = 0x1209,
     .idProduct          = 0x4122,
     .bcdDevice          = 0x0100,
 
