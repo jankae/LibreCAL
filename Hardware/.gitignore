@@ -30,6 +30,7 @@ fp-info-cache
 *.csv
 # But include the explicitly copied BOM file in this folder
 !BOM.csv
+!PnP/LibreCAL-all-pos.csv
 
 Datasheets
 
