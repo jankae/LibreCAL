@@ -38,7 +38,7 @@ if args.flash is not None:
 # Try to find the connected LibreCAL
 port = None
 for p in serial.tools.list_ports.comports():
-    if p.vid == 0x0483 and p.pid == 0x4122:
+    if (p.vid == 0x0483 and p.pid == 0x4122) or (p.vid == 0x1209 and p.pid == 0x4122):
         port = p
         break
 
