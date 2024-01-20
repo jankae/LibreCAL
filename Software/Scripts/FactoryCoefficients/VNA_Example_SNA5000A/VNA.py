@@ -26,9 +26,10 @@ def checkIfReady() -> bool:
     vna.stop_sweep()
     vna.set_start_freq(9000)
     vna.set_stop_freq(8500000000)
-    vna.set_points(801)
+    vna.set_points(1001)
     vna.set_source_power(0)
-    vna.set_IF_bandwidth(10000)
+    vna.set_IF_bandwidth(1000)
+    vna.set_excited_ports(range(1, vna.num_ports+1))
     
     return True
 

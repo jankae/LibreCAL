@@ -3,6 +3,9 @@ import serial
 import serial.tools.list_ports
 import subprocess
 import time
+import json
+import math
+import cmath
 #import VNA
 #from VNA_Example_LibreVNA import VNA
 from VNA_Example_SNA5000A import VNA
@@ -19,6 +22,7 @@ def SCPICommand(ser, cmd: str) -> str:
 
 parser = argparse.ArgumentParser(description = "Helps with creation of factory calibration coefficients for a new LibreCAL device")
 parser.add_argument('-f', '--flash', help='Flash the firmware file first', metavar="firmware")
+parser.add_argument('-l', '--limits', help='Enables limit checking on coefficients with limits from json file', metavar="json_limit_file")
 
 args = parser.parse_args()
 
@@ -34,7 +38,6 @@ if args.flash is not None:
     print("Firmware flashed, waiting for device to boot")
     time.sleep(2)
 
-
 # Try to find the connected LibreCAL
 port = None
 for p in serial.tools.list_ports.comports():
@@ -47,7 +50,7 @@ if port is None:
     
 print("Found LibreCAL device on port " + port.device)
 
-ser = serial.Serial(port.device, timeout = 1)
+ser = serial.Serial(port.device, timeout = 2)
 idn = SCPICommand(ser, "*IDN?").split(",")
 if idn[0] != "LibreCAL":
     raise Exception("Invalid *IDN response: "+idn)
@@ -214,6 +217,94 @@ for conn in PortConnections[VNAports]:
     
 print("\r\nMeasurements complete.")
 
+if args.limits:
+    jlimits = None
+    try:
+        f = open(args.limits)
+        jlimits = json.load(f)
+    except Exception as e:
+        raise Exception("Failed to parse limit file")
+    
+   
+    for i in jlimits:
+        # grab the specified measurement
+        measurements = {}
+        if i == "OPEN":
+            measurements = Opens
+        elif i == "SHORT":
+            measurements = Shorts
+        elif i == "LOAD":
+            measurements = Loads
+        elif i == "THRU REFLECTION":
+            for through in Throughs:
+                measurements[through+"_S11"] = Throughs[through]["S11"]
+                measurements[through+"_S22"] = Throughs[through]["S22"]
+        elif i == "THRU TRANSMISSION":
+            for through in Throughs:
+                measurements[through+"_S12"] = Throughs[through]["S12"]
+                measurements[through+"_S21"] = Throughs[through]["S21"]    
+        elif i == "OPEN SHORT PHASE":
+            for key in Opens.keys():
+                if key not in Shorts:
+                    # should not happen
+                    raise RuntimeError("Got an open measurement without corresponding short measurement at port "+str(key))
+                samples = max(len(Opens[key]), len(Shorts[key]))
+                open_vs_short = []
+                for j in range(samples):
+                    if Opens[key][j][0] == Shorts[key][j][0]:
+                        # this sample uses the same frequency (should always be the case)
+                        open_vs_short.append((Opens[key][j][0], Opens[key][j][1] / Shorts[key][j][1]))
+                    else:
+                        raise RuntimeError("Open and short measurements have difference frequencies at port "+str(key))
+                measurements[key] = open_vs_short
+                    
+        if len(measurements) == 0:
+            # unknown limit keyword, nothing to check
+            continue
+           
+        # iterate over and check the specified limits
+        for limit in jlimits[i]:
+            # iterate over the measurements we need to check
+            for key in measurements.keys():
+                # check every sample in the measurement
+                for sample in measurements[key]:
+                    if sample[0] < limit["x1"] or sample[0] > limit["x2"]:
+                        # Sample not covered by this limit
+                        continue
+                    # calculate limit value for this sample
+                    alpha = (sample[0] - limit["x1"]) / (limit["x2"] - limit["x1"])
+                    limval = limit["y1"] + alpha * (limit["y2"] - limit["y1"])
+                    
+                    # transform y value according to limit type
+                    yval = None
+                    if limit["type"] == "dB":
+                        yval = 20*math.log10(abs(sample[1]))
+                    elif limit["type"] == "phase":
+                        yval = math.degrees(cmath.polar(sample[1])[1])
+                        # contrain to [0, 360)
+                        while yval < 0:
+                            yval += 360
+                        while yval >= 360:
+                            yval -= 360
+                    else:
+                        # unknown limit type
+                        raise Exception("Unknown limit type: "+str(limit["type"]))
+                     
+                    # perform the actual limit check
+                    success = True
+                    if limit["limit"] == "max":
+                        if yval > limval:
+                            success = False
+                    elif limit["limit"] == "min":
+                        if yval < limval:
+                            success = False
+                    else:
+                        # unknown limit
+                        raise Exception("Unknown limit: "+str(limit["limit"]))
+                    if not success:
+                        # this limit failed
+                        raise Exception("Limit check failed for type "+str(i)+" in measurement "+str(key)+" at frequency "+str(sample[0])+": limit is "+str(limval)+", measured value is "+str(yval))
+                    
 rCoeffs = {}
 tCoeffs = {}
 
