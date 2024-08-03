@@ -35,7 +35,7 @@ const char* time = __TIME__;
 					: date[2] == 't' ? 10 \
 					: date[2] == 'v' ? 11 : 12)
 
-#define DAY(date)   ((date[4] - '0') * 10 + (date[5] - '0'))
+#define DAY(date)   ((date[4] == ' ' ? 0 : (date[4] - '0') * 10) + (date[5] - '0'))
 #define HOUR(time)  ((time[0] - '0') * 10 + (time[1] - '0'))
 #define MINUTE(time) ((time[3] - '0') * 10 + (time[4] - '0'))
 #define SECOND(time) ((time[6] - '0') * 10 + (time[7] - '0'))
