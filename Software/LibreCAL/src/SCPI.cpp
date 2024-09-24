@@ -494,28 +494,38 @@ static const Command commands[] = {
 			}
 			char filename[50];
 			snprintf(filename, sizeof(filename), "%s.%s", argv[2], coefficientOptionEnding(argv[2]));
-			uint32_t point = strtoul(argv[3], NULL, 10);
-			double values[9];
-			int decoded = Touchstone::GetPoint(argv[1], filename, point, values);
-			if(decoded == 0) {
-				tx_string("ERROR\r\n", interface);
-				return;
-			} else {
-				char response[200] = "";
-				for(int i=0;i<decoded;i++) {
-					char val[20];
-					auto len = strlen(response);
-					len += snprintf(&response[len], sizeof(response)-len, "%f",values[i]);
-					if(i<decoded - 1) {
-						// not the last entry
-						response[len] = ',';
-						response[len+1] = '\0';
+			if(argc == 4) {
+				// specific point requested
+				uint32_t point = strtoul(argv[3], NULL, 10);
+				double values[9];
+				int decoded = Touchstone::GetPoint(argv[1], filename, point, values);
+				if(decoded == 0) {
+					tx_string("ERROR\r\n", interface);
+					return;
+				} else {
+					char response[200] = "";
+					for(int i=0;i<decoded;i++) {
+						char val[20];
+						auto len = strlen(response);
+						len += snprintf(&response[len], sizeof(response)-len, "%f",values[i]);
+						if(i<decoded - 1) {
+							// not the last entry
+							response[len] = ',';
+							response[len+1] = '\0';
+						}
 					}
+					strcat(response, "\r\n");
+					tx_string(response, interface);
 				}
-				strcat(response, "\r\n");
-				tx_string(response, interface);
+			} else if(argc == 3) {
+				// whole file requested
+				if(!Touchstone::PrintFile(argv[1], filename, tx_data, interface)) {
+					tx_string("ERROR\r\n", interface);
+				}
+			} else {
+				tx_string("ERROR\r\n", interface);
 			}
-		}, 0, 3),
+		}, 0, 2),
 		Command("FACTory:ENABLEWRITE", [](char *argv[], int argc, int interface){
 			if(strcmp("I_AM_SURE", argv[1]) != 0) {
 				tx_string("ERROR\r\n", interface);

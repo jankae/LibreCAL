@@ -10,6 +10,8 @@
 
 #include <cstdint>
 
+#include "SCPI.hpp"
+
 namespace Touchstone {
 
 uint32_t GetPointNum(const char *folder, const char *filename);
@@ -20,6 +22,7 @@ bool FinishFile();
 bool DeleteFile(const char *folder, const char *filename);
 int GetPoint(const char *folder, const char *filename, uint32_t point, double *values);
 bool GetUserCoefficientName(uint8_t index, char *name, uint16_t maxlen);
+bool PrintFile(const char *folder, const char *filename, SCPI::scpi_tx_callback tx_func, uint8_t interface);
 
 void EnableFactoryWriting();
 bool clearFactory();

@@ -291,6 +291,33 @@ bool Touchstone::GetUserCoefficientName(uint8_t index, char *name, uint16_t maxl
 	return false;
 }
 
+bool Touchstone::PrintFile(const char *folder, const char *filename, SCPI::scpi_tx_callback tx_func, uint8_t interface) {
+	if(readFileOpen) {
+		closeReadFile();
+	}
+	tx_func((uint8_t*) "START\r\n", 7, interface);
+	if(!open_file(readFile, folder, filename, FA_OPEN_EXISTING | FA_READ)) {
+		return false;
+	}
+	uint8_t buffer[256];
+	while(true) {
+		UINT br;
+		if(f_read(&readFile, buffer, sizeof(buffer), &br) != FR_OK) {
+			f_close(&readFile);
+			return false;
+		}
+		if(br > 0) {
+			tx_func(buffer, br, interface);
+		}
+		if(br < sizeof(buffer)) {
+			break;
+		}
+	}
+	f_close(&readFile);
+	tx_func((uint8_t*) "END\r\n", 5, interface);
+	return true;
+}
+
 // Implemented in main.cpp
 bool createInfoFile();
 extern FATFS fs1;
