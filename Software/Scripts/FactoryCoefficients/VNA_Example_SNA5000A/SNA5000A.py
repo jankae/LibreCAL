@@ -1,6 +1,9 @@
 import pyvisa
 from enum import Enum
 
+from bokeh.models import Segment
+
+
 class SNA5000A:
     # Class to control a siglent SNA5000A vector network analyzer
 
@@ -45,6 +48,40 @@ class SNA5000A:
 
     def set_points(self, points):
         self.write(":SENS:SWEEP:POINTS "+str(points))
+
+    class SweepType(Enum):
+        Linear = "LIN"
+        Logarithmic = "LOG"
+        Segment = "SEGM"
+        Power = "POW"
+        CW = "CW"
+
+    def set_sweep_type(self, type: SweepType):
+        self.write(":SENS:SWEEP:TYPE "+type.value)
+
+    class Segment:
+        def __init__(self, start = 100000, stop = 1000000, points = 21):
+            self.start = start
+            self.stop = stop
+            self.points = points
+
+    class SegmentTable:
+        def __init__(self):
+            self.segments = []
+
+        def clear(self):
+            self.segments = []
+
+        def add(self, segment):
+            self.segments.append(segment)
+
+    def set_segment_table(self, table: SegmentTable):
+        cmd = ":SENS:SEGM:DATA 5,0,0,0,0,0"
+        # Add number of segments
+        cmd += ","+str(len(table.segments))
+        for s in table.segments:
+            cmd += f",{s.start},{s.stop},{s.points}"
+        self.write(cmd)
 
     def get_trace_data(self, parameters: set):
         # example call: get_trace_data({"S11", "S21"})

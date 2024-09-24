@@ -24,11 +24,16 @@ def checkIfReady() -> bool:
         return False
         
     vna.stop_sweep()
-    vna.set_start_freq(9000)
-    vna.set_stop_freq(8500000000)
-    vna.set_points(1001)
+    table = vna.SegmentTable()
+    table.add(vna.Segment(9000, 100000, 92))
+    table.add(vna.Segment(110000, 1000000, 90))
+    table.add(vna.Segment(1100000, 10000000, 90))
+    table.add(vna.Segment(11000000, 100000000, 90))
+    table.add(vna.Segment(110000000, 8.5e9, 840))
     vna.set_source_power(0)
     vna.set_IF_bandwidth(1000)
+    vna.set_segment_table(table)
+    vna.set_sweep_type(vna.SweepType.Segment)
     vna.set_excited_ports(range(1, vna.num_ports+1))
     
     return True
@@ -43,6 +48,14 @@ def getPorts() -> int:
     :return: Number of ports on the VNA
     """
     return vna.num_ports
+
+def getInfo() -> str:
+    """
+    getInfo returns information about this VNA (such as model number, serial number)
+
+    :return: Any useful string identifying the VNA
+    """
+    return vna.inst.query('*IDN?')
 
 def measure():
     """

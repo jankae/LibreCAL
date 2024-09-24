@@ -24,6 +24,14 @@ def getPorts() -> int:
     """
     return 0
 
+def getInfo() -> str:
+    """
+    getInfo returns information about this VNA (such as model number, serial number)
+
+    :return: Any useful string identifying the VNA
+    """
+    return ""
+
 def measure():
     """
     measure starts a measurement and returns the S parameter data
