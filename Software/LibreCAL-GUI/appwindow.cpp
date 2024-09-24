@@ -8,9 +8,11 @@
 #include "CustomWidgets/informationbox.h"
 
 #include <QDebug>
+#include <QInputDialog>
+#include <QFileDialog>
+#include <QValueAxis>
 
 using namespace std;
-using namespace QtCharts;
 
 AppWindow::AppWindow() :
     device(nullptr),
@@ -454,7 +456,7 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
             auto filename = QFileDialog::getSaveFileName(this, "Select file for exporting coefficients", "", "Touchstone file (*"+ending+")", nullptr, QFileDialog::DontUseNativeDialog);
             if(filename.isEmpty()) {
                 // aborted selection
-                return false;
+                return;
             }
             c->t.toFile(filename);
         });
@@ -462,7 +464,7 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
             auto filename = QFileDialog::getOpenFileName(this, "Select file for importing coefficients", "", "Touchstone files (*.s1p *.s2p *.s3p *.s4p)", nullptr, QFileDialog::DontUseNativeDialog);
             if(filename.isEmpty()) {
                 // aborted selection
-                return false;
+                return;
             }
             auto import = new TouchstoneImportDialog(requiredPorts, filename);
             connect(import, &TouchstoneImportDialog::fileImported, this, [=](Touchstone file){

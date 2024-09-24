@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QtCharts/QLineSeries>
 #include <QTimer>
+#include <QProgressDialog>
 
 class AppWindow : public QMainWindow
 {
@@ -47,7 +48,7 @@ private:
 
     QTimer *updateTimer;
     // temperature chart widgets
-    QtCharts::QLineSeries *tempSeries, *heaterSeries;
+    QLineSeries *tempSeries, *heaterSeries;
 
     bool backgroundOperations;
 };
