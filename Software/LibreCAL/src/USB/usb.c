@@ -125,6 +125,7 @@ bool usb_transmit(const uint8_t *data, uint16_t length, uint8_t i) {
 			vTaskDelay(1);
 		}
 		tud_vendor_write(data, length);
+		tud_vendor_write_flush();
 	}
     return true;
 }
