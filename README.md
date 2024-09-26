@@ -32,7 +32,7 @@ All of the following steps are only required if you plan to use the LibreCAL-GUI
 * Download the latest [Release](https://github.com/jankae/LibreCAL/releases) and unpack the zip file
 * Install the required libraries:
 ```console
-sudo apt install libqt5widgets5 libqt5charts5
+sudo apt install libqt6widgets6 libqt6charts6 libqt6svg6
 ```
 * Install the udev rule (otherwise you don't have the permissions to access the USB device):
 ```console
