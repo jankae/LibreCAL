@@ -78,6 +78,8 @@ namespace Util {
     double distanceToLine(QPointF point, QPointF l1, QPointF l2, QPointF *closestLinePoint = nullptr, double *pointRatio = nullptr);
 
     unsigned long long random(unsigned long long max);
+
+    bool firmwareEqualOrHigher(QString firmware, QString compare);
 }
 
 #endif // UTILH_H

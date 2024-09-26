@@ -11,6 +11,7 @@
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QValueAxis>
+#include <QProgressDialog>
 
 using namespace std;
 
@@ -32,14 +33,6 @@ AppWindow::AppWindow() :
     ui->portInvalidLabel->setVisible(false);
 
     portCBs = {ui->port1, ui->port2, ui->port3, ui->port4};
-
-    progress = new QProgressDialog();
-    progress->setLabelText("Loading calibration coefficients from device...");
-    progress->setWindowTitle("Updating");
-    progress->setWindowModality(Qt::ApplicationModal);
-    progress->setMinimumDuration(0);
-    progress->setCancelButton(nullptr);
-    progress->reset();
 
     // Set up the temperature chart
     auto chart = new QChart();
@@ -93,7 +86,7 @@ AppWindow::AppWindow() :
     });
     connect(ui->coeffList, &QListWidget::currentRowChanged, [=](int row){
         if(device) {
-            if(row < device->getCoefficientSets().size()) {
+            if(row < (int) device->getCoefficientSets().size()) {
                 showCoefficientSet(device->getCoefficientSets()[row]);
             }
         }
@@ -109,7 +102,6 @@ AppWindow::AppWindow() :
 AppWindow::~AppWindow()
 {
     delete device;
-    delete progress;
     delete deviceActionGroup;
     delete status;
     delete updateTimer;
@@ -198,10 +190,10 @@ bool AppWindow::ConnectToDevice(QString serial)
                             ", "+QString::number(device->getNumPorts())+" ports"+
                             ", "+LibreCAL_DateTimeUTC);
         }
-        for(int i=0;i<device->getNumPorts();i++) {
+        for(unsigned int i=0;i<device->getNumPorts();i++) {
             portCBs[i]->setEnabled(true);
             for(auto s : CalDevice::availableStandards()) {
-                if(s.type == CalDevice::Standard::Type::Through && s.throughDest == i+1) {
+                if(s.type == CalDevice::Standard::Type::Through && s.throughDest == (int) i+1) {
                     // do not add through to the port itself
                     continue;
                 }
@@ -288,7 +280,7 @@ void AppWindow::updateStatus()
 {
     if(device && !backgroundOperations) {
         // update port status
-        for(int i=0;i<device->getNumPorts();i++) {
+        for(unsigned int i=0;i<device->getNumPorts();i++) {
             portCBs[i]->blockSignals(true);
             portCBs[i]->setCurrentText(CalDevice::StandardToString(device->getStandard(i+1)));
             portCBs[i]->blockSignals(false);
@@ -320,7 +312,7 @@ void AppWindow::updateStatus()
         if(range == 0) {
             extraYSpace = 0.1;
         }
-        ui->chartView->chart()->axisY()->setRange(minTemp - extraYSpace, maxTemp + extraYSpace);
+        ui->chartView->chart()->axes(Qt::Vertical)[0]->setRange(minTemp - extraYSpace, maxTemp + extraYSpace);
 
         auto stable = device->stabilized();
         if(!stable) {
@@ -363,12 +355,20 @@ void AppWindow::loadCoefficients()
         }
     }
     backgroundOperations = true;
-    progress->setValue(0);
-    connect(device, &CalDevice::updateCoefficientsPercent, progress, &QProgressDialog::setValue, Qt::UniqueConnection);
+    auto d = new QProgressDialog();
+    d->setLabelText("Loading calibration coefficients from device...");
+    d->setWindowTitle("Updating");
+    d->setWindowModality(Qt::ApplicationModal);
+    d->setMinimumDuration(0);
+    d->setCancelButton(nullptr);
+    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue);
+    connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
+        d->accept();
+        delete d;
+    });
     connect(device, &CalDevice::updateCoefficientsDone, this, [=](){
         ui->saveCoefficients->setEnabled(false);
         backgroundOperations = false;
-        progress->reset();
 
         ui->coeffList->clear();
         for(auto set : device->getCoefficientSets()) {
@@ -376,7 +376,7 @@ void AppWindow::loadCoefficients()
         }
         ui->coeffList->setCurrentRow(0);
     });
-    progress->show();
+    d->show();
     device->loadCoefficientSets();
 }
 
@@ -396,12 +396,15 @@ void AppWindow::saveCoefficients()
     d->setWindowTitle("Updating");
     d->setWindowModality(Qt::ApplicationModal);
     d->setMinimumDuration(0);
+    d->setCancelButton(nullptr);
     connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue);
+    connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
+        d->accept();
+        delete d;
+    });
     connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
         ui->saveCoefficients->setEnabled(device->hasModifiedCoefficients());
         backgroundOperations = false;
-        d->accept();
-        delete d;
 
         ui->coeffList->clear();
         for(auto set : device->getCoefficientSets()) {
@@ -439,7 +442,7 @@ void AppWindow::createCoefficient()
     ui->coeffList->setCurrentRow(device->getCoefficientSets().size()-1);
 }
 
-void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
+void AppWindow::showCoefficientSet(CalDevice::CoefficientSet &set)
 {
     auto setupCoefficient = [=](CalDevice::CoefficientSet::Coefficient *c, QCheckBox *modified, QLineEdit *info, QDialogButtonBox *buttons, int requiredPorts, bool editable){
         info->setStyleSheet("QLineEdit:read-only{background: palette(window);}");
@@ -489,7 +492,7 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
             reset->setEnabled(false);
             ui->saveCoefficients->setEnabled(true);
         });
-        if(!c->t.points()) {
+        if(!c || !c->t.points()) {
             info->setText("Not available");
             save->setEnabled(false);
             modified->setChecked(false);
@@ -500,8 +503,8 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
             info->setText(s);
             save->setEnabled(true);
             reset->setEnabled(true);
+            modified->setChecked(c->modified);
         }
-        modified->setChecked(c->modified);
         if(editable) {
             modified->show();
             buttons->show();
@@ -512,37 +515,31 @@ void AppWindow::showCoefficientSet(const CalDevice::CoefficientSet &set)
     };
 
     bool editable = set.name != "FACTORY";
-    if(set.ports >= 1) {
-        setupCoefficient(set.opens[0], ui->modifiedOpenP_1, ui->infoOpenP_1, ui->buttonsOpenP_1, 1, editable);
-        setupCoefficient(set.shorts[0], ui->modifiedShortP_1, ui->infoShortP_1, ui->buttonsShortP_1, 1, editable);
-        setupCoefficient(set.loads[0], ui->modifiedLoadP_1, ui->infoLoadP_1, ui->buttonsLoadP_1, 1, editable);
-        ui->coeffBoxP_1->show();
-    } else {
-        ui->coeffBoxP_1->hide();
+
+    QList<QCheckBox*> modifiedOpen = {ui->modifiedOpenP_1, ui->modifiedOpenP_2, ui->modifiedOpenP_3, ui->modifiedOpenP_4};
+    QList<QCheckBox*> modifiedShort = {ui->modifiedShortP_1, ui->modifiedShortP_2, ui->modifiedShortP_3, ui->modifiedShortP_4};
+    QList<QCheckBox*> modifiedLoad = {ui->modifiedLoadP_1, ui->modifiedLoadP_2, ui->modifiedLoadP_3, ui->modifiedLoadP_4};
+
+    QList<QLineEdit*> infoOpen = {ui->infoOpenP_1, ui->infoOpenP_2, ui->infoOpenP_3, ui->infoOpenP_4};
+    QList<QLineEdit*> infoShort = {ui->infoShortP_1, ui->infoShortP_2, ui->infoShortP_3, ui->infoShortP_4};
+    QList<QLineEdit*> infoLoad = {ui->infoLoadP_1, ui->infoLoadP_2, ui->infoLoadP_3, ui->infoLoadP_4};
+
+    QList<QDialogButtonBox*> buttonsOpen = {ui->buttonsOpenP_1, ui->buttonsOpenP_2, ui->buttonsOpenP_3, ui->buttonsOpenP_4};
+    QList<QDialogButtonBox*> buttonsShort = {ui->buttonsShortP_1, ui->buttonsShortP_2, ui->buttonsShortP_3, ui->buttonsShortP_4};
+    QList<QDialogButtonBox*> buttonsLoad = {ui->buttonsLoadP_1, ui->buttonsLoadP_2, ui->buttonsLoadP_3, ui->buttonsLoadP_4};
+
+    QList<QGroupBox*> coeffBox = {ui->coeffBoxP_1, ui->coeffBoxP_2, ui->coeffBoxP_3, ui->coeffBoxP_4};
+
+    for(int port = 1;port <= set.ports;port++) {
+        int index = port - 1;
+        setupCoefficient(set.getOpen(port), modifiedOpen[index], infoOpen[index], buttonsOpen[index], 1, editable);
+        setupCoefficient(set.getShort(port), modifiedShort[index], infoShort[index], buttonsShort[index], 1, editable);
+        setupCoefficient(set.getLoad(port), modifiedLoad[index], infoLoad[index], buttonsLoad[index], 1, editable);
+        coeffBox[index]->show();
     }
-    if(set.ports >= 2) {
-        setupCoefficient(set.opens[1], ui->modifiedOpenP_2, ui->infoOpenP_2, ui->buttonsOpenP_2, 1, editable);
-        setupCoefficient(set.shorts[1], ui->modifiedShortP_2, ui->infoShortP_2, ui->buttonsShortP_2, 1, editable);
-        setupCoefficient(set.loads[1], ui->modifiedLoadP_2, ui->infoLoadP_2, ui->buttonsLoadP_2, 1, editable);
-        ui->coeffBoxP_2->show();
-    } else {
-        ui->coeffBoxP_2->hide();
-    }
-    if(set.ports >= 3) {
-        setupCoefficient(set.opens[2], ui->modifiedOpenP_3, ui->infoOpenP_3, ui->buttonsOpenP_3, 1, editable);
-        setupCoefficient(set.shorts[2], ui->modifiedShortP_3, ui->infoShortP_3, ui->buttonsShortP_3, 1, editable);
-        setupCoefficient(set.loads[2], ui->modifiedLoadP_3, ui->infoLoadP_3, ui->buttonsLoadP_3, 1, editable);
-        ui->coeffBoxP_3->show();
-    } else {
-        ui->coeffBoxP_3->hide();
-    }
-    if(set.ports >= 4) {
-        setupCoefficient(set.opens[3], ui->modifiedOpenP_4, ui->infoOpenP_4, ui->buttonsOpenP_4, 1, editable);
-        setupCoefficient(set.shorts[3], ui->modifiedShortP_4, ui->infoShortP_4, ui->buttonsShortP_4, 1, editable);
-        setupCoefficient(set.loads[3], ui->modifiedLoadP_4, ui->infoLoadP_4, ui->buttonsLoadP_4, 1, editable);
-        ui->coeffBoxP_4->show();
-    } else {
-        ui->coeffBoxP_4->hide();
+    for(unsigned int port = set.ports + 1; port <= 4;port++) {
+        int index = port - 1;
+        coeffBox[index]->hide();
     }
 
     if(set.ports >= 2) {

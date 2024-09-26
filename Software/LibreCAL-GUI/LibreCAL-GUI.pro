@@ -17,6 +17,7 @@ SOURCES += \
         CustomWidgets/informationbox.cpp \
         CustomWidgets/siunitedit.cpp \
         CustomWidgets/touchstoneimport.cpp \
+        Util/usbinbuffer.cpp \
         Util/util.cpp \
         about.cpp \
         appwindow.cpp \
@@ -50,7 +51,7 @@ windows{
 
 REVISION = $$system(git rev-parse HEAD)
 DEFINES += GITHASH=\\"\"$$REVISION\\"\"
-DEFINES += FW_MAJOR=0 FW_MINOR=2 FW_PATCH=0 FW_SUFFIX=""#\\"\"-alpha.2\\"\"
+DEFINES += FW_MAJOR=0 FW_MINOR=2 FW_PATCH=1 FW_SUFFIX=""#\\"\"-alpha.2\\"\"
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -62,6 +63,7 @@ HEADERS += \
     CustomWidgets/siunitedit.h \
     CustomWidgets/touchstoneimport.h \
     Util/qpointervariant.h \
+    Util/usbinbuffer.h \
     Util/util.h \
     about.h \
     appwindow.h \

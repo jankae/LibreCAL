@@ -6,6 +6,7 @@
 
 #include <QString>
 #include <QObject>
+#include <thread>
 
 class CalDevice : public QObject
 {
@@ -59,18 +60,29 @@ public:
             bool modified;
         };
 
-        std::vector<Coefficient*> opens;
-        std::vector<Coefficient*> shorts;
-        std::vector<Coefficient*> loads;
-        std::vector<Coefficient*> throughs;
+        Coefficient *getOpen(int port);
+        Coefficient *getShort(int port);
+        Coefficient *getLoad(int port);
+        Coefficient *getThrough(int port1, int port2);
 
-        Coefficient *getThrough(int port1, int port2) const;
+        std::map<int, Coefficient*> opens;
+        std::map<int, Coefficient*> shorts;
+        std::map<int, Coefficient*> loads;
+        std::map<int, Coefficient*> throughs;
+
+        int portsToThroughIndex(int port1, int port2);
+        void portsFromThroughIndex(int &port1, int &port2, int index);
+
+        void createEmptyCoefficients();
+        bool isEmpty();
     };
 
     // Extracts the coefficients from the device. This is done with a dedicated thread.
     // Do not call any other functions until the update is finished. Process can be
     // monitored through the updateCoefficientsPercent and updateCoefficientsDone signals
-    void loadCoefficientSets(QStringList names = QStringList());
+    void loadCoefficientSets(QStringList names = QStringList(), QList<int> ports = {}, bool fast=true);
+
+    void abortCoefficientLoading();
     // Writes coefficient sets to the device. This will only write modified files to save
     // time. This is done with a dedicated thread.
     // Do not call any other functions until the update is finished. Process can be
@@ -92,12 +104,15 @@ signals:
     void disconnected();
 
 private:
-    void loadCoefficientSetsThread(QStringList names = QStringList());
+    void loadCoefficientSetsThreadSlow(QStringList names, QList<int> ports);
+    void loadCoefficientSetsThreadFast(QStringList names, QList<int> ports);
     void saveCoefficientSetsThread();
 
     USBDevice *usb;
     QString firmware;
     int numPorts;
+    std::thread *loadThread;
+    bool abortLoading;
 
     float firmware_major_minor;
 

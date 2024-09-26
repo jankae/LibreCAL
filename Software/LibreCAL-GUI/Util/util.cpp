@@ -88,3 +88,28 @@ unsigned long long Util::random(unsigned long long max)
     std::uniform_int_distribution<unsigned long long> distribute(0, max);
     return distribute(generator);
 }
+
+bool Util::firmwareEqualOrHigher(QString firmware, QString compare)
+{
+    QStringList f = firmware.split(".");
+    QStringList c = compare.split(".");
+    if(f.size() != 3 || c.size() != 3) {
+        return false;
+    }
+    if(f[0].toInt() < c[0].toInt()) {
+        return false;
+    } else if(f[0].toInt() > c[0].toInt()) {
+        return true;
+    }
+    if(f[1].toInt() < c[1].toInt()) {
+        return false;
+    } else if(f[1].toInt() > c[1].toInt()) {
+        return true;
+    }
+    if(f[2].toInt() < c[2].toInt()) {
+        return false;
+    } else {
+        return true;
+    }
+}
+

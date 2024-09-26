@@ -9,7 +9,6 @@
 #include <QLabel>
 #include <QtCharts/QLineSeries>
 #include <QTimer>
-#include <QProgressDialog>
 
 class AppWindow : public QMainWindow
 {
@@ -30,7 +29,7 @@ private slots:
     void saveCoefficients();
     void createCoefficient();
 
-    void showCoefficientSet(const CalDevice::CoefficientSet &set);
+    void showCoefficientSet(CalDevice::CoefficientSet &set);
 private:
     bool confirmUnsavedCoefficients();
     static constexpr double updateInterval = 1.0;
@@ -41,8 +40,6 @@ private:
 
     QActionGroup *deviceActionGroup;
     QLabel *status;
-
-    QProgressDialog *progress;
 
     std::array<QComboBox*, 4> portCBs;
 
