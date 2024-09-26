@@ -86,7 +86,7 @@ AppWindow::AppWindow() :
     });
     connect(ui->coeffList, &QListWidget::currentRowChanged, [=](int row){
         if(device) {
-            if(row < (int) device->getCoefficientSets().size()) {
+            if(row >= 0 && row < (int) device->getCoefficientSets().size()) {
                 showCoefficientSet(device->getCoefficientSets()[row]);
             }
         }
@@ -361,11 +361,11 @@ void AppWindow::loadCoefficients()
     d->setWindowModality(Qt::ApplicationModal);
     d->setMinimumDuration(0);
     d->setCancelButton(nullptr);
-    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue);
+    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue, Qt::DirectConnection);
     connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
         d->accept();
         delete d;
-    });
+    }, Qt::QueuedConnection);
     connect(device, &CalDevice::updateCoefficientsDone, this, [=](){
         ui->saveCoefficients->setEnabled(false);
         backgroundOperations = false;
@@ -397,11 +397,11 @@ void AppWindow::saveCoefficients()
     d->setWindowModality(Qt::ApplicationModal);
     d->setMinimumDuration(0);
     d->setCancelButton(nullptr);
-    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue);
+    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue, Qt::DirectConnection);
     connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
         d->accept();
         delete d;
-    });
+    }, Qt::QueuedConnection);
     connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
         ui->saveCoefficients->setEnabled(device->hasModifiedCoefficients());
         backgroundOperations = false;
