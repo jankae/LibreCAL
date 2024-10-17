@@ -33,7 +33,13 @@ LIBS += -lusb-1.0
 unix:LIBS += -L/usr/lib/
 win32:LIBS += -L"$$_PRO_FILE_PWD_" # Github actions placed libusb here
 osx:INCPATH += /usr/local/include
-osx:LIBS += $(shell pkg-config --libs libusb-1.0)
+osx:LIBS += -L/usr/local/lib
+
+mac{
+	QT_CONFIG -= no-pkg-config
+	CONFIG += link_pkgconfig
+	PKGCONFIG += libusb-1.0
+}
 
 # libusb-1.0.23 shall be extracted in same directory as this file
 windows{
