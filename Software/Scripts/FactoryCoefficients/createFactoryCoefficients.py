@@ -273,7 +273,7 @@ if args.directory:
                     + " " + str(m["S11"][i][1].real) + " " + str(m["S11"][i][1].imag)
                     + " " + str(m["S21"][i][1].real) + " " + str(m["S21"][i][1].imag)
                     + " " + str(m["S12"][i][1].real) + " " + str(m["S12"][i][1].imag)
-                    + " " + str(m["S22"][i][1].real) + " " + str(m["S22"][i][1].imag))
+                    + " " + str(m["S22"][i][1].real) + " " + str(m["S22"][i][1].imag) + "\n")
     # zip and delete uncompressed
     shutil.make_archive(args.directory + "/" + libreCAL_serial, 'zip', args.directory + "/" + libreCAL_serial)
     shutil.rmtree(args.directory + "/" + libreCAL_serial)
