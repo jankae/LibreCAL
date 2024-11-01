@@ -1,6 +1,7 @@
 import serial
 import serial.tools.list_ports
 from enum import Enum
+import datetime
 
 class libreCAL:
     def __init__(self, serialnum = ''):
@@ -77,6 +78,33 @@ class libreCAL:
 
     def setDateTimeUTC(self, date_time_utc):
         return self.SCPICommand(":DATE_TIME "+ date_time_utc)
+        
+    def setDateTimeNow(self):
+        dt = datetime.datetime.now()
+        # get current time in UTC
+        now_utc = datetime.datetime.utcnow()
+
+        # get UTC offset
+        utc_offset = dt - now_utc
+
+        # calculate offset in hours and minutes
+        offset_seconds = int(utc_offset.total_seconds())
+        offset_hours = abs(offset_seconds // 3600)
+        offset_minutes = abs((offset_seconds // 60) % 60)
+
+        if offset_seconds < 0:
+            sign = "-"
+        else:
+            sign = "+"
+
+        offset_str = f"{sign}{offset_hours:02d}:{offset_minutes:02d}"
+
+        # format datetime as string
+        dt_str = dt.strftime("%Y/%m/%d %H:%M:%S")
+
+        # add UTC offset to string
+        dt_str_with_offset = f"{dt_str} UTC{offset_str}"
+        self.setDateTimeUTC(dr_str_with_offset)
 
     def SCPICommand(self, cmd: str) -> str:
         self.ser.write((cmd+"\r\n").encode())

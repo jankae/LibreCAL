@@ -62,6 +62,22 @@ libreCAL_serial = idn[2]
 libreCAL_firmware = idn[3]
 print("Detected LibreCAL device has serial number "+libreCAL_serial)
 
+# Set the time on the LibreCAL
+dt = datetime.now()
+now_utc = datetime.utcnow()
+utc_offset = dt - now_utc
+offset_seconds = int(utc_offset.total_seconds())
+offset_hours = abs(offset_seconds // 3600)
+offset_minutes = abs((offset_seconds // 60) % 60)
+if offset_seconds < 0:
+    sign = "-"
+else:
+    sign = "+"
+offset_str = f"{sign}{offset_hours:02d}:{offset_minutes:02d}"
+dt_str = dt.strftime("%Y/%m/%d %H:%M:%S")
+dt_str_with_offset = f"{dt_str} UTC{offset_str}"
+SCPICommand(ser, ":DATE_TIME "+dt_str_with_offset)
+
 if not VNA.checkIfReady():
     exit("VNA is not ready.")
     
@@ -261,6 +277,7 @@ if args.directory:
         f.write("# GHz S RI R 50.0\n")
         for data in rCoeffs[r]:
             f.write(str(data[0] / 1000000000.0) + " " + str(data[1].real) + " " + str(data[1].imag) + "\n")
+        f.close()
     for t in tCoeffs:
         f = open(args.directory + "/" + libreCAL_serial + "/" + t + ".s2p", "w")
         f.write("! Created by factory calibration script\n")
@@ -274,6 +291,7 @@ if args.directory:
                     + " " + str(m["S21"][i][1].real) + " " + str(m["S21"][i][1].imag)
                     + " " + str(m["S12"][i][1].real) + " " + str(m["S12"][i][1].imag)
                     + " " + str(m["S22"][i][1].real) + " " + str(m["S22"][i][1].imag) + "\n")
+        f.close()
     # zip and delete uncompressed
     shutil.make_archive(args.directory + "/" + libreCAL_serial, 'zip', args.directory + "/" + libreCAL_serial)
     shutil.rmtree(args.directory + "/" + libreCAL_serial)
