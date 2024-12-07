@@ -32,7 +32,7 @@ target_include_directories(FreeRTOS PUBLIC
 add_definitions(
 -DFW_MAJOR=0
 -DFW_MINOR=2
--DFW_PATCH=1
+-DFW_PATCH=2
 )
 
 add_executable(LibreCAL 
