@@ -9,7 +9,7 @@ static char serial[13];
 static const char base64_chars[] =
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
              "abcdefghijklmnopqrstuvwxyz"
-             "0123456789+/";
+             "0123456789+_";
 
 static void encode_base64(char *dest, uint8_t *data) {
 	dest[0] = base64_chars[data[0] >> 2];
