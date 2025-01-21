@@ -9,6 +9,7 @@ import cmath
 from datetime import datetime
 import os
 import shutil
+from ftplib import FTP
 #import VNA
 #from VNA_Example_LibreVNA import VNA
 from VNA_Example_SNA5000A import VNA
@@ -27,8 +28,12 @@ parser = argparse.ArgumentParser(description = "Helps with creation of factory c
 parser.add_argument('-f', '--flash', help='Flash the firmware file first', metavar="firmware")
 parser.add_argument('-l', '--limits', help='Enables limit checking on coefficients with limits from json file', metavar="json_limit_file")
 parser.add_argument('-d', '--directory', help='Save measured touchstone files to this path', metavar="touchstone_path")
+parser.add_argument('--ftp', help='Save measured touchstone files to a FTP server (requires --directory)', metavar="ftp_json_file")
 
 args = parser.parse_args()
+
+if args.ftp and not args.directory:
+    raise Exception("ftp option is only valid when directory option is also specified")
 
 if args.flash is not None:
     # Check if picotool is available
@@ -385,6 +390,28 @@ if args.limits:
                         # this limit failed
                         raise Exception("Limit check failed for type "+str(i)+" in measurement "+str(key)+" at frequency "+str(sample[0])+": limit is "+str(limval)+", measured value is "+str(yval))
 
+# Limits are valid, upload to FTP server at this point
+if args.ftp:
+    print("Uploading to FTP server...")
+    jftp = None
+    try:
+        f = open(args.ftp)
+        jftp = json.load(f)
+    except Exception as e:
+        raise Exception("Failed to parse FTP config file: "+str(e))
+        
+    try:
+        ftp = FTP(host=jftp["host"], user=jftp["user"], passwd=jftp["password"])
+        # Open the previously created zip file
+        zipname = libreCAL_serial + '.zip'
+        zippath = args.directory + "/" + zipname
+        zipfile = open(zippath, 'rb')
+        ftp.storbinary("STOR "+zipname, zipfile)
+        zipfile.close()
+        ftp.quit()
+    except Exception as e:
+        raise Exception("FTP transfer failed: "+str(e))
+        
 # Enable writing of the factory partition
 SCPICommand(ser, ":FACT:ENABLEWRITE I_AM_SURE")
 
