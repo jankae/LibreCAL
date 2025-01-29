@@ -1,6 +1,6 @@
 CONFIG += c++17
 
-QT += core gui widgets charts svg
+QT += core gui widgets charts svg network
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -17,6 +17,9 @@ SOURCES += \
         CustomWidgets/informationbox.cpp \
         CustomWidgets/siunitedit.cpp \
         CustomWidgets/touchstoneimport.cpp \
+        Util/QMicroz/miniz.c \
+        Util/QMicroz/qmicroz.cpp \
+        Util/QMicroz/tools.cpp \
         Util/usbinbuffer.cpp \
         Util/util.cpp \
         about.cpp \
@@ -68,6 +71,9 @@ HEADERS += \
     CustomWidgets/informationbox.h \
     CustomWidgets/siunitedit.h \
     CustomWidgets/touchstoneimport.h \
+    Util/QMicroz/miniz.h \
+    Util/QMicroz/qmicroz.h \
+    Util/QMicroz/tools.h \
     Util/qpointervariant.h \
     Util/usbinbuffer.h \
     Util/util.h \
@@ -84,6 +90,7 @@ HEADERS += \
 FORMS += \
     CustomWidgets/touchstoneimport.ui \
     aboutdialog.ui \
+    factoryUpdateDialog.ui \
     main.ui \
     touchstoneimportdialog.ui
 

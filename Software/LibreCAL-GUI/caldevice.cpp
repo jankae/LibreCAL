@@ -1,9 +1,15 @@
 #include "caldevice.h"
 
 #include "Util/util.h"
+#include "ui_factoryUpdateDialog.h"
+#include "Util/QMicroz/qmicroz.h"
 
 #include <QDebug>
 #include <QDateTime>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QUrl>
+#include <QFile>
 
 using namespace std;
 
@@ -35,6 +41,7 @@ CalDevice::CalDevice(QString serial) :
     usb(new USBDevice(serial))
 {
     loadThread = nullptr;
+    transferActive = false;
 
     // Check device identification
     auto id = usb->Query("*IDN?");
@@ -66,6 +73,9 @@ CalDevice::CalDevice(QString serial) :
         numPorts = 0;
     }
     connect(usb, &USBDevice::communicationFailure, this, &CalDevice::disconnected);
+    connect(this, &CalDevice::updateCoefficientsDone, this, [=]() {
+        transferActive = false;
+    });
 }
 
 CalDevice::~CalDevice()
@@ -186,6 +196,7 @@ void CalDevice::loadCoefficientSets(QStringList names, QList<int> ports, bool fa
     }
 
     abortLoading = false;
+    transferActive = true;
     if(fast && Util::firmwareEqualOrHigher(firmware, "0.2.1")) {
         loadThread = new std::thread(&CalDevice::loadCoefficientSetsThreadFast, this, names, ports);
     } else {
@@ -199,6 +210,7 @@ void CalDevice::abortCoefficientLoading()
         abortLoading = true;
         loadThread->join();
         loadThread = nullptr;
+        transferActive = false;
     }
 }
 
@@ -208,6 +220,7 @@ void CalDevice::saveCoefficientSets()
         // nothing to do, already done
         emit updateCoefficientsDone(true);
     } else {
+        transferActive = true;
         new std::thread(&CalDevice::saveCoefficientSetsThread, this);
     }
 }
@@ -598,6 +611,130 @@ bool CalDevice::hasModifiedCoefficients()
         }
     }
     return false;
+}
+
+void CalDevice::factoryUpdateDialog()
+{
+    auto d = new QDialog();
+    auto ui = new Ui::FactoryUpdateDialog();
+    ui->setupUi(d);
+
+    ui->progress->setValue(0);
+    connect(this, &CalDevice::updateCoefficientsPercent, ui->progress, &QProgressBar::setValue);
+
+    auto addStatus = [=](QString status) {
+        ui->msg->appendPlainText(status);
+    };
+    auto abortWithError = [=](QString error) {
+        // timer.stop();
+
+        QTextCharFormat tf;
+        tf = ui->msg->currentCharFormat();
+        tf.setForeground(QBrush(Qt::red));
+        ui->msg->setCurrentCharFormat(tf);
+        ui->msg->appendPlainText(error);
+        tf.setForeground(QBrush(Qt::black));
+        ui->msg->setCurrentCharFormat(tf);
+        ui->startUpdate->setEnabled(true);
+    };
+
+    connect(this, &CalDevice::updateCoefficientsDone, this, [=](bool success) {
+        // transfer complete
+
+        // pass on communication failures again
+        connect(usb, &USBDevice::communicationFailure, this, &CalDevice::disconnected);
+        if(success) {
+            addStatus("...done");
+            ui->startUpdate->setEnabled(true);
+        } else {
+            abortWithError("Transferring coefficients to LibreCAL failed");
+        }
+        QFile rmfile(serial()+".zip");
+        rmfile.remove();
+    });
+
+    auto netw = new QNetworkAccessManager();
+    connect(netw, &QNetworkAccessManager::finished, this, [=](QNetworkReply *reply) {
+        if(reply->error() == QNetworkReply::NoError) {
+            // success
+            addStatus("Factory coefficients downloaded...");
+            QFile file(serial()+".zip");
+            if(!file.open(QIODevice::WriteOnly)) {
+                abortWithError("Failed to create folder for zipped data");
+                return;
+            }
+            file.write(reply->readAll());
+            file.flush();
+            file.close();
+            addStatus("Unzipping file...");
+            QMicroz::extract(serial()+".zip");
+            // create coefficient set
+            auto set = CoefficientSet();
+            set.name = "FACTORY";
+            set.ports = 4;
+            set.createEmptyCoefficients();
+            struct Coeff {
+                QString description;
+                QString filename;
+                CoefficientSet::Coefficient *coeff;
+            };
+            std::array<Coeff, 18> coeffs = {{
+                {.description = "Port 1 open", .filename = "P1_OPEN.s1p", .coeff = set.opens[1]},
+                {.description = "Port 1 short", .filename = "P1_SHORT.s1p", .coeff = set.shorts[1]},
+                {.description = "Port 1 load", .filename = "P1_LOAD.s1p", .coeff = set.loads[1]},
+                {.description = "Port 2 open", .filename = "P2_OPEN.s1p", .coeff = set.opens[2]},
+                {.description = "Port 2 short", .filename = "P2_SHORT.s1p", .coeff = set.shorts[2]},
+                {.description = "Port 2 load", .filename = "P2_LOAD.s1p", .coeff = set.loads[2]},
+                {.description = "Port 3 open", .filename = "P3_OPEN.s1p", .coeff = set.opens[3]},
+                {.description = "Port 3 short", .filename = "P3_SHORT.s1p", .coeff = set.shorts[3]},
+                {.description = "Port 3 load", .filename = "P3_LOAD.s1p", .coeff = set.loads[3]},
+                {.description = "Port 4 open", .filename = "P4_OPEN.s1p", .coeff = set.opens[4]},
+                {.description = "Port 4 short", .filename = "P4_SHORT.s1p", .coeff = set.shorts[4]},
+                {.description = "Port 4 load", .filename = "P4_LOAD.s1p", .coeff = set.loads[4]},
+                {.description = "Port 1 to 2 through", .filename = "P12_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(1,2)]},
+                {.description = "Port 1 to 3 through", .filename = "P13_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(1,3)]},
+                {.description = "Port 1 to 4 through", .filename = "P14_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(1,4)]},
+                {.description = "Port 2 to 3 through", .filename = "P23_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(2,3)]},
+                {.description = "Port 2 to 4 through", .filename = "P24_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(2,4)]},
+                {.description = "Port 3 to 4 through", .filename = "P34_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(3,4)]},
+            }};
+            for(const Coeff &c : coeffs) {
+                addStatus("Loading coefficient ("+c.description+")...");
+                try {
+                    auto t = Touchstone::fromFile(c.filename.toStdString());
+                    c.coeff->t = t;
+                    c.coeff->modified = true;
+                    QFile rmfile(c.filename);
+                    rmfile.remove();
+                } catch (const std::exception &e) {
+                    abortWithError("Failed: "+QString::fromStdString(e.what()));
+                    return;
+                }
+            }
+            // add set to device
+            coeffSets.push_back(set);
+            // enable factory writing on device
+            addStatus("Enable factory coefficient writes...");
+            usb->Cmd(":FACT:ENABLEWRITE I_AM_SURE");
+            // start the transfer
+            addStatus("Transferring new coefficients to LibreCAL...");
+            // potential communication failures should not be passed on during this
+            disconnect(usb, &USBDevice::communicationFailure, this, &CalDevice::disconnected);
+            saveCoefficientSets();
+        } else {
+            abortWithError("No factory coefficients found. Check internet access and serial number");
+        }
+    });
+
+    connect(ui->startUpdate, &QPushButton::clicked, this, [=](){
+        ui->msg->clear();
+        ui->startUpdate->setEnabled(false);
+        addStatus("Looking up factory coefficient data...");
+        QUrl url("https://librecal.kaeberich.com/calibrationdata/"+serial()+".zip");
+        netw->get(QNetworkRequest(url));
+    });
+
+    d->exec();
 }
 
 CalDevice::CoefficientSet::Coefficient *CalDevice::CoefficientSet::getOpen(int port)

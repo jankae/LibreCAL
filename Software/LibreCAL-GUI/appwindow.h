@@ -46,8 +46,6 @@ private:
     QTimer *updateTimer;
     // temperature chart widgets
     QLineSeries *tempSeries, *heaterSeries;
-
-    bool backgroundOperations;
 };
 
 #endif // APPWINDOW_H
