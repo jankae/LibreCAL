@@ -275,8 +275,7 @@
                <string>New</string>
               </property>
               <property name="icon">
-               <iconset theme="document-new">
-                <normaloff>.</normaloff>.</iconset>
+               <iconset theme="document-new"/>
               </property>
              </widget>
             </item>
@@ -289,8 +288,7 @@
                <string>Save To Device</string>
               </property>
               <property name="icon">
-               <iconset theme="document-save">
-                <normaloff>.</normaloff>.</iconset>
+               <iconset theme="document-save"/>
               </property>
              </widget>
             </item>
@@ -303,8 +301,20 @@
                <string>Load From Device</string>
               </property>
               <property name="icon">
-               <iconset theme="view-refresh">
-                <normaloff>.</normaloff>.</iconset>
+               <iconset theme="view-refresh"/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="updateFactory">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="text">
+               <string>Update Factory Coefficients</string>
+              </property>
+              <property name="icon">
+               <iconset theme="system-software-update"/>
               </property>
              </widget>
             </item>
@@ -1198,8 +1208,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionUpdate_Device_List">
    <property name="icon">
-    <iconset theme="view-refresh">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset theme="view-refresh"/>
    </property>
    <property name="text">
     <string>Update Device List</string>
@@ -1251,7 +1260,6 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="resources/frontpanel.qrc"/>
   <include location="resources/frontpanel.qrc"/>
   <include location="resources/frontpanel.qrc"/>
  </resources>

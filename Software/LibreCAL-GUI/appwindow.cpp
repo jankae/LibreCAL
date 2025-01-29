@@ -17,8 +17,7 @@ using namespace std;
 
 AppWindow::AppWindow() :
     device(nullptr),
-    updateTimer(nullptr),
-    backgroundOperations(false)
+    updateTimer(nullptr)
 {
     ui = new Ui::MainWindow;
     ui->setupUi(this);
@@ -94,6 +93,15 @@ AppWindow::AppWindow() :
     connect(ui->loadCoefficients, &QPushButton::clicked, this, &AppWindow::loadCoefficients);
     connect(ui->saveCoefficients, &QPushButton::clicked, this, &AppWindow::saveCoefficients);
     connect(ui->newCoefficient, &QPushButton::clicked, this, &AppWindow::createCoefficient);
+    connect(ui->updateFactory, &QPushButton::clicked, this, [=](){
+        if(device) {
+            if(device->hasModifiedCoefficients()) {
+                InformationBox::ShowError("Unsaved coefficients", "Some coefficients have been modified. They must be saved to the device before the factory coefficients can be updated");
+            } else {
+                device->factoryUpdateDialog();
+            }
+        }
+    });
     if(UpdateDeviceList()) {
         ConnectToDevice();
     }
@@ -157,6 +165,7 @@ bool AppWindow::ConnectToDevice(QString serial)
         ui->actionDisconnect->setEnabled(true);
         ui->actionEnter_Bootloader_Mode->setEnabled(true);
         ui->loadCoefficients->setEnabled(true);
+        ui->updateFactory->setEnabled(true);
         ui->newCoefficient->setEnabled(true);
 
         // this needs to be a queued connection because connection problems are only discovered during communication.
@@ -230,8 +239,6 @@ void AppWindow::DisconnectDevice()
     delete device;
     device = nullptr;
 
-    backgroundOperations = false;
-
     ui->portInvalidLabel->setVisible(false);
 
     for(auto a : deviceActionGroup->actions()) {
@@ -243,6 +250,7 @@ void AppWindow::DisconnectDevice()
     ui->actionDisconnect->setEnabled(false);
     ui->actionEnter_Bootloader_Mode->setEnabled(false);
     ui->loadCoefficients->setEnabled(false);
+    ui->updateFactory->setEnabled(false);
     ui->newCoefficient->setEnabled(false);
     tempSeries->clear();
     heaterSeries->clear();
@@ -278,7 +286,7 @@ void AppWindow::EnterBootloader()
 
 void AppWindow::updateStatus()
 {
-    if(device && !backgroundOperations) {
+    if(device && !device->coefficientTransferActive()) {
         // update port status
         for(unsigned int i=0;i<device->getNumPorts();i++) {
             portCBs[i]->blockSignals(true);
@@ -345,7 +353,7 @@ void AppWindow::updateStatus()
 
 void AppWindow::loadCoefficients()
 {
-    if(!device || backgroundOperations) {
+    if(!device || device->coefficientTransferActive()) {
         return;
     }
     if(device->hasModifiedCoefficients()) {
@@ -354,7 +362,6 @@ void AppWindow::loadCoefficients()
             return;
         }
     }
-    backgroundOperations = true;
     auto d = new QProgressDialog();
     d->setLabelText("Loading calibration coefficients from device...");
     d->setWindowTitle("Updating");
@@ -368,7 +375,6 @@ void AppWindow::loadCoefficients()
     }, Qt::QueuedConnection);
     connect(device, &CalDevice::updateCoefficientsDone, this, [=](){
         ui->saveCoefficients->setEnabled(false);
-        backgroundOperations = false;
 
         ui->coeffList->clear();
         for(auto set : device->getCoefficientSets()) {
@@ -390,7 +396,6 @@ void AppWindow::saveCoefficients()
         ui->saveCoefficients->setEnabled(false);
         return;
     }
-    backgroundOperations = true;
     auto d = new QProgressDialog();
     d->setLabelText("Saving calibration coefficients to device...");
     d->setWindowTitle("Updating");
@@ -404,7 +409,6 @@ void AppWindow::saveCoefficients()
     }, Qt::QueuedConnection);
     connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
         ui->saveCoefficients->setEnabled(device->hasModifiedCoefficients());
-        backgroundOperations = false;
 
         ui->coeffList->clear();
         for(auto set : device->getCoefficientSets()) {
