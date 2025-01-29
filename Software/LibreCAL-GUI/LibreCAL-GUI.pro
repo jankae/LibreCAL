@@ -47,6 +47,7 @@ mac{
 # libusb-1.0.23 shall be extracted in same directory as this file
 windows{
     INCLUDEPATH += ./libusb-1.0.23/include
+    DEFINES += QMICROZ_LIBRARY
     contains(QMAKE_CC, gcc){
         # MingW64 libusb static lib
         LIBS += -L"$$_PRO_FILE_PWD_"/libusb-1.0.23/MinGW64/static
