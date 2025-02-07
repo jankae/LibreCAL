@@ -3,6 +3,7 @@
 #include "Util/util.h"
 #include "ui_factoryUpdateDialog.h"
 #include "Util/QMicroz/qmicroz.h"
+#include "CustomWidgets/informationbox.h"
 
 #include <QDebug>
 #include <QDateTime>
@@ -12,6 +13,40 @@
 #include <QFile>
 
 using namespace std;
+
+static const QStringList factoryProblemSerials = {
+    "5mNkR0s+NzMA", "5mNkR0s2DTcA", "5mNkR0s2gzcA", "5mNkR0s2HTMA", "5mNkR0s2STMA",
+    "5mNkR0s3pzcA", "5mNkR0s8ijcA", "5mNkR0s9jjMA", "5mNkR0sGdCsA", "5mNkR0slqjEA",
+    "5mNkR0srVDMA", "5mNkR0sssjcA", "5mNkR0suHDcA", "5mNkR0svOTcA", "5mNkR0svrzcA",
+    "5mNkR0swkTcA", "5mNkR0s_JzMA", "5mNkR0t+HTUA", "5mNkR0t+JzcA", "5mNkR0t+mjUA",
+    "5mNkR0t0IzIA", "5mNkR0t0TjAA", "5mNkR0t1bTAA", "5mNkR0t1cjUA", "5mNkR0t1HDAA",
+    "5mNkR0t2oTIA", "5mNkR0t2rTAA", "5mNkR0t2uyoA", "5mNkR0t3HC0A", "5mNkR0t3HjIA",
+    "5mNkR0t3MS0A", "5mNkR0t3vC0A", "5mNkR0t3VzUA", "5mNkR0t4aS0A", "5mNkR0t4nDUA",
+    "5mNkR0t5fDcA", "5mNkR0t6cDcA", "5mNkR0t9kzcA", "5mNkR0t9OTcA", "5mNkR0t9UTUA",
+    "5mNkR0tbPTUA", "5mNkR0tbqTUA", "5mNkR0tcHzUA", "5mNkR0tctDUA", "5mNkR0tcwjcA",
+    "5mNkR0tdrDUA", "5mNkR0telDUA", "5mNkR0tgaTkA", "5mNkR0tgRzcA", "5mNkR0tgWTkA",
+    "5mNkR0tikTUA", "5mNkR0tivDcA", "5mNkR0tIXS8A", "5mNkR0tLOTkA", "5mNkR0tqtTkA",
+    "5mNkR0tshS0A", "5mNkR0tsnioA", "5mNkR0tSOzQA", "5mNkR0tSqjQA", "5mNkR0tThjUA",
+    "5mNkR0tTxTUA", "5mNkR0tuVS0A", "5mNkR0tvGC0A", "5mNkR0tvYyoA", "5mNkR0tWljIA",
+    "5mNkR0tXMDIA", "5mNkR0t_UzUA", "5mNkR0uBiC0A", "5mNkR0uBNS0A", "5mNkR0uCPTYA",
+    "5mNkR0uCrTYA", "5mNkR0uDgDIA", "5mNkR0uFjTUA", "5mNkR0uFTjUA", "5mNkR0ugbCoA",
+    "5mNkR0uGIy0A", "5mNkR0uGkzUA", "5mNkR0uGpi0A", "5mNkR0uGRC0A", "5mNkR0uGrjUA",
+    "5mNkR0uGSzUA", "5mNkR0uGVCoA", "5mNkR0uHIyoA", "5mNkR0uHJjUA", "5mNkR0uHmC0A",
+    "5mNkR0uHpzUA", "5mNkR0uHTzUA", "5mNkR0uIdzUA", "5mNkR0uIPDYA", "5mNkR0uIpy0A",
+    "5mNkR0uIqioA", "5mNkR0uISioA", "5mNkR0uITjUA", "5mNkR0uIVi0A", "5mNkR0uJejYA",
+    "5mNkR0uJSDUA", "5mNkR0uKNDYA", "5mNkR0uKnzYA", "5mNkR0uLfTIA", "5mNkR0uLPjIA",
+    "5mNkR0uMbTIA", "5mNkR0uNpy0A", "5mNkR0uOTzAA", "5mNkR0uPhTAA", "5mOUNss0EysA",
+    "5mOUNss1XisA", "5mOUNsseICwA", "5mOUNssiNiwA", "5mOUNssnISwA", "5mOUNssnIyUA",
+    "5mOUNssrmCQA", "5mOUNssRmicA", "5mOUNssUlycA", "5mOUNssURCcA", "5mOUNssvjyQA",
+    "5mOUNssvNSUA", "5mOUNssVXSwA", "5mOUNsszOiQA", "5mOUNst9liQA", "5mOUNstAhSsA",
+    "5mOUNstFSysA", "5mOUNstFwCsA", "5mOUNstGmCUA", "5mOUNstHaCUA", "5mOUNstJkScA",
+    "5mOUNstOxysA", "5mOUNstsYiIA", "5mOUNstYRi0A", "5mOUNsuHqioA", "5mOUNsuhVSgA",
+    "5mOUNsuJLSoA", "5mOUNsuJrioA", "5mOUNsuVdCcA", "5mNkR0s1sjMA", "5mNkR0s3MjMA",
+    "5mNkR0s3XDcA", "5mNkR0slWjEA", "5mNkR0sxkC8A", "5mNkR0t+bzcA", "5mNkR0t1azIA",
+    "5mNkR0taKzUA", "5mNkR0tbbTcA", "5mNkR0tgGTkA", "5mNkR0thGDcA", "5mNkR0thiTcA",
+    "5mNkR0thKDcA", "5mNkR0tRYzQA", "5mNkR0tWBTIA", "5mNkR0uCpDYA", "5mNkR0uDXDYA",
+    "5mNkR0uJUDUA", "5mNkR0uLfjYA", "5mNkR0uMfjIA",
+};
 
 static QString getLocalDateTimeWithUtcOffset()
 {
@@ -76,6 +111,43 @@ CalDevice::CalDevice(QString serial) :
     connect(this, &CalDevice::updateCoefficientsDone, this, [=]() {
         transferActive = false;
     });
+
+    // Check if this device was affected by the factory calibration problem
+    if(factoryProblemSerials.contains(usb->serial())) {
+        // it was, check if it still has bad factory coefficients
+
+        // this just grabs the S12 coefficient for 1 GHz as a quick way to check
+        QString ret = usb->Query(":COEFF:GET? FACTORY P12_THROUGH 451");
+        auto parts = ret.split(",");
+        if (parts.size() == 9 && parts[0].toDouble() == 1.0) {
+            // got the correct data, check S12 phase
+            auto S12 = std::complex(parts[3].toDouble(), parts[4].toDouble());
+            auto constexpr expectedS12Delay = 498e-12;
+            auto phase = -arg(S12);
+            if(phase < 0) {
+                phase += 2*M_PI;
+            }
+            double S12Delay = phase / (2*M_PI) / 1e9;
+            auto error = S12Delay - expectedS12Delay;
+            QList<double> possibleErrors({0, -94.7e-12, 34.8e-12});
+            double tolerance = 17e-12;
+            for(auto e : possibleErrors) {
+                if(abs(error-e) <= tolerance) {
+                    // this is the error of the LibreCAL
+                    if(e != 0) {
+                        // still has the wrong coefficients
+                        if(InformationBox::AskQuestion("Update Factory Coefficients?", "Your LibreCAL with serial number "+usb->serial()+" is affected by "
+                                                        "a mistake in the factory calibration and its factory coefficients (specifically the phase of all "
+                                                        "THRU standard definitions) are slightly wrong. The mistake has been corrected and updated factory "
+                                                        "coefficients are available. Do you want to update the factory coefficients now?", false)) {
+                            factoryUpdateDialog();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
 }
 
 CalDevice::~CalDevice()
@@ -536,18 +608,33 @@ void CalDevice::saveCoefficientSetsThread()
         for(int i=1;i<=numPorts;i++) {
             if(set.opens.count(i)) {
                 success &= createCoefficient(set.name, "P"+QString::number(i)+"_OPEN", set.opens[i]->t, set.opens[i]->modified);
+                if(!success) {
+                    break;
+                }
             }
             if(set.shorts.count(i)) {
                 success &= createCoefficient(set.name, "P"+QString::number(i)+"_SHORT", set.shorts[i]->t, set.shorts[i]->modified);
+                if(!success) {
+                    break;
+                }
             }
             if(set.loads.count(i)) {
                 success &= createCoefficient(set.name, "P"+QString::number(i)+"_LOAD", set.loads[i]->t, set.loads[i]->modified);
+                if(!success) {
+                    break;
+                }
             }
             for(int j=i+1;j<=numPorts;j++) {
                 auto c = set.getThrough(i,j);
                 if(c) {
                     success &= createCoefficient(set.name, "P"+QString::number(i)+QString::number(j)+"_THROUGH", c->t, c->modified);
+                    if(!success) {
+                        break;
+                    }
                 }
+            }
+            if(!success) {
+                break;
             }
         }
     }
@@ -626,7 +713,7 @@ void CalDevice::factoryUpdateDialog()
         ui->msg->appendPlainText(status);
     };
     auto abortWithError = [=](QString error) {
-        // timer.stop();
+        ui->progress->setValue(0);
 
         QTextCharFormat tf;
         tf = ui->msg->currentCharFormat();
@@ -644,6 +731,7 @@ void CalDevice::factoryUpdateDialog()
         // pass on communication failures again
         connect(usb, &USBDevice::communicationFailure, this, &CalDevice::disconnected);
         if(success) {
+            ui->progress->setValue(100);
             addStatus("...done");
             ui->startUpdate->setEnabled(true);
         } else {
@@ -711,11 +799,17 @@ void CalDevice::factoryUpdateDialog()
                     return;
                 }
             }
+            // delete previous factory set if available
+            if(coeffSets.size() > 0 && coeffSets[0].name == "FACTORY") {
+                coeffSets.erase(coeffSets.begin());
+            }
             // add set to device
             coeffSets.push_back(set);
             // enable factory writing on device
             addStatus("Enable factory coefficient writes...");
             usb->Cmd(":FACT:ENABLEWRITE I_AM_SURE");
+            // delete all factory coefficients (this formats the factory partition)
+            usb->Cmd(":FACT:DEL");
             // start the transfer
             addStatus("Transferring new coefficients to LibreCAL...");
             // potential communication failures should not be passed on during this
