@@ -44,7 +44,7 @@ jobs:
       - name: Upload artifact
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: LibreCAL-GUI-Ubuntu-${{env.LIBRECAL_VERSION}}
           path: Software/LibreCAL-GUI/LibreCAL-GUI
@@ -104,7 +104,7 @@ jobs:
         shell: cmd
         
       - name: Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
         with:
@@ -149,7 +149,7 @@ jobs:
       - name: Upload artifact
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: LibreCAL-GUI-OSX-${{env.LIBRECAL_VERSION}}
           path: Software/LibreCAL-GUI/LibreCAL-GUI.zip
@@ -193,7 +193,7 @@ jobs:
         shell: bash
 
       - name: Upload
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         env: 
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
         with:
