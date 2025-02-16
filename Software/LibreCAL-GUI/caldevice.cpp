@@ -11,6 +11,7 @@
 #include <QNetworkReply>
 #include <QUrl>
 #include <QFile>
+#include <QFileDialog>
 
 using namespace std;
 
@@ -709,6 +710,37 @@ void CalDevice::factoryUpdateDialog()
     ui->progress->setValue(0);
     connect(this, &CalDevice::updateCoefficientsPercent, ui->progress, &QProgressBar::setValue);
 
+    auto updateEnableState = [=]() {
+        ui->updateFile->setEnabled(true);
+        ui->updateServer->setEnabled(true);
+        if(ui->updateServer->isChecked()) {
+            // can start
+            ui->startUpdate->setEnabled(true);
+            // file selection disabled
+            ui->file->setEnabled(false);
+            ui->browse->setEnabled(false);
+        } else {
+            // file selection enabled
+            ui->file->setEnabled(true);
+            ui->browse->setEnabled(true);
+            // start possible if some file is selected
+            ui->startUpdate->setEnabled(!ui->file->text().isEmpty());
+        }
+    };
+
+    connect(ui->updateServer, &QRadioButton::toggled, this, updateEnableState);
+    connect(ui->file, &QLineEdit::textChanged, this, updateEnableState);
+    connect(ui->browse, &QPushButton::clicked, this, [=](){
+        auto filename = QFileDialog::getOpenFileName(nullptr, "Select factory coefficient file", "", "Zip files (*.zip)", nullptr, QFileDialog::DontUseNativeDialog);
+        if(filename.isEmpty()) {
+            // aborted selection
+            return;
+        } else {
+            ui->file->setText(filename);
+            updateEnableState();
+        }
+    });
+
     auto addStatus = [=](QString status) {
         ui->msg->appendPlainText(status);
     };
@@ -722,7 +754,8 @@ void CalDevice::factoryUpdateDialog()
         ui->msg->appendPlainText(error);
         tf.setForeground(QBrush(Qt::black));
         ui->msg->setCurrentCharFormat(tf);
-        ui->startUpdate->setEnabled(true);
+
+        updateEnableState();
     };
 
     connect(this, &CalDevice::updateCoefficientsDone, this, [=](bool success) {
@@ -733,13 +766,78 @@ void CalDevice::factoryUpdateDialog()
         if(success) {
             ui->progress->setValue(100);
             addStatus("...done");
-            ui->startUpdate->setEnabled(true);
+            updateEnableState();
         } else {
             abortWithError("Transferring coefficients to LibreCAL failed");
         }
-        QFile rmfile(serial()+".zip");
-        rmfile.remove();
     });
+
+    auto updateFromFile = [=](QString filename) {
+        addStatus("Unzipping file...");
+        if(!QMicroz::extract(filename, ".")) {
+            abortWithError("Extracting zip file failed");
+            return;
+        }
+        // create coefficient set
+        auto set = CoefficientSet();
+        set.name = "FACTORY";
+        set.ports = 4;
+        set.createEmptyCoefficients();
+        struct Coeff {
+            QString description;
+            QString filename;
+            CoefficientSet::Coefficient *coeff;
+        };
+        std::array<Coeff, 18> coeffs = {{
+                                         {.description = "Port 1 open", .filename = "P1_OPEN.s1p", .coeff = set.opens[1]},
+                                         {.description = "Port 1 short", .filename = "P1_SHORT.s1p", .coeff = set.shorts[1]},
+                                         {.description = "Port 1 load", .filename = "P1_LOAD.s1p", .coeff = set.loads[1]},
+                                         {.description = "Port 2 open", .filename = "P2_OPEN.s1p", .coeff = set.opens[2]},
+                                         {.description = "Port 2 short", .filename = "P2_SHORT.s1p", .coeff = set.shorts[2]},
+                                         {.description = "Port 2 load", .filename = "P2_LOAD.s1p", .coeff = set.loads[2]},
+                                         {.description = "Port 3 open", .filename = "P3_OPEN.s1p", .coeff = set.opens[3]},
+                                         {.description = "Port 3 short", .filename = "P3_SHORT.s1p", .coeff = set.shorts[3]},
+                                         {.description = "Port 3 load", .filename = "P3_LOAD.s1p", .coeff = set.loads[3]},
+                                         {.description = "Port 4 open", .filename = "P4_OPEN.s1p", .coeff = set.opens[4]},
+                                         {.description = "Port 4 short", .filename = "P4_SHORT.s1p", .coeff = set.shorts[4]},
+                                         {.description = "Port 4 load", .filename = "P4_LOAD.s1p", .coeff = set.loads[4]},
+                                         {.description = "Port 1 to 2 through", .filename = "P12_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(1,2)]},
+                                         {.description = "Port 1 to 3 through", .filename = "P13_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(1,3)]},
+                                         {.description = "Port 1 to 4 through", .filename = "P14_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(1,4)]},
+                                         {.description = "Port 2 to 3 through", .filename = "P23_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(2,3)]},
+                                         {.description = "Port 2 to 4 through", .filename = "P24_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(2,4)]},
+                                         {.description = "Port 3 to 4 through", .filename = "P34_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(3,4)]},
+                                         }};
+        for(const Coeff &c : coeffs) {
+            addStatus("Loading coefficient ("+c.description+")...");
+            try {
+                auto t = Touchstone::fromFile(c.filename.toStdString());
+                c.coeff->t = t;
+                c.coeff->modified = true;
+                QFile rmfile(c.filename);
+                rmfile.remove();
+            } catch (const std::exception &e) {
+                abortWithError("Failed: "+QString::fromStdString(e.what()));
+                return;
+            }
+        }
+        // delete previous factory set if available
+        if(coeffSets.size() > 0 && coeffSets[0].name == "FACTORY") {
+            coeffSets.erase(coeffSets.begin());
+        }
+        // add set to device
+        coeffSets.push_back(set);
+        // enable factory writing on device
+        addStatus("Enable factory coefficient writes...");
+        usb->Cmd(":FACT:ENABLEWRITE I_AM_SURE");
+        // delete all factory coefficients (this formats the factory partition)
+        usb->Cmd(":FACT:DEL");
+        // start the transfer
+        addStatus("Transferring new coefficients to LibreCAL...");
+        // potential communication failures should not be passed on during this
+        disconnect(usb, &USBDevice::communicationFailure, this, &CalDevice::disconnected);
+        saveCoefficientSets();
+    };
 
     auto netw = new QNetworkAccessManager();
     connect(netw, &QNetworkAccessManager::finished, this, [=](QNetworkReply *reply) {
@@ -754,67 +852,9 @@ void CalDevice::factoryUpdateDialog()
             file.write(reply->readAll());
             file.flush();
             file.close();
-            addStatus("Unzipping file...");
-            QMicroz::extract(serial()+".zip");
-            // create coefficient set
-            auto set = CoefficientSet();
-            set.name = "FACTORY";
-            set.ports = 4;
-            set.createEmptyCoefficients();
-            struct Coeff {
-                QString description;
-                QString filename;
-                CoefficientSet::Coefficient *coeff;
-            };
-            std::array<Coeff, 18> coeffs = {{
-                {.description = "Port 1 open", .filename = "P1_OPEN.s1p", .coeff = set.opens[1]},
-                {.description = "Port 1 short", .filename = "P1_SHORT.s1p", .coeff = set.shorts[1]},
-                {.description = "Port 1 load", .filename = "P1_LOAD.s1p", .coeff = set.loads[1]},
-                {.description = "Port 2 open", .filename = "P2_OPEN.s1p", .coeff = set.opens[2]},
-                {.description = "Port 2 short", .filename = "P2_SHORT.s1p", .coeff = set.shorts[2]},
-                {.description = "Port 2 load", .filename = "P2_LOAD.s1p", .coeff = set.loads[2]},
-                {.description = "Port 3 open", .filename = "P3_OPEN.s1p", .coeff = set.opens[3]},
-                {.description = "Port 3 short", .filename = "P3_SHORT.s1p", .coeff = set.shorts[3]},
-                {.description = "Port 3 load", .filename = "P3_LOAD.s1p", .coeff = set.loads[3]},
-                {.description = "Port 4 open", .filename = "P4_OPEN.s1p", .coeff = set.opens[4]},
-                {.description = "Port 4 short", .filename = "P4_SHORT.s1p", .coeff = set.shorts[4]},
-                {.description = "Port 4 load", .filename = "P4_LOAD.s1p", .coeff = set.loads[4]},
-                {.description = "Port 1 to 2 through", .filename = "P12_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(1,2)]},
-                {.description = "Port 1 to 3 through", .filename = "P13_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(1,3)]},
-                {.description = "Port 1 to 4 through", .filename = "P14_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(1,4)]},
-                {.description = "Port 2 to 3 through", .filename = "P23_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(2,3)]},
-                {.description = "Port 2 to 4 through", .filename = "P24_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(2,4)]},
-                {.description = "Port 3 to 4 through", .filename = "P34_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(3,4)]},
-            }};
-            for(const Coeff &c : coeffs) {
-                addStatus("Loading coefficient ("+c.description+")...");
-                try {
-                    auto t = Touchstone::fromFile(c.filename.toStdString());
-                    c.coeff->t = t;
-                    c.coeff->modified = true;
-                    QFile rmfile(c.filename);
-                    rmfile.remove();
-                } catch (const std::exception &e) {
-                    abortWithError("Failed: "+QString::fromStdString(e.what()));
-                    return;
-                }
-            }
-            // delete previous factory set if available
-            if(coeffSets.size() > 0 && coeffSets[0].name == "FACTORY") {
-                coeffSets.erase(coeffSets.begin());
-            }
-            // add set to device
-            coeffSets.push_back(set);
-            // enable factory writing on device
-            addStatus("Enable factory coefficient writes...");
-            usb->Cmd(":FACT:ENABLEWRITE I_AM_SURE");
-            // delete all factory coefficients (this formats the factory partition)
-            usb->Cmd(":FACT:DEL");
-            // start the transfer
-            addStatus("Transferring new coefficients to LibreCAL...");
-            // potential communication failures should not be passed on during this
-            disconnect(usb, &USBDevice::communicationFailure, this, &CalDevice::disconnected);
-            saveCoefficientSets();
+            updateFromFile(serial()+".zip");
+            // remove zip file
+            file.remove();
         } else {
             abortWithError("No factory coefficients found. Check internet access and serial number");
         }
@@ -823,10 +863,21 @@ void CalDevice::factoryUpdateDialog()
     connect(ui->startUpdate, &QPushButton::clicked, this, [=](){
         ui->msg->clear();
         ui->startUpdate->setEnabled(false);
-        addStatus("Looking up factory coefficient data...");
-        QUrl url("https://librecal.kaeberich.com/calibrationdata/"+serial()+".zip");
-        netw->get(QNetworkRequest(url));
+        ui->updateFile->setEnabled(false);
+        ui->updateServer->setEnabled(false);
+        ui->file->setEnabled(false);
+        ui->browse->setEnabled(false);
+        if(ui->updateServer->isChecked()) {
+            addStatus("Looking up factory coefficient data...");
+            QUrl url("https://librecal.kaeberich.com/calibrationdata/"+serial()+".zip");
+            netw->get(QNetworkRequest(url));
+        } else {
+            // update from file
+            updateFromFile(ui->file->text());
+        }
     });
+
+    updateEnableState();
 
     d->exec();
 }
