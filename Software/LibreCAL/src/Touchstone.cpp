@@ -326,6 +326,12 @@ bool Touchstone::clearFactory() {
 	if(!writeFactory) {
 		return false;
 	}
+    
+    // close any possibly still open file
+    if(readFileOpen) {
+		closeReadFile();
+	}
+    FinishFile();
 
 	// format the factory drive
 	BYTE work[FF_MAX_SS];

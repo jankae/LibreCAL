@@ -85,11 +85,12 @@ USBDevice::~USBDevice()
     delete m_receiveThread;
 }
 
-bool USBDevice::Cmd(QString cmd)
+bool USBDevice::Cmd(QString cmd, unsigned int timeout)
 {
     QString rcv;
     flushReceived();
-    bool success = send(cmd) && receive(&rcv);
+    bool success = send(cmd) && receive(&rcv, timeout);
+    qDebug() << "Cmd:" << cmd << "Response:" << rcv;
     if(success && rcv == "") {
         // empty response expected by commad
         return true;
@@ -100,12 +101,13 @@ bool USBDevice::Cmd(QString cmd)
     }
 }
 
-QString USBDevice::Query(QString query)
+QString USBDevice::Query(QString query, unsigned int timeout)
 {
     flushReceived();
     if(send(query)) {
         QString rcv;
-        if(receive(&rcv)) {
+        if(receive(&rcv, timeout)) {
+            qDebug() << "Query:" << query << "Response:" << rcv;
             return rcv;
         } else {
             emit communicationFailure();

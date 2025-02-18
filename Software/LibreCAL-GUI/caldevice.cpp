@@ -822,21 +822,28 @@ void CalDevice::factoryUpdateDialog()
             }
         }
         // delete previous factory set if available
-        if(coeffSets.size() > 0 && coeffSets[0].name == "FACTORY") {
-            coeffSets.erase(coeffSets.begin());
+        for(unsigned int i=0;i<coeffSets.size();i++) {
+            if(coeffSets[i].name == "FACTORY") {
+                coeffSets.erase(coeffSets.begin() + i);
+            }
         }
         // add set to device
         coeffSets.push_back(set);
         // enable factory writing on device
         addStatus("Enable factory coefficient writes...");
-        usb->Cmd(":FACT:ENABLEWRITE I_AM_SURE");
+        bool success = usb->Cmd(":FACT:ENABLEWRITE I_AM_SURE");
         // delete all factory coefficients (this formats the factory partition)
-        usb->Cmd(":FACT:DEL");
-        // start the transfer
-        addStatus("Transferring new coefficients to LibreCAL...");
-        // potential communication failures should not be passed on during this
-        disconnect(usb, &USBDevice::communicationFailure, this, &CalDevice::disconnected);
-        saveCoefficientSets();
+        success &= usb->Cmd(":FACT:DEL", 5000);
+
+        if(success) {
+            // start the transfer
+            addStatus("Transferring new coefficients to LibreCAL...");
+            // potential communication failures should not be passed on during this
+            disconnect(usb, &USBDevice::communicationFailure, this, &CalDevice::disconnected);
+            saveCoefficientSets();
+        } else {
+            abortWithError("Failed to erase previous factory calibration");
+        }
     };
 
     auto netw = new QNetworkAccessManager();

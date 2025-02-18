@@ -26,8 +26,8 @@ public:
     USBDevice(QString serial = QString());
     ~USBDevice();
 
-    bool Cmd(QString cmd);
-    QString Query(QString query);
+    bool Cmd(QString cmd, unsigned int timeout = 2000);
+    QString Query(QString query, unsigned int timeout = 2000);
     QString serial() const;
 
     // Returns serial numbers of all connected devices
