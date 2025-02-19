@@ -19,6 +19,11 @@
 * Please see the [user manual](Documentation/manual.pdf) for details of operation.
 * If you would like to control the LibreCAL with a script, see the [SCPI API](Documentation/SCPI_API.pdf).
 
+## Factory calibration
+* All LibreCAL devices are preprogrammed with individually measured factory calibration coefficients (if you build one yourself, you need a way to measure them)
+* These coefficients are important, without them the LibreCAL is nothing more than an ordinary RF switch matrix
+* If the coefficients have been lost, you can download them [here](https://librecal.kaeberich.com/) (based on the serial number of your LibreCAL). If no coefficients for your LibreCAL are available, it could be a clone (not produced through official channels)
+
 ## Installation
 
 All of the following steps are only required if you plan to use the LibreCAL-GUI. If you plan to control the LibreCAL manually with the buttons, through a script or the LibreVNA-GUI, there is no need to download the LibreCAL-GUI (but you should still install the udev rule on Linux systems).
