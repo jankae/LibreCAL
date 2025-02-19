@@ -117,35 +117,63 @@ CalDevice::CalDevice(QString serial) :
     if(factoryProblemSerials.contains(usb->serial())) {
         // it was, check if it still has bad factory coefficients
 
-        // this just grabs the S12 coefficient for 1 GHz as a quick way to check
-        QString ret = usb->Query(":COEFF:GET? FACTORY P12_THROUGH 451");
-        auto parts = ret.split(",");
-        if (parts.size() == 9 && parts[0].toDouble() == 1.0) {
-            // got the correct data, check S12 phase
-            auto S12 = std::complex(parts[3].toDouble(), parts[4].toDouble());
-            auto constexpr expectedS12Delay = 498e-12;
-            auto phase = -arg(S12);
-            if(phase < 0) {
-                phase += 2*M_PI;
-            }
-            double S12Delay = phase / (2*M_PI) / 1e9;
-            auto error = S12Delay - expectedS12Delay;
-            QList<double> possibleErrors({0, -94.7e-12, 34.8e-12});
-            double tolerance = 17e-12;
-            for(auto e : possibleErrors) {
-                if(abs(error-e) <= tolerance) {
-                    // this is the error of the LibreCAL
-                    if(e != 0) {
-                        // still has the wrong coefficients
-                        if(InformationBox::AskQuestion("Update Factory Coefficients?", "Your LibreCAL with serial number "+usb->serial()+" is affected by "
-                                                        "a mistake in the factory calibration and its factory coefficients (specifically the phase of all "
-                                                        "THRU standard definitions) are slightly wrong. The mistake has been corrected and updated factory "
-                                                        "coefficients are available. Do you want to update the factory coefficients now?", false)) {
-                            factoryUpdateDialog();
-                        }
-                    }
+        struct point {
+            uint16_t pointNum;
+            double freq;
+        };
+        std::array<point, 3> pointsToCheck = {{
+            {.pointNum = 451, .freq = 1.0},
+            {.pointNum = 551, .freq = 2.0},
+            {.pointNum = 651, .freq = 3.0},
+        }};
+
+        bool hasBadData = false;
+        for(auto point : pointsToCheck) {
+            // grab the point (just checking P12_THROUGH is enough
+            QString ret = usb->Query(":COEFF:GET? FACTORY P12_THROUGH "+QString::number(point.pointNum));
+            auto parts = ret.split(",");
+            if (parts.size() == 9 && parts[0].toDouble() == point.freq) {
+                // got the correct data, check S12 phase
+                auto S12 = std::complex(parts[3].toDouble(), parts[4].toDouble());
+                auto constexpr expectedS12Delay = 498e-12;
+                auto expectedS12Phase = expectedS12Delay * (point.freq * 1e9) * 2*M_PI;
+                auto phase = -arg(S12);
+                // unwrap to expected phase
+                while(phase < expectedS12Phase - M_PI) {
+                    phase += 2*M_PI;
+                }
+                double S12Delay = phase / (2*M_PI) / (point.freq * 1e9);
+                qDebug() << "expected delay:" << expectedS12Delay << "factory calibration delay:" << S12Delay;
+                auto error = S12Delay - expectedS12Delay;
+                double tolerance = 17e-12;
+                if(abs(error) > tolerance) {
+                    hasBadData = true;
                     break;
                 }
+//                QList<double> possibleErrors({0, -94.7e-12, 34.8e-12});
+//                for(auto e : possibleErrors) {
+//                    if(abs(error-e) <= tolerance) {
+//                        // this is the error of the LibreCAL
+//                        if(e != 0) {
+//                            // still has the wrong coefficients
+//                            hasBadData = true;
+//                        }
+//                        break;
+//                    }
+//                }
+            } else {
+                qWarning() << "Unexpected point frequency, factory calibration data is dubious";
+            }
+            if(hasBadData) {
+                break;
+            }
+        }
+        if(hasBadData) {
+            if(InformationBox::AskQuestion("Update Factory Coefficients?", "Your LibreCAL with serial number "+usb->serial()+" is affected by "
+                                          "a mistake in the factory calibration and its factory coefficients (specifically the phase of all "
+                                          "THRU standard definitions) are slightly wrong. The mistake has been corrected and updated factory "
+                                          "coefficients are available. Do you want to update the factory coefficients now?", false)) {
+                factoryUpdateDialog();
             }
         }
     }
