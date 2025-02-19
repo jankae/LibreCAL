@@ -442,11 +442,11 @@ void CalDevice::loadCoefficientSetsThreadFast(QStringList names, QList<int> port
                 QString line;
                 if(!usb->receive(&line)) {
                     // failed to receive something, abort
-                    return c;
+                    return nullptr;
                 }
                 if(line.startsWith("ERROR")) {
                     // something went wront
-                    return c;
+                    return nullptr;
                 }
                 // ignore start, comments and option line
                 if(line.startsWith("START") || line.startsWith("!") || line.startsWith("#")) {
@@ -474,7 +474,7 @@ void CalDevice::loadCoefficientSetsThreadFast(QStringList names, QList<int> port
                     }
                     c->t.AddDatapoint(p);
                 } catch (...) {
-                    return c;
+                    return nullptr;
                 }
             }
         };
@@ -708,7 +708,7 @@ void CalDevice::factoryUpdateDialog()
     ui->setupUi(d);
 
     ui->progress->setValue(0);
-    connect(this, &CalDevice::updateCoefficientsPercent, ui->progress, &QProgressBar::setValue);
+    connect(this, &CalDevice::updateCoefficientsPercent, ui->progress, &QProgressBar::setValue, Qt::QueuedConnection);
 
     auto updateEnableState = [=]() {
         ui->updateFile->setEnabled(true);

@@ -31,6 +31,7 @@ USBInBuffer::~USBInBuffer()
         if(cv.wait_for(lck, 100ms) == cv_status::timeout) {
             qWarning() << "Timed out waiting for mutex acquisition during disconnect";
         }
+        libusb_free_transfer(transfer);
     }
     delete[] buffer;
 }

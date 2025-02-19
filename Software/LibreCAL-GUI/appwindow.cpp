@@ -118,6 +118,12 @@ AppWindow::~AppWindow()
     delete ui;
 }
 
+void AppWindow::closeEvent(QCloseEvent *event)
+{
+    Q_UNUSED(event);
+    delete device;
+}
+
 int AppWindow::UpdateDeviceList()
 {
     deviceActionGroup->setExclusive(true);
@@ -225,6 +231,7 @@ bool AppWindow::ConnectToDevice(QString serial)
         return true;
     } catch (const runtime_error &e) {
         qWarning() << "Failed to connect:" << e.what();
+        InformationBox::ShowError("Error", "Failed to connect to "+serial+": "+e.what());
         DisconnectDevice();
         UpdateDeviceList();
         return false;
@@ -368,10 +375,10 @@ void AppWindow::loadCoefficients()
     d->setWindowModality(Qt::ApplicationModal);
     d->setMinimumDuration(0);
     d->setCancelButton(nullptr);
-    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue, Qt::DirectConnection);
+    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue, Qt::QueuedConnection);
     connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
         d->accept();
-        delete d;
+        d->deleteLater();
     }, Qt::QueuedConnection);
     connect(device, &CalDevice::updateCoefficientsDone, this, [=](){
         ui->saveCoefficients->setEnabled(false);
@@ -381,7 +388,7 @@ void AppWindow::loadCoefficients()
             ui->coeffList->addItem(set.name);
         }
         ui->coeffList->setCurrentRow(0);
-    });
+    }, Qt::QueuedConnection);
     d->show();
     device->loadCoefficientSets();
 }
@@ -402,7 +409,7 @@ void AppWindow::saveCoefficients()
     d->setWindowModality(Qt::ApplicationModal);
     d->setMinimumDuration(0);
     d->setCancelButton(nullptr);
-    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue, Qt::DirectConnection);
+    connect(device, &CalDevice::updateCoefficientsPercent, d, &QProgressDialog::setValue, Qt::QueuedConnection);
     connect(device, &CalDevice::updateCoefficientsDone, d, [=](){
         d->accept();
         delete d;

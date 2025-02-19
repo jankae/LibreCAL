@@ -17,6 +17,8 @@ public:
     AppWindow();
     ~AppWindow();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
 private slots:
     int UpdateDeviceList();
     bool ConnectToDevice(QString serial = QString());
