@@ -55,6 +55,14 @@ cd $UNPACKED_ZIP_FOLDER$
 ./LibreCAL-GUI
 ```
 
+### MacOS
+* Download the latest [Release](https://github.com/jankae/LibreCAL/releases)
+  * If you are using MacOS 14+ use the release with `latest` in the name.
+  * If you are using MacOS >13.7 use the release with  `13.7` in the name.
+* Unpack the zip file and move LibreCAL-GUI.app to your `/Applications` folder.
+* Start LibreCAL-GUI.app and add a security exception to allow the Mac to run the app with an "untrusted" signing key.
+* Launch app again.
+
 ## How does it work?
 The LibreCAL is just a switch-matrix with additional options to terminate each port into an open, short or 50 Ohm connection:
 
