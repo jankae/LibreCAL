@@ -151,8 +151,52 @@ jobs:
           LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
         uses: actions/upload-artifact@v4
         with:
-          name: LibreCAL-GUI-OSX-${{env.LIBRECAL_VERSION}}
+          name: LibreCAL-GUI-OSX-latest-${{env.LIBRECAL_VERSION}}
           path: Software/LibreCAL-GUI/LibreCAL-GUI.zip
+
+  PC_Application_OSX_13:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install qt@6 pcre
+
+      - name: Set Environment
+        run: |
+          echo "/usr/local/opt/qt@6/bin" >> $GITHUB_PATH
+          
+      - name: Get build timestamp
+        id: id_date
+        run: echo "timestamp=$(date +%Y-%m-%d-%H-%M-%S)" >> $GITHUB_OUTPUT
+
+      - name: Get app version
+        id: id_version
+        run: |
+          cd Software/LibreCAL-GUI
+          fw_major=`pcregrep -o '(?<=FW_MAJOR=)[0-9]+' LibreCAL-GUI.pro`
+          fw_minor=`pcregrep -o '(?<=FW_MINOR=)[0-9]+' LibreCAL-GUI.pro`
+          fw_patch=`pcregrep -o '(?<=FW_PATCH=)[0-9]+' LibreCAL-GUI.pro` 
+          echo "app_version=v$fw_major.$fw_minor.$fw_patch-${{steps.id_date.outputs.timestamp}}" >> $GITHUB_OUTPUT
+          
+      - name: Build application
+        run: |
+          cd Software/LibreCAL-GUI
+          qmake LibreCAL-GUI.pro
+          make -j9
+          macdeployqt LibreCAL-GUI.app
+          zip -ry LibreCAL-GUI.zip LibreCAL-GUI.app
+        shell: bash
+
+      - name: Upload artifact
+        env: 
+          LIBRECAL_VERSION: "${{steps.id_version.outputs.app_version}}"
+        uses: actions/upload-artifact@v4
+        with:
+          name: LibreCAL-GUI-OSX-13.7-${{env.LIBRECAL_VERSION}}
+          path: Software/LibreCAL-GUI/LibreCAL-GUI.zip
+
 
   Embedded_Firmware:
     runs-on: ubuntu-20.04
