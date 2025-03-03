@@ -94,7 +94,7 @@ void tud_cdc_rx_cb(uint8_t itf)
 	handleIncoming(buf, &recCnt, USB_INTERFACE_CDC);
 }
 
-void tud_vendor_rx_cb(uint8_t itf)
+void tud_vendor_rx_cb(uint8_t itf, uint8_t const* buffer, uint16_t bufsize)
 {
 	static uint8_t buf[USB_REC_BUFFER_SIZE];
 	static uint16_t recCnt = 0;

@@ -186,7 +186,7 @@ jobs:
           sudo apt-get update
           sudo apt install -y build-essential gcc-arm-none-eabi binutils-arm-none-eabi 
           sudo git clone https://github.com/raspberrypi/pico-sdk.git /opt/pico-sdk
-          sudo git -C /opt/pico-sdk checkout 2.0.0
+          sudo git -C /opt/pico-sdk checkout 2.1.1
           sudo git -C /opt/pico-sdk submodule update --init
           echo 'export PICO_SDK_PATH=/opt/pico-sdk' | sudo tee -a /etc/profile.d/pico-sdk.sh
           source /etc/profile
