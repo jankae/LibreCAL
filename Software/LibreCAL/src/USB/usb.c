@@ -70,8 +70,8 @@ static void handleIncoming(char *buf, uint16_t *recCnt, uint8_t interface) {
 	}
 	*recCnt += cnt;
 	char *lineEnd;
-	while(lineEnd = strnstr(buf, "\r\n", *recCnt)) {
-		uint16_t bytes = lineEnd - buf + 2;
+	while(lineEnd = memchr(buf, '\n', *recCnt)) {
+		uint16_t bytes = lineEnd - buf + 1;
 		if(callback) {
 			callback(buf, bytes, interface);
 		}

@@ -658,8 +658,8 @@ void SCPI::Input(const char *msg, uint16_t len, uint8_t interface) {
 	memcpy(&buf[*cnt], msg, len);
 	*cnt += len;
 	// check if got a complete line
-	char *endptr = (char*) memchr(buf, '\n', len);
-	if(endptr) {
+	char *endptr = (char*) memchr(buf, '\n', *cnt);
+	while(endptr) {
 		uint8_t bytes_line = endptr - buf + 1;
 		if(bytes_line > 1) {
 			// check if previous char was '\r'
@@ -676,8 +676,12 @@ void SCPI::Input(const char *msg, uint16_t len, uint8_t interface) {
 			// already got bytes afterwards, move them
 			memmove(buf, &buf[bytes_line], *cnt - bytes_line);
 			*cnt -= bytes_line;
+			// check if we have another complete line
+			endptr = (char*) memchr(buf, '\n', *cnt);
 		} else {
 			*cnt = 0;
+			// no more data
+			endptr = 0;
 		}
 	}
 }
