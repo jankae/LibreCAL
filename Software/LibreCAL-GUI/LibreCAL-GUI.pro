@@ -42,6 +42,7 @@ mac{
 	QT_CONFIG -= no-pkg-config
 	CONFIG += link_pkgconfig
 	PKGCONFIG += libusb-1.0
+    ICON = resources/librecal.icns
 }
 
 # libusb-1.0.23 shall be extracted in same directory as this file
