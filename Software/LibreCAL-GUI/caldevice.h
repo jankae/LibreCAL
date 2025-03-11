@@ -115,6 +115,7 @@ private:
 
     USBDevice *usb;
     QString firmware;
+    QString tmpDir;
     int numPorts;
     std::thread *loadThread;
     bool abortLoading;

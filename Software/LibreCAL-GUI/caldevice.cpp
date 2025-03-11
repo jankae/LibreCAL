@@ -12,6 +12,7 @@
 #include <QUrl>
 #include <QFile>
 #include <QFileDialog>
+#include <QStandardPaths>
 
 using namespace std;
 
@@ -78,6 +79,7 @@ CalDevice::CalDevice(QString serial) :
 {
     loadThread = nullptr;
     transferActive = false;
+    tmpDir = QStandardPaths::writableLocation(QStandardPaths::TempLocation);
 
     // Check device identification
     auto id = usb->Query("*IDN?");
@@ -802,7 +804,7 @@ void CalDevice::factoryUpdateDialog()
 
     auto updateFromFile = [=](QString filename) {
         addStatus("Unzipping file...");
-        if(!QMicroz::extract(filename, ".")) {
+        if(!QMicroz::extract(filename, tmpDir)) {
             abortWithError("Extracting zip file failed");
             return;
         }
@@ -837,12 +839,13 @@ void CalDevice::factoryUpdateDialog()
                                          {.description = "Port 3 to 4 through", .filename = "P34_THROUGH.s2p", .coeff = set.throughs[set.portsToThroughIndex(3,4)]},
                                          }};
         for(const Coeff &c : coeffs) {
+            QString tmpPath = QDir(tmpDir).filePath(c.filename);
             addStatus("Loading coefficient ("+c.description+")...");
             try {
-                auto t = Touchstone::fromFile(c.filename.toStdString());
+                auto t = Touchstone::fromFile(tmpPath.toStdString());
                 c.coeff->t = t;
                 c.coeff->modified = true;
-                QFile rmfile(c.filename);
+                QFile rmfile(tmpPath);
                 rmfile.remove();
             } catch (const std::exception &e) {
                 abortWithError("Failed: "+QString::fromStdString(e.what()));
@@ -879,7 +882,8 @@ void CalDevice::factoryUpdateDialog()
         if(reply->error() == QNetworkReply::NoError) {
             // success
             addStatus("Factory coefficients downloaded...");
-            QFile file(serial()+".zip");
+            QString zipPath = QDir(tmpDir).filePath(serial()+".zip");
+            QFile file(zipPath);
             if(!file.open(QIODevice::WriteOnly)) {
                 abortWithError("Failed to create folder for zipped data");
                 return;
@@ -887,7 +891,7 @@ void CalDevice::factoryUpdateDialog()
             file.write(reply->readAll());
             file.flush();
             file.close();
-            updateFromFile(serial()+".zip");
+            updateFromFile(zipPath);
             // remove zip file
             file.remove();
         } else {
