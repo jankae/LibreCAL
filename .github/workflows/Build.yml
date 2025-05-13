@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - build_FW_test
   pull_request:
     branches:
       - main
@@ -199,7 +200,7 @@ jobs:
 
 
   Embedded_Firmware:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
