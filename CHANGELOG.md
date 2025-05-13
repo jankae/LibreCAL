@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.4
+
+- update to Pico SDK 2.1.1 (improves USB stability)
+- accept \\r\\n and \\n as line endings for SCPI commands
+
 ## v0.2.3
 
 - minor error recovery improvements for USB connection problems
