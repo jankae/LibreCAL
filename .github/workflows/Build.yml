@@ -211,7 +211,7 @@ jobs:
 
           # Ubuntu 24.04 comes with version 10.3 of the ARM GCC toolchain. For some reason builds with that version result in buggy file reading/writing and unstable USB connections.
           # Manually install older version of the toolchain which does not have the problem
-          wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-aarch64-linux.tar.bz2
+          wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2
           tar -xvjf gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2 -C /opt
           export PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin:$PATH
 
