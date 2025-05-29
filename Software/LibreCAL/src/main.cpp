@@ -128,6 +128,16 @@ static void defaultTask(void* ptr) {
 			createInfoFile();
 		}
 	}
+	
+	if (UserInterface::IsFunctionHeld() && !f_open(&fil, "0:siglent/info.dat", FA_OPEN_EXISTING | FA_READ)) {
+		/* someone has given us Siglent parameters, enter Siglent
+		 * mode.  maybe in the future we should compute a default
+		 * siglent/info.dat to put in the RO partition, but that
+		 * would require a zip engine onboard; punt on that for now
+		 */
+		usb_is_siglent();
+		f_close(&fil);
+	}
 
 	usb_init(usb_rx);
 

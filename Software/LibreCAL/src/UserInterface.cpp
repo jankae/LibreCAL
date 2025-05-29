@@ -39,6 +39,10 @@ void setLED(LED led, bool on) {
 	gpio_put(LEDpins[(int) led], !on);
 }
 
+bool IsFunctionHeld() {
+	return !gpio_get(Buttonpins[(int)Button::FUNCTION]);
+}
+
 void Task(void*) {
 	bool editing = false;
 	uint8_t selectedPort = 0;

@@ -48,6 +48,7 @@ add_executable(LibreCAL
 	src/USB/msc_disk.cpp
 	src/USB/usb_descriptors.c
 	src/USB/usb.c
+	src/USB/tmc.cpp
 	src/fatfs/ff.c
 	src/fatfs/ffsystem.c
 	src/fatfs/ffunicode.c

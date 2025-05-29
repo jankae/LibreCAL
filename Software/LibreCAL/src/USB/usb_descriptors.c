@@ -58,11 +58,43 @@ tusb_desc_device_t const desc_device =
     .bNumConfigurations = 0x01
 };
 
+tusb_desc_device_t const desc_device_siglent =
+{
+    .bLength            = sizeof(tusb_desc_device_t),
+    .bDescriptorType    = TUSB_DESC_DEVICE,
+    .bcdUSB             = 0x0210, // at least 2.1 or 3.x for BOS & webUSB
+
+    // We behave like a USBTMC device for this.
+    .bDeviceClass       = 0x00,
+    .bDeviceSubClass    = 0x00,
+    .bDeviceProtocol    = 0x00,
+    .bMaxPacketSize0    = CFG_TUD_ENDPOINT0_SIZE,
+
+    // Pretend to be a Siglent eCal.
+    .idVendor           = 0xf4ec,
+    .idProduct          = 0x1600,
+    .bcdDevice          = 0x0100,
+
+    .iManufacturer      = 0x01,
+    .iProduct           = 0x08,
+    .iSerialNumber      = 0x03,
+
+    .bNumConfigurations = 0x01
+};
+
+
+static bool is_siglent = false;
+
+// emulate a Siglent eCal
+void usb_is_siglent() {
+  is_siglent = true;
+}
+
 // Invoked when received GET DEVICE DESCRIPTOR
 // Application return pointer to descriptor
 uint8_t const * tud_descriptor_device_cb(void)
 {
-  return (uint8_t const *) &desc_device;
+  return is_siglent ? (uint8_t const *) &desc_device_siglent : (uint8_t const *) &desc_device;
 }
 
 //--------------------------------------------------------------------+
@@ -77,7 +109,8 @@ enum
   ITF_NUM_TOTAL
 };
 
-#define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_VENDOR_DESC_LEN + TUD_MSC_DESC_LEN)
+#define ITF_NUM_USBTMC ITF_NUM_MSC
+
 
 #if CFG_TUSB_MCU == OPT_MCU_LPC175X_6X || CFG_TUSB_MCU == OPT_MCU_LPC177X_8X || CFG_TUSB_MCU == OPT_MCU_LPC40XX
   // LPC 17xx and 40xx endpoint type (bulk/interrupt/iso) are fixed by its number
@@ -102,7 +135,11 @@ enum
   #define EPNUM_MSC_OUT    4
   #define EPNUM_MSC2_IN	   5
   #define EPNUM_MSC2_OUT   5
+  #define EPNUM_TMC_IN     6
+  #define EPNUM_TMC_OUT    6
 #endif
+
+#define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_VENDOR_DESC_LEN + TUD_MSC_DESC_LEN)
 
 uint8_t const desc_configuration[] =
 {
@@ -119,13 +156,35 @@ uint8_t const desc_configuration[] =
   TUD_MSC_DESCRIPTOR(ITF_NUM_MSC, 6, EPNUM_MSC_OUT, 0x80 | EPNUM_MSC_IN, 64),
 };
 
+/* We don't want a MSC device to confuse the UI and attempt to save files to
+ * "USB storage", so Siglent mode exposes its TMC interface *instead* of the
+ * MSC interface.
+ */
+
+#define CONFIG_TOTAL_LEN_SIGLENT    (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_VENDOR_DESC_LEN + TUD_USBTMC_IF_DESCRIPTOR_LEN + TUD_USBTMC_BULK_DESCRIPTORS_LEN)
+
+uint8_t const desc_configuration_siglent[] =
+{
+  // Config number, interface count, string index, total length, attribute, power in mA
+  TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN_SIGLENT, 0x00, 100),
+
+  // Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC, 4, 0x81, 8, EPNUM_CDC_OUT, 0x80 | EPNUM_CDC_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
+
+  // Interface number, string index, EP Out & IN address, EP size
+  TUD_VENDOR_DESCRIPTOR(ITF_NUM_VENDOR, 5, EPNUM_VENDOR_OUT, 0x80 | EPNUM_VENDOR_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
+
+  TUD_USBTMC_IF_DESCRIPTOR(ITF_NUM_USBTMC, /* _bNumEndpoints = */ 2u,  /*_stridx = */ 7u, 0 /* no subclass */),
+  TUD_USBTMC_BULK_DESCRIPTORS(/* OUT = */ EPNUM_TMC_OUT, /* IN = */ 0x80 | EPNUM_TMC_IN, /* packet size = */ 64),
+};
+
 // Invoked when received GET CONFIGURATION DESCRIPTOR
 // Application return pointer to descriptor
 // Descriptor contents must exist long enough for transfer to complete
 uint8_t const * tud_descriptor_configuration_cb(uint8_t index)
 {
   (void) index; // for multiple configurations
-  return desc_configuration;
+  return is_siglent ? desc_configuration_siglent : desc_configuration;
 }
 
 //--------------------------------------------------------------------+
@@ -210,9 +269,11 @@ char const* string_desc_arr [] =
   "LibreCAL CDC",                 // 4: CDC Interface
   "LibreCAL Vendor",               // 5: Vendor Interface
   "LibreCAL Storage",			// 6: MSC Interface
+  "LibreCAL Siglent TMC",         // 7: USBTMC interface
+  "LibreCAL (Siglent eCal emulation mode)", // 8: Product ID in eCal emulation mode
 };
 
-static uint16_t _desc_str[32];
+static uint16_t _desc_str[64];
 
 // Invoked when received GET STRING DESCRIPTOR request
 // Application return pointer to descriptor, whose contents must exist long enough for transfer to complete
@@ -242,7 +303,7 @@ uint16_t const* tud_descriptor_string_cb(uint8_t index, uint16_t langid)
 
     // Cap at max char
     chr_count = (uint8_t) strlen(str);
-    if ( chr_count > 31 ) chr_count = 31;
+    if ( chr_count > 63 ) chr_count = 63;
 
     // Convert ASCII string into UTF-16
     for(uint8_t i=0; i<chr_count; i++)

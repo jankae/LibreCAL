@@ -100,6 +100,9 @@
 #define CFG_TUD_MSC               1
 #define CFG_TUD_MIDI              0
 #define CFG_TUD_VENDOR            1
+#define CFG_TUD_USBTMC               1
+#define CFG_TUD_USBTMC_ENABLE_INT_EP 0
+#define CFG_TUD_USBTMC_ENABLE_488    0
 
  // CDC FIFO size of TX and RX
  #define CFG_TUD_CDC_RX_BUFSIZE    (TUD_OPT_HIGH_SPEED ? 512 : 256)
