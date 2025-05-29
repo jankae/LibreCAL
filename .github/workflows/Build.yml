@@ -213,7 +213,6 @@ jobs:
           # Manually install older version of the toolchain which does not have the problem
           wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2
           tar -xvjf gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2 -C /opt
-          export PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin:$PATH
 
           sudo git clone https://github.com/raspberrypi/pico-sdk.git /opt/pico-sdk
           sudo git -C /opt/pico-sdk checkout 2.1.1
@@ -237,6 +236,7 @@ jobs:
       - name: Build application
         run: |
           export PICO_SDK_PATH=/opt/pico-sdk
+          export PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin:$PATH
           cd Software/LibreCAL
           mkdir build && cd build
           cmake ..
