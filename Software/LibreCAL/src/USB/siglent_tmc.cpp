@@ -105,52 +105,33 @@ extern "C" bool tud_usbtmc_msg_data_cb(void *data, size_t len, bool transfer_com
   ibuf[ibuf_len] = 0;
   LOG_DEBUG("USB TMC: %s", ibuf);
   
-  /* different Siglent VNAs seem to use different cases for the commands, force everything to upper case */
-  for(size_t i=0;i<ibuf_len;i++) {
-	  ibuf[i] = toupper(ibuf[i]);
-  }
-
   obuf_len = 0;
   obuf_pos = 0;
 
   /* This SCPI interface supports a very different command set than the main
    * SCPI interface does, so we don't even share a parser.  */
   
-  if (!strcmp((char *)ibuf, "*IDN?\n")) {
+  if (!strcasecmp((char *)ibuf, "*IDN?\n")) {
       obuf_pos = 0;
       obuf_len = snprintf((char *)obuf, sizeof(obuf), "LibreVNA,LibreCAL,%s,%d.%d.%d\n", getSerial(), FW_MAJOR, FW_MINOR, FW_PATCH);
-  }
-
-  /* The FL:DATA: commands convert to filesystem reads and writes.  In a
-   * more serious USB device, we would kick these onto another thread, but
-   * for this application it's ok to block the USB thread for the small
-   * reads.
-   */
-  
-  else if (!strcmp((char *)ibuf, "FL:DATA:READ:START\n")) {
+  } else if (!strcasecmp((char *)ibuf, "FL:DATA:READ:START\n")) {
+    /* The FL:DATA: commands convert to filesystem reads and writes.  In a
+     * more serious USB device, we would kick these onto another thread, but
+     * for this application it's ok to block the USB thread for the small
+     * reads.
+     */
     fl_file_open = f_open(&fl_file, "0:siglent/info.dat", FA_OPEN_EXISTING | FA_READ) == FR_OK;
-    obuf_len = 0;
-    obuf_pos = 0;
-  }
-  
-  else if (!strncmp((char *)ibuf, "FL:DATA:INDEX ", 14)) {
+  } else if (!strncasecmp((char *)ibuf, "FL:DATA:INDEX ", 14)) {
     int idx = atoi((char *)ibuf + 14);
     char name[32];
     snprintf(name, sizeof(name), "0:siglent/data%d.zip", idx);
     fl_file_open = f_open(&fl_file, name, FA_OPEN_EXISTING | FA_READ) == FR_OK;
-    obuf_len = 0;
-    obuf_pos = 0;
-  }
-
-  else if (!strncmp((char *)ibuf, "FL:DATA:READ? ", 14)) {
+  } else if (!strncasecmp((char *)ibuf, "FL:DATA:READ? ", 14)) {
     size_t req = atoi((char *)ibuf + 14);
     
     size_t len = tu_min32(sizeof(obuf), req);
     size_t rv;
     
-    obuf_len = 0;
-    obuf_pos = 0;
-
     if (!fl_file_open) {
       goto done;
     }
@@ -160,13 +141,7 @@ extern "C" bool tud_usbtmc_msg_data_cb(void *data, size_t len, bool transfer_com
     }
 
     obuf_len = rv;
-    obuf_pos = 0;
-  }
-  
-  else if (!strncmp((char *)ibuf, "SL ", 3)) {
-    obuf_len = 0;
-    obuf_pos = 0;
-
+  } else if (!strncasecmp((char *)ibuf, "SL ", 3)) {
     /* This is not a very robust parser. */
     char *buf = (char *)ibuf + 3;
     const char *cmd = strtok(buf, ",");
@@ -178,13 +153,15 @@ extern "C" bool tud_usbtmc_msg_data_cb(void *data, size_t len, bool transfer_com
       goto done;
     }
     int srcport = atoi(srcport_s) - 1;
-    if (!strcmp(cmd, "OPEN")) {
+    if (!strcasecmp(cmd, "OPEN")) {
       Switch::SetStandard(srcport, Switch::Standard::Open);
-    } else if (!strcmp(cmd, "SHORT")) {
+    } else if (!strcasecmp(cmd, "SHORT")) {
       Switch::SetStandard(srcport, Switch::Standard::Short);
-    } else if (!strcmp(cmd, "LOAD")) {
+    } else if (!strcasecmp(cmd, "LOAD")) {
       Switch::SetStandard(srcport, Switch::Standard::Load);
-    } else if (!strcmp(cmd, "THRU")) {
+    } else if (!strcasecmp(cmd, "THRU") || !strcasecmp(cmd, "ATT")) {
+      // Since we don't have an attenuator, we fake "SL ATT,n,m" with "THRU"
+      // by providing the through coefficients for CF_*.
       const char *dstport_s = strtok(NULL, ",\n");
       if (!dstport_s) {
         goto done;
@@ -192,13 +169,10 @@ extern "C" bool tud_usbtmc_msg_data_cb(void *data, size_t len, bool transfer_com
       int dstport = atoi(dstport_s) - 1;
       Switch::SetThrough(srcport, dstport);
     } else {
-        /* We do not support 'SL ATT,n,m', whatever that is.  It seems to be
-         * used in the VNA confidence check.  */
     	goto done;
     }
-    
 
-  } else if(!strncmp((char*) ibuf, "SET:PORT", 8)) {
+  } else if(!strncasecmp((char*) ibuf, "SET:PORT", 8)) {
 	  // SNA5000A sends these commands. There is one mandatory argument
 	  // which is either OPEN, SHORT, LOAD, THRU or ATT. This is then
 	  // followed by a list of ports (by their letter, e.g. 'A' or 'D').
@@ -214,7 +188,7 @@ extern "C" bool tud_usbtmc_msg_data_cb(void *data, size_t len, bool transfer_com
 	  }
 
 	  // figure out the argument
-	  if(!strncmp((char*) &ibuf[9], "THRU", 4)) {
+	  if(!strncasecmp((char*) &ibuf[9], "THRU", 4) || !strncasecmp((char*) &ibuf[9], "ATT", 4)) {
 		  // special case, this must always have two ports
 		  if(port_cnt != 2) {
 			  LOG_ERR("%d ports given for THRU", port_cnt);
@@ -225,14 +199,12 @@ extern "C" bool tud_usbtmc_msg_data_cb(void *data, size_t len, bool transfer_com
 	  }
 	  // handle the other standards
 	  auto s = Switch::Standard::None;
-	  if(!strncmp((char*) &ibuf[9], "OPEN", 4)) {
+	  if(!strncasecmp((char*) &ibuf[9], "OPEN", 4)) {
 		  s = Switch::Standard::Open;
-	  } else if(!strncmp((char*) &ibuf[9], "SHORT", 5)) {
+	  } else if(!strncasecmp((char*) &ibuf[9], "SHORT", 5)) {
 		  s = Switch::Standard::Short;
-	  } else if(!strncmp((char*) &ibuf[9], "LOAD", 4)) {
+	  } else if(!strncasecmp((char*) &ibuf[9], "LOAD", 4)) {
 		  s = Switch::Standard::Load;
-	  } else if(!strncmp((char*) &ibuf[9], "ATT", 3)) {
-		  s = Switch::Standard::None;
 	  } else {
 		  LOG_ERR("Unknown port standard: %s", &ibuf[9]);
 		  goto done;
