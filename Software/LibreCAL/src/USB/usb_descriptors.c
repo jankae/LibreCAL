@@ -27,6 +27,7 @@
 #include <usb_descriptors.h>
 #include "tusb.h"
 #include "serial.h"
+#include "main.h"
 
 #define USB_PID           (0x4000 | _PID_MAP(CDC, 0) | _PID_MAP(MSC, 1) | _PID_MAP(HID, 2) | \
                            _PID_MAP(MIDI, 3) | _PID_MAP(VENDOR, 4) )
@@ -34,7 +35,7 @@
 //--------------------------------------------------------------------+
 // Device Descriptors
 //--------------------------------------------------------------------+
-tusb_desc_device_t const desc_device =
+tusb_desc_device_t const desc_device_default =
 {
     .bLength            = sizeof(tusb_desc_device_t),
     .bDescriptorType    = TUSB_DESC_DEVICE,
@@ -82,78 +83,64 @@ tusb_desc_device_t const desc_device_siglent =
     .bNumConfigurations = 0x01
 };
 
-
-static bool is_siglent = false;
-
-// emulate a Siglent eCal
-void usb_is_siglent() {
-  is_siglent = true;
-}
-
 // Invoked when received GET DEVICE DESCRIPTOR
 // Application return pointer to descriptor
 uint8_t const * tud_descriptor_device_cb(void)
 {
-  return is_siglent ? (uint8_t const *) &desc_device_siglent : (uint8_t const *) &desc_device;
+  switch(getMode()) {
+  case MODE_DEFAULT: return (uint8_t const *) &desc_device_default;
+  case MODE_SIGLENT: return (uint8_t const *) &desc_device_siglent;
+  }
 }
 
 //--------------------------------------------------------------------+
 // Configuration Descriptor
 //--------------------------------------------------------------------+
+// Default mode
 enum
 {
-  ITF_NUM_CDC = 0,
-  ITF_NUM_CDC_DATA,
-  ITF_NUM_VENDOR,
-  ITF_NUM_MSC,
-  ITF_NUM_TOTAL
+  ITF_DEF_NUM_CDC = 0,
+  ITF_DEF_NUM_CDC_DATA,
+  ITF_DEF_NUM_VENDOR,
+  ITF_DEF_NUM_MSC,
+  ITF_DEF_NUM_TOTAL
 };
 
-#define ITF_NUM_USBTMC ITF_NUM_MSC
+// Endpoints for default mode
+#define EPNUM_CDC_IN     	2
+#define EPNUM_CDC_OUT    	2
+#define EPNUM_VENDOR_IN  	3
+#define EPNUM_VENDOR_OUT 	3
+#define EPNUM_MSC_IN	   	4
+#define EPNUM_MSC_OUT    	4
+#define EPNUM_MSC2_IN	   	5
+#define EPNUM_MSC2_OUT   	5
 
-
-#if CFG_TUSB_MCU == OPT_MCU_LPC175X_6X || CFG_TUSB_MCU == OPT_MCU_LPC177X_8X || CFG_TUSB_MCU == OPT_MCU_LPC40XX
-  // LPC 17xx and 40xx endpoint type (bulk/interrupt/iso) are fixed by its number
-  // 0 control, 1 In, 2 Bulk, 3 Iso, 4 In etc ...
-  #define EPNUM_CDC_IN     2
-  #define EPNUM_CDC_OUT    2
-  #define EPNUM_VENDOR_IN  5
-  #define EPNUM_VENDOR_OUT 5
-#elif CFG_TUSB_MCU == OPT_MCU_SAMG || CFG_TUSB_MCU ==  OPT_MCU_SAMX7X
-  // SAMG & SAME70 don't support a same endpoint number with different direction IN and OUT
-  //    e.g EP1 OUT & EP1 IN cannot exist together
-  #define EPNUM_CDC_IN     2
-  #define EPNUM_CDC_OUT    3
-  #define EPNUM_VENDOR_IN  4
-  #define EPNUM_VENDOR_OUT 5
-#else
-  #define EPNUM_CDC_IN     2
-  #define EPNUM_CDC_OUT    2
-  #define EPNUM_VENDOR_IN  3
-  #define EPNUM_VENDOR_OUT 3
-  #define EPNUM_MSC_IN	   4
-  #define EPNUM_MSC_OUT    4
-  #define EPNUM_MSC2_IN	   5
-  #define EPNUM_MSC2_OUT   5
-  #define EPNUM_TMC_IN     6
-  #define EPNUM_TMC_OUT    6
-#endif
+// Siglent mode
+enum
+{
+  ITF_SIGLENT_TMC = 0,
+  ITF_SGILENT_NUM_TOTAL
+};
+// Endpoints for Siglent mode
+#define EPNUM_TMC_IN     	2
+#define EPNUM_TMC_OUT    	2
 
 #define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_VENDOR_DESC_LEN + TUD_MSC_DESC_LEN)
 
-uint8_t const desc_configuration[] =
+uint8_t const desc_configuration_default[] =
 {
   // Config number, interface count, string index, total length, attribute, power in mA
-  TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, 0x00, 100),
+  TUD_CONFIG_DESCRIPTOR(1, ITF_DEF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, 0x00, 100),
 
   // Interface number, string index, EP notification address and size, EP data address (out, in) and size.
-  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC, 4, 0x81, 8, EPNUM_CDC_OUT, 0x80 | EPNUM_CDC_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
+  TUD_CDC_DESCRIPTOR(ITF_DEF_NUM_CDC, 4, 0x81, 8, EPNUM_CDC_OUT, 0x80 | EPNUM_CDC_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
 
   // Interface number, string index, EP Out & IN address, EP size
-  TUD_VENDOR_DESCRIPTOR(ITF_NUM_VENDOR, 5, EPNUM_VENDOR_OUT, 0x80 | EPNUM_VENDOR_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
+  TUD_VENDOR_DESCRIPTOR(ITF_DEF_NUM_VENDOR, 5, EPNUM_VENDOR_OUT, 0x80 | EPNUM_VENDOR_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
 
   // Interface number, string index, EP Out & EP In address, EP size
-  TUD_MSC_DESCRIPTOR(ITF_NUM_MSC, 6, EPNUM_MSC_OUT, 0x80 | EPNUM_MSC_IN, 64),
+  TUD_MSC_DESCRIPTOR(ITF_DEF_NUM_MSC, 6, EPNUM_MSC_OUT, 0x80 | EPNUM_MSC_IN, 64),
 };
 
 /* We don't want a MSC device to confuse the UI and attempt to save files to
@@ -161,20 +148,20 @@ uint8_t const desc_configuration[] =
  * MSC interface.
  */
 
-#define CONFIG_TOTAL_LEN_SIGLENT    (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_VENDOR_DESC_LEN + TUD_USBTMC_IF_DESCRIPTOR_LEN + TUD_USBTMC_BULK_DESCRIPTORS_LEN)
+#define CONFIG_TOTAL_LEN_SIGLENT    (TUD_CONFIG_DESC_LEN + TUD_USBTMC_IF_DESCRIPTOR_LEN + TUD_USBTMC_BULK_DESCRIPTORS_LEN)
 
 uint8_t const desc_configuration_siglent[] =
 {
   // Config number, interface count, string index, total length, attribute, power in mA
-  TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN_SIGLENT, 0x00, 100),
+  TUD_CONFIG_DESCRIPTOR(1, ITF_SGILENT_NUM_TOTAL, 0, CONFIG_TOTAL_LEN_SIGLENT, 0x00, 100),
 
-  // Interface number, string index, EP notification address and size, EP data address (out, in) and size.
-  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC, 4, 0x81, 8, EPNUM_CDC_OUT, 0x80 | EPNUM_CDC_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
+//  // Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+//  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC, 4, 0x81, 8, EPNUM_CDC_OUT, 0x80 | EPNUM_CDC_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
+//
+//  // Interface number, string index, EP Out & IN address, EP size
+//  TUD_VENDOR_DESCRIPTOR(ITF_NUM_VENDOR, 5, EPNUM_VENDOR_OUT, 0x80 | EPNUM_VENDOR_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
 
-  // Interface number, string index, EP Out & IN address, EP size
-  TUD_VENDOR_DESCRIPTOR(ITF_NUM_VENDOR, 5, EPNUM_VENDOR_OUT, 0x80 | EPNUM_VENDOR_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
-
-  TUD_USBTMC_IF_DESCRIPTOR(ITF_NUM_USBTMC, /* _bNumEndpoints = */ 2u,  /*_stridx = */ 7u, 0 /* no subclass */),
+  TUD_USBTMC_IF_DESCRIPTOR(ITF_SIGLENT_TMC, /* _bNumEndpoints = */ 2u,  /*_stridx = */ 7u, 0 /* no subclass */),
   TUD_USBTMC_BULK_DESCRIPTORS(/* OUT = */ EPNUM_TMC_OUT, /* IN = */ 0x80 | EPNUM_TMC_IN, /* packet size = */ 64),
 };
 
@@ -184,7 +171,10 @@ uint8_t const desc_configuration_siglent[] =
 uint8_t const * tud_descriptor_configuration_cb(uint8_t index)
 {
   (void) index; // for multiple configurations
-  return is_siglent ? desc_configuration_siglent : desc_configuration;
+  switch(getMode()) {
+  case MODE_DEFAULT: return desc_configuration_default;
+  case MODE_SIGLENT: return desc_configuration_siglent;
+  }
 }
 
 //--------------------------------------------------------------------+
@@ -234,7 +224,7 @@ uint8_t const desc_ms_os_20[] =
   U16_TO_U8S_LE(0x0008), U16_TO_U8S_LE(MS_OS_20_SUBSET_HEADER_CONFIGURATION), 0, 0, U16_TO_U8S_LE(MS_OS_20_DESC_LEN-0x0A),
 
   // Function Subset header: length, type, first interface, reserved, subset length
-  U16_TO_U8S_LE(0x0008), U16_TO_U8S_LE(MS_OS_20_SUBSET_HEADER_FUNCTION), ITF_NUM_VENDOR, 0, U16_TO_U8S_LE(MS_OS_20_DESC_LEN-0x0A-0x08),
+  U16_TO_U8S_LE(0x0008), U16_TO_U8S_LE(MS_OS_20_SUBSET_HEADER_FUNCTION), ITF_DEF_NUM_VENDOR, 0, U16_TO_U8S_LE(MS_OS_20_DESC_LEN-0x0A-0x08),
 
   // MS OS 2.0 Compatible ID descriptor: length, type, compatible ID, sub compatible ID
   U16_TO_U8S_LE(0x0014), U16_TO_U8S_LE(MS_OS_20_FEATURE_COMPATBLE_ID), 'W', 'I', 'N', 'U', 'S', 'B', 0x00, 0x00,

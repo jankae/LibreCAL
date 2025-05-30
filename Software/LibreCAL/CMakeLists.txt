@@ -33,6 +33,7 @@ add_definitions(
 -DFW_MAJOR=0
 -DFW_MINOR=2
 -DFW_PATCH=4
+#-DENABLE_UART
 )
 
 add_executable(LibreCAL 
@@ -48,11 +49,12 @@ add_executable(LibreCAL
 	src/USB/msc_disk.cpp
 	src/USB/usb_descriptors.c
 	src/USB/usb.c
-	src/USB/tmc.cpp
+	src/USB/siglent_tmc.cpp
 	src/fatfs/ff.c
 	src/fatfs/ffsystem.c
 	src/fatfs/ffunicode.c
 	src/fatfs/flashdisk.cpp
+	src/Log.cpp
 )
 
 target_include_directories(LibreCAL PUBLIC
@@ -63,4 +65,4 @@ target_include_directories(LibreCAL PUBLIC
 )
 
 pico_add_extra_outputs(LibreCAL)
-target_link_libraries(LibreCAL pico_stdlib pico_unique_id hardware_rtc hardware_spi hardware_pwm hardware_adc FreeRTOS tinyusb_device tinyusb_board)
+target_link_libraries(LibreCAL pico_stdlib pico_unique_id hardware_rtc hardware_uart hardware_spi hardware_pwm hardware_adc FreeRTOS tinyusb_device tinyusb_board)

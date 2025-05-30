@@ -1,24 +1,17 @@
 #!/usr/bin/env python3
 
 """
-
 Converts LibreCAL Touchstone files to a format that a Siglent VNA can use.
-
 Usage:
-
 $ python3 convert_siglent.py /Volumes/LIBRECAL_R /Volumes/LIBRECAL_RW
-
 (or your paths or drive letters, as appropriate)
-
 This will create a "siglent" directory in your LIBRECAL_RW volume.  Then,
 plug in your LibreCAL while holding down the FUNCTION button, which will
 activate Siglent eCal compatibility mode, and calibrate your VNA as if you
 were using a SEM5000A (or other Siglent eCal).
-
 Since I only have a two port VNA, I have only tested calibrating with port 1
 and port 2 on my LibreCAL connected to SVA1032X ports 1 and 2.  If you have
 a fancier VNA, please let me know if it works.
-
 """
 
 __author__ = "Joshua Wise"
@@ -53,11 +46,15 @@ with ZipFile(zipbuf, "w", compression=ZIP_DEFLATED, compresslevel=9) as zf, \
     with say_open(indir / "info.txt", "r") as inf:
         for l in inf.readlines():
             outf.write(f"! {l.strip()}\n")
-    outf.write("#HZ,A,B,C,D,T_AB,T_AC,T_AD,T_BC,T_BD,T_CD\n")
-    
+    outf.write("#HZ,A,B,C,D,T_AB,T_AC,T_AD,T_BC,T_BD,T_CD,CF_AB,CF_AC,CF_AD,CF_BC,CF_BD,CF_CD\n")
+
+    # Some early LibreCALs have a truncated P34_THROUGH.s2p file. The siglent format only supports
+    # identical number of points for all standards. Keep track of shortest parameter list and truncate
+    # all parameters to that value below
+    shortest_axis = 9999999
     freqs = [] # will get populated below
     axes = [freqs]
-    
+
     for port in ["1", "2", "3", "4"]:
         for col in "OPEN", "SHORT", "LOAD":
             with say_open(indir / f"P{port}_{col}.s1p", "r") as inf:
@@ -70,13 +67,15 @@ with ZipFile(zipbuf, "w", compression=ZIP_DEFLATED, compresslevel=9) as zf, \
                     freqs.append(freq * 1e9)
                     ax_r.append(r)
                     ax_i.append(i)
+                if len(ax_r) < shortest_axis:
+                    shortest_axis = len(ax_r)
                 axes.append(ax_r)
                 axes.append(ax_i)
                 freqs = [] # hope they're all the same!
         axes.append([0 for _ in axes[0]])
         axes.append([0 for _ in axes[0]])
 
-    for port in ["12", "13", "14", "23", "24", "34"]:
+    for port in ["12", "13", "14", "23", "24", "34"] * 2:
         with say_open(indir / f"P{port}_THROUGH.s2p", "r") as inf:
             snps = [ [] for _ in range(8) ]
             for l in inf.readlines():
@@ -85,8 +84,14 @@ with ZipFile(zipbuf, "w", compression=ZIP_DEFLATED, compresslevel=9) as zf, \
                 snp_line = [float(x) for x in l.split(" ")][1:]
                 for k,v in enumerate([float(x) for x in l.split(" ")][1:]):
                     snps[k].append(v)
+            if len(snps[0]) < shortest_axis:
+                shortest_axis = len(snps[0])
             for l in snps:
                 axes.append(l)
+
+    # Truncate all axes to the same length
+    for i in range(len(axes)):
+        axes[i] = axes[i][:shortest_axis]
 
     ar = np.vstack(axes, dtype=np.float64).transpose()
     print(f"compressing {ar.shape[0]} points with {ar.shape[1]} columns")
@@ -100,14 +105,14 @@ info = { k: v for k,v in (line.split(": ") for line in open(indir / "info.txt", 
 VENDOR = "LibreCAL"
 PRODUCT = "LibreCAL"
 SERIAL = info['Serial']
-BYTE_0x4E = 0 # What are these?
+BYTE_0x4E = 4 # Not sure but best guess is that these bytes represent the number of ports on the eCal
 BYTE_0x4F = 0
 header = struct.pack("30s16s16s16sBB64s", b"", VENDOR.encode(), PRODUCT.encode(), SERIAL.encode(), BYTE_0x4E, BYTE_0x4F, b"")
 
 header += f"""Connector:SMA
 Module:Factory
 Desc:{ziphash}
-Frequency:9000,8500000000,1201
+Frequency:{str(int(axes[0][0]))},{str(int(axes[0][-1]))},{str(len(axes[0]))}
 Data:0,{len(zipbuf.getvalue())},{ziphash}
 Date:{strftime('%Y-%m-%d', caldate)}
 """.encode()

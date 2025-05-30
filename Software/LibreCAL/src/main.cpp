@@ -1,4 +1,6 @@
 #include <ff.h>
+#include <main.h>
+#include <main.h>
 #include <serial.h>
 #include <usb.h>
 #include <cstdio>
@@ -17,6 +19,10 @@
 #include "Flash.hpp"
 #include "UserInterface.hpp"
 #include "Heater.hpp"
+
+#define LOG_LEVEL	LOG_LEVEL_INFO
+#define LOG_MODULE	"App"
+#include "Log.h"
 
 const char* date = __DATE__;
 const char* time = __TIME__;
@@ -57,6 +63,12 @@ static usb_interface_t usb_interface;
 static xTaskHandle handle;
 
 Flash flash(spi0, FLASH_CLK_PIN, FLASH_MOSI_PIN, FLASH_MISO_PIN, FLASH_CS_PIN);
+
+static ecal_mode_t mode = MODE_DEFAULT;
+
+ecal_mode_t getMode() {
+	return mode;
+}
 
 static void usb_rx(const uint8_t *buf, uint16_t len, usb_interface_t i) {
 	if(len > sizeof(usb_buffer)) {
@@ -129,14 +141,19 @@ static void defaultTask(void* ptr) {
 		}
 	}
 	
-	if (UserInterface::IsFunctionHeld() && !f_open(&fil, "0:siglent/info.dat", FA_OPEN_EXISTING | FA_READ)) {
-		/* someone has given us Siglent parameters, enter Siglent
-		 * mode.  maybe in the future we should compute a default
-		 * siglent/info.dat to put in the RO partition, but that
-		 * would require a zip engine onboard; punt on that for now
-		 */
-		usb_is_siglent();
-		f_close(&fil);
+	// Figure out which mode we should be in. The default mode is the normal LibreCAL mode.
+	// You can always force that mode by pressing the function button when power is applied.
+	// If that button is not pressed, the LibreCAL may emulate other electronic calibration
+	// units it the necessary files are available
+	if(UserInterface::IsFunctionHeld()) {
+		mode = MODE_DEFAULT;
+	} else {
+		// default mode is not forced, check files
+		if(!f_open(&fil, "0:siglent/info.dat", FA_OPEN_EXISTING | FA_READ)) {
+			// we have data in Siglent format
+			mode = MODE_SIGLENT;
+			f_close(&fil);
+		}
 	}
 
 	usb_init(usb_rx);
@@ -150,6 +167,10 @@ static void defaultTask(void* ptr) {
 }
 
 int main(void) {
+#ifdef ENABLE_UART
+	Log_Init();
+	LOG_INFO("Start");
+#endif
 	spi_init(spi0, 20000 * 1000);
 	gpio_set_function(FLASH_CLK_PIN, GPIO_FUNC_SPI);
 	gpio_set_function(FLASH_MOSI_PIN, GPIO_FUNC_SPI);
