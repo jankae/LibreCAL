@@ -119,12 +119,14 @@ enum
 // Siglent mode
 enum
 {
-  ITF_SIGLENT_TMC = 0,
-  ITF_SGILENT_NUM_TOTAL
+  ITF_SIGLENT_NUM_CDC = 0,
+  ITF_SIGLENT_NUM_CDC_DATA,
+  ITF_SIGLENT_NUM_TMC,
+  ITF_SIGLENT_NUM_TOTAL
 };
 // Endpoints for Siglent mode
-#define EPNUM_TMC_IN     	2
-#define EPNUM_TMC_OUT    	2
+#define EPNUM_TMC_IN     	3
+#define EPNUM_TMC_OUT    	3
 
 #define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_VENDOR_DESC_LEN + TUD_MSC_DESC_LEN)
 
@@ -148,20 +150,20 @@ uint8_t const desc_configuration_default[] =
  * MSC interface.
  */
 
-#define CONFIG_TOTAL_LEN_SIGLENT    (TUD_CONFIG_DESC_LEN + TUD_USBTMC_IF_DESCRIPTOR_LEN + TUD_USBTMC_BULK_DESCRIPTORS_LEN)
+#define CONFIG_TOTAL_LEN_SIGLENT    (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_USBTMC_IF_DESCRIPTOR_LEN + TUD_USBTMC_BULK_DESCRIPTORS_LEN)
 
 uint8_t const desc_configuration_siglent[] =
 {
   // Config number, interface count, string index, total length, attribute, power in mA
-  TUD_CONFIG_DESCRIPTOR(1, ITF_SGILENT_NUM_TOTAL, 0, CONFIG_TOTAL_LEN_SIGLENT, 0x00, 100),
+  TUD_CONFIG_DESCRIPTOR(1, ITF_SIGLENT_NUM_TOTAL, 0, CONFIG_TOTAL_LEN_SIGLENT, 0x00, 100),
 
-//  // Interface number, string index, EP notification address and size, EP data address (out, in) and size.
-//  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC, 4, 0x81, 8, EPNUM_CDC_OUT, 0x80 | EPNUM_CDC_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
+  // Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+  TUD_CDC_DESCRIPTOR(ITF_SIGLENT_NUM_CDC, 4, 0x81, 8, EPNUM_CDC_OUT, 0x80 | EPNUM_CDC_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
 //
 //  // Interface number, string index, EP Out & IN address, EP size
 //  TUD_VENDOR_DESCRIPTOR(ITF_NUM_VENDOR, 5, EPNUM_VENDOR_OUT, 0x80 | EPNUM_VENDOR_IN, TUD_OPT_HIGH_SPEED ? 512 : 64),
 
-  TUD_USBTMC_IF_DESCRIPTOR(ITF_SIGLENT_TMC, /* _bNumEndpoints = */ 2u,  /*_stridx = */ 7u, 0 /* no subclass */),
+  TUD_USBTMC_IF_DESCRIPTOR(ITF_SIGLENT_NUM_TMC, /* _bNumEndpoints = */ 2u,  /*_stridx = */ 7u, 0 /* no subclass */),
   TUD_USBTMC_BULK_DESCRIPTORS(/* OUT = */ EPNUM_TMC_OUT, /* IN = */ 0x80 | EPNUM_TMC_IN, /* packet size = */ 64),
 };
 
