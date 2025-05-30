@@ -103,7 +103,7 @@ void Task(void*) {
 		// update LEDs
 
 		// wait/ready are solid on when in default mode and blink when in any other mode
-		bool on = (getMode() == MODE_DEFAULT) || (xTaskGetTickCount() % ledBlinkPeriod > ledBlinkOnTime);
+		bool on = (getUsbMode() == MODE_DEFAULT) || (xTaskGetTickCount() % ledBlinkPeriod > ledBlinkOnTime);
 		if(Heater::IsStable()) {
 			setLED(LED::WAIT, false);
 			setLED(LED::READY, on);

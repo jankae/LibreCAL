@@ -64,9 +64,9 @@ static xTaskHandle handle;
 
 Flash flash(spi0, FLASH_CLK_PIN, FLASH_MOSI_PIN, FLASH_MISO_PIN, FLASH_CS_PIN);
 
-static ecal_mode_t mode = MODE_DEFAULT;
+static ecal_usb_mode_t mode = MODE_DEFAULT;
 
-ecal_mode_t getMode() {
+ecal_usb_mode_t getUsbMode() {
 	return mode;
 }
 

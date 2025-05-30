@@ -7,9 +7,9 @@ extern "C" {
 typedef enum {
 	MODE_DEFAULT,
 	MODE_SIGLENT,
-} ecal_mode_t;
+} ecal_usb_mode_t;
 
-ecal_mode_t getMode();
+ecal_usb_mode_t getUsbMode();
 
 #ifdef __cplusplus
 }
