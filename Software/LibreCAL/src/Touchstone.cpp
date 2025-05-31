@@ -6,6 +6,10 @@
 #include <cstdio>
 #include <cstring>
 
+#define LOG_LEVEL	LOG_LEVEL_INFO
+#define LOG_MODULE	"Touchstone"
+#include "Log.h"
+
 static FIL writeFile;
 static bool writeFileOpen = false;
 
@@ -324,6 +328,7 @@ extern FATFS fs1;
 
 bool Touchstone::clearFactory() {
 	if(!writeFactory) {
+		LOG_ERR("Factory deletion not allowed");
 		return false;
 	}
     
@@ -335,15 +340,20 @@ bool Touchstone::clearFactory() {
 
 	// format the factory drive
 	BYTE work[FF_MAX_SS];
-	if(f_mkfs("1:", 0, work, sizeof(work)) != FR_OK) {
+	FRESULT status;
+	if((status = f_mkfs("1:", 0, work, sizeof(work))) != FR_OK) {
+		LOG_ERR("mkfs failed: %d", status);
 		return false;
 	}
-	if(f_setlabel("1:LibreCAL_R") != FR_OK) {
+	if((status = f_mount(&fs1, "1:", 1)) != FR_OK) {
+		LOG_ERR("mount failed: %d", status);
 		return false;
 	}
-	if(f_mount(&fs1, "1:", 1) != FR_OK) {
+	if((status = f_setlabel("1:LibreCAL_R")) != FR_OK) {
+		LOG_ERR("set label failed: %d", status);
 		return false;
 	}
+
 
     // needs to recreate the information file
     return createInfoFile();

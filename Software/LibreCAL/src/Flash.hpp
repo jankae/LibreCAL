@@ -24,7 +24,7 @@ public:
 
 	bool isPresent();
 	void read(uint32_t address, uint16_t length, void *dest);
-	bool write(uint32_t address, uint16_t length, const void *src);
+	bool write(uint32_t address, uint16_t length, const uint8_t *src);
 	bool eraseChip();
 	bool eraseSector(uint32_t address);
 	bool erase32Block(uint32_t address);

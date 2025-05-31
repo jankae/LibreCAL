@@ -3,15 +3,13 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include <cstring>
+#include "pico/time.h"
 
 #include <stdio.h>
 
-#define LOG_DEBUG(s, ...) //printf(s, __VA_ARGS__)
-#define LOG_INFO(s...) //printf(s)
-#define LOG_ERR(s...) //printf(s)
-//#define LOG_ERR(s, ...) printf(s, __VA_ARGS__)
-//#define LOG_ERR(s, ...) printf(s, __VA_ARGS__)
-//#define LOG_ERR(s, ...) printf(s, __VA_ARGS__)
+#define LOG_LEVEL	LOG_LEVEL_INFO
+#define LOG_MODULE	"Flash"
+#include "Log.h"
 
 bool Flash::isPresent() {
 	xSemaphoreTakeRecursive(mutex, portMAX_DELAY);
@@ -50,16 +48,16 @@ void Flash::read(uint32_t address, uint16_t length, void *dest) {
 	xSemaphoreGiveRecursive(mutex);
 }
 
-bool Flash::write(uint32_t address, uint16_t length, const void *src) {
+bool Flash::write(uint32_t address, uint16_t length, const uint8_t *src) {
 	xSemaphoreTakeRecursive(mutex, portMAX_DELAY);
 	if(address % PageSize != 0 || length%PageSize != 0) {
 		// only writes to complete pages allowed
-		LOG_ERR("Invalid write address/size: %lu/%u", address, length);
+		LOG_ERR("Invalid write address/size: 0x%08x/%u", address, length);
 		xSemaphoreGiveRecursive(mutex);
 		return false;
 	}
 	address &= 0x00FFFFFF;
-	LOG_DEBUG("Writing %u bytes to address %lu", length, address);
+	LOG_DEBUG("Writing %u bytes to address 0x%08x", length, address);
 	while(length > 0) {
 		EnableWrite();
 		CS(false);
@@ -101,6 +99,7 @@ void Flash::EnableWrite() {
 	uint8_t wel = 0x06;
 	spi_write_blocking(spi, &wel, 1);
 	CS(true);
+	sleep_us(1);
 }
 
 bool Flash::eraseChip() {
@@ -111,6 +110,7 @@ bool Flash::eraseChip() {
 	uint8_t chip_erase = 0x60;
 	spi_write_blocking(spi, &chip_erase, 1);
 	CS(true);
+	sleep_us(1);
 	return WaitBusy(25000);
 }
 
@@ -118,7 +118,7 @@ bool Flash::eraseSector(uint32_t address) {
 	xSemaphoreTakeRecursive(mutex, portMAX_DELAY);
 	// align address with sector address
 	address -= address % SectorSize;
-	LOG_INFO("Erasing sector at %lu", address);
+	LOG_INFO("Erasing sector at 0x%08x", address);
 	EnableWrite();
 	CS(false);
 	uint8_t cmd[4] = {
@@ -129,6 +129,7 @@ bool Flash::eraseSector(uint32_t address) {
 	};
 	spi_write_blocking(spi, cmd, 4);
 	CS(true);
+	sleep_us(1);
 	bool ret =  WaitBusy(25000);
 	xSemaphoreGiveRecursive(mutex);
 	return ret;
@@ -138,7 +139,7 @@ bool Flash::erase32Block(uint32_t address) {
 	xSemaphoreTakeRecursive(mutex, portMAX_DELAY);
 	// align address with block address
 	address -= address % Block32Size;
-	LOG_INFO("Erasing 32kB block at %lu", address);
+	LOG_INFO("Erasing 32kB block at 0x%08x", address);
 	EnableWrite();
 	CS(false);
 	uint8_t cmd[4] = {
@@ -149,6 +150,7 @@ bool Flash::erase32Block(uint32_t address) {
 	};
 	spi_write_blocking(spi, cmd, 4);
 	CS(true);
+	sleep_us(1);
 	bool ret =  WaitBusy(25000);
 	xSemaphoreGiveRecursive(mutex);
 	return ret;
@@ -158,7 +160,7 @@ bool Flash::erase64Block(uint32_t address) {
 	xSemaphoreTakeRecursive(mutex, portMAX_DELAY);
 	// align address with block address
 	address -= address % Block64Size;
-	LOG_INFO("Erasing 64kB block at %lu", address);
+	LOG_INFO("Erasing 64kB block at 0x%08x", address);
 	EnableWrite();
 	CS(false);
 	uint8_t cmd[4] = {

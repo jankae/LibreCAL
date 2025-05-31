@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - siglent
+      - build_FW_test
   pull_request:
     branches:
       - main
@@ -207,13 +207,7 @@ jobs:
       - name: Install toolchain
         run: |
           sudo apt-get update
-          sudo apt install -y build-essential binutils-arm-none-eabi 
-
-          # Ubuntu 24.04 comes with version 10.3 of the ARM GCC toolchain. For some reason builds with that version result in buggy file reading/writing and unstable USB connections.
-          # Manually install older version of the toolchain which does not have the problem
-          wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2
-          tar -xvjf gcc-arm-none-eabi-9-2020-q2-update-x86_64-linux.tar.bz2 -C /opt
-
+          sudo apt install -y build-essential gcc-arm-none-eabi binutils-arm-none-eabi 
           sudo git clone https://github.com/raspberrypi/pico-sdk.git /opt/pico-sdk
           sudo git -C /opt/pico-sdk checkout 2.1.1
           sudo git -C /opt/pico-sdk submodule update --init
@@ -236,7 +230,6 @@ jobs:
       - name: Build application
         run: |
           export PICO_SDK_PATH=/opt/pico-sdk
-          export PATH=/opt/gcc-arm-none-eabi-9-2020-q2-update/bin:$PATH
           cd Software/LibreCAL
           mkdir build && cd build
           cmake ..
