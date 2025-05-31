@@ -166,6 +166,8 @@ static void defaultTask(void* ptr) {
 	}
 }
 
+static TaskHandle_t main_task;
+
 int main(void) {
 #ifdef ENABLE_UART
 	Log_Init();
@@ -209,7 +211,7 @@ int main(void) {
 	Heater::SetTarget(35);
 	SCPI::Init(usb_transmit);
 
-	xTaskCreate(defaultTask, "defaultTask", 16384, NULL, 3, NULL);
+	xTaskCreate(defaultTask, "defaultTask", 16384, NULL, 3, &main_task);
 
 	vTaskStartScheduler();
 	return 0;

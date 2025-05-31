@@ -108,10 +108,12 @@ static void tinyUSB_task(void* ptr) {
 	}
 }
 
+static TaskHandle_t usb_task;
+
 void usb_init(usbd_recv_callback_t receive_callback) {
 	callback = receive_callback;
 	tud_init(0);
-	xTaskCreate(tinyUSB_task, "TinyUSB", 1024, NULL, 1, NULL);
+	xTaskCreate(tinyUSB_task, "TinyUSB", 1024, NULL, 3, &usb_task);
 }
 bool usb_transmit(const uint8_t *data, uint16_t length, uint8_t i) {
 	if(i == USB_INTERFACE_CDC) {
