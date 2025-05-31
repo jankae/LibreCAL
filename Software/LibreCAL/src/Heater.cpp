@@ -106,7 +106,7 @@ void Heater::Init() {
 	adc_gpio_init(ADCPin);
 	adc_select_input(ADCPin - 26);
 
-	xTaskCreate(HeaterTask, "Heater", 512, NULL, 1, NULL);
+	xTaskCreate(HeaterTask, "Heater", 512, NULL, 3, NULL);
 }
 
 void Heater::SetTarget(uint8_t celsius) {

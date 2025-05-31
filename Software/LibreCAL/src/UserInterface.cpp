@@ -162,7 +162,7 @@ void Init() {
 	    gpio_set_dir(Buttonpins[i], GPIO_IN);
 	    gpio_set_pulls(Buttonpins[i], true, false);
 	}
-	xTaskCreate(Task, "UserInterface", 512, NULL, 1, NULL);
+	xTaskCreate(Task, "UserInterface", 512, NULL, 3, NULL);
 }
 
 };
