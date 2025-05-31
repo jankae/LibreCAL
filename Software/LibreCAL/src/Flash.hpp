@@ -13,6 +13,7 @@
 
 #include "hardware/spi.h"
 #include "hardware/gpio.h"
+#include "pico/time.h"
 
 class Flash {
 public:
@@ -42,6 +43,9 @@ public:
 private:
 	void CS(bool high) {
 		gpio_put(CS_pin, high);
+		if(high) {
+			sleep_us(1);
+		}
 	}
 	// Starts the reading process without actually reading any bytes
 	void initiateRead(uint32_t address);

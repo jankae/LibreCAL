@@ -3,7 +3,6 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include <cstring>
-#include "pico/time.h"
 
 #include <stdio.h>
 
@@ -63,8 +62,8 @@ bool Flash::write(uint32_t address, uint16_t length, const uint8_t *src) {
 		CS(false);
 		uint8_t cmd[4] = {
 			0x02,
-			(uint8_t) (address >> 16) & 0xFF,
-			(uint8_t) (address >> 8) & 0xFF,
+			(uint8_t) ((address >> 16) & 0xFF),
+			(uint8_t) ((address >> 8) & 0xFF),
 			(uint8_t) (address & 0xFF),
 		};
 		// issue write command
@@ -99,7 +98,6 @@ void Flash::EnableWrite() {
 	uint8_t wel = 0x06;
 	spi_write_blocking(spi, &wel, 1);
 	CS(true);
-	sleep_us(1);
 }
 
 bool Flash::eraseChip() {
@@ -110,7 +108,6 @@ bool Flash::eraseChip() {
 	uint8_t chip_erase = 0x60;
 	spi_write_blocking(spi, &chip_erase, 1);
 	CS(true);
-	sleep_us(1);
 	return WaitBusy(25000);
 }
 
@@ -123,13 +120,12 @@ bool Flash::eraseSector(uint32_t address) {
 	CS(false);
 	uint8_t cmd[4] = {
 		0x20,
-		(uint8_t) (address >> 16) & 0xFF,
-		(uint8_t) (address >> 8) & 0xFF,
+		(uint8_t) ((address >> 16) & 0xFF),
+		(uint8_t) ((address >> 8) & 0xFF),
 		(uint8_t) (address & 0xFF),
 	};
 	spi_write_blocking(spi, cmd, 4);
 	CS(true);
-	sleep_us(1);
 	bool ret =  WaitBusy(25000);
 	xSemaphoreGiveRecursive(mutex);
 	return ret;
@@ -144,13 +140,12 @@ bool Flash::erase32Block(uint32_t address) {
 	CS(false);
 	uint8_t cmd[4] = {
 		0x52,
-		(uint8_t) (address >> 16) & 0xFF,
-		(uint8_t) (address >> 8) & 0xFF,
+		(uint8_t) ((address >> 16) & 0xFF),
+		(uint8_t) ((address >> 8) & 0xFF),
 		(uint8_t) (address & 0xFF),
 	};
 	spi_write_blocking(spi, cmd, 4);
 	CS(true);
-	sleep_us(1);
 	bool ret =  WaitBusy(25000);
 	xSemaphoreGiveRecursive(mutex);
 	return ret;
@@ -165,8 +160,8 @@ bool Flash::erase64Block(uint32_t address) {
 	CS(false);
 	uint8_t cmd[4] = {
 		0xD8,
-		(uint8_t) (address >> 16) & 0xFF,
-		(uint8_t) (address >> 8) & 0xFF,
+		(uint8_t) ((address >> 16) & 0xFF),
+		(uint8_t) ((address >> 8) & 0xFF),
 		(uint8_t) (address & 0xFF),
 	};
 	spi_write_blocking(spi, cmd, 4);
@@ -181,8 +176,8 @@ void Flash::initiateRead(uint32_t address) {
 	CS(false);
 	uint8_t cmd[4] = {
 		0x03,
-		(uint8_t) (address >> 16) & 0xFF,
-		(uint8_t) (address >> 8) & 0xFF,
+		(uint8_t) ((address >> 16) & 0xFF),
+		(uint8_t) ((address >> 8) & 0xFF),
 		(uint8_t) (address & 0xFF),
 	};
 	// issue read command
