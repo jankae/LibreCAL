@@ -175,8 +175,8 @@ There are three buttons available:
 \subsection{LEDs}
 \begin{itemize}
 \item \textbf{Power:} Always on.
-\item \textbf{Ready:} On when the heater has reached the required temperature.
-\item \textbf{Wait:} On while temperature has not yet settled. Do not make calibration measurements while this LED is on.
+\item \textbf{Ready:} On or blinking when the heater has reached the required temperature.
+\item \textbf{Wait:} On or blinking while temperature has not yet settled. Do not make calibration measurements while this LED is on.
 \item \textbf{Port[1-4]:}
 \begin{itemize}
 \item \textbf{While manually changing settings:} The LED corresponding to the currently selected port flashes.
@@ -286,6 +286,21 @@ In other words, the touchstone option line must be
 # GHz S RI R 50.0
 \end{lstlisting}
 If the touchstone file uses any other format, it must either be converted before copying it to \mbox{LIBRECAL\_R}W or the \dev{}-GUI must be used to import the touchstone file and create the coefficient from that.
+
+
+\section{USB modes}
+The \dev{} is primarely used to calibrate the LibreVNA with the functions and protocol described in this document. VNAs from other manufacturers usually have their own proprietary protocol and will not detect the \dev{}. However, for some VNAs and protocols it is possible to reverse engineer their functions and add an emulation mode to the \dev{}. That way, it can be used to automatically calibrate these VNAs as well.
+
+To enable an emulation mode, the calibration coefficients must be stored on the LibreCAL in the reverse engineered format. This can be achieved with the supplied scripts\footnote{\url{https://github.com/jankae/LibreCAL/blob/main/Software/Scripts}}.
+
+When the \dev{} starts and detects this data, it will automatically enter the corresponding emulation mode. This is indicated by a blinking wait or ready LED (which would be constantly on in the default mode). When an emulation mode is active, the \dev{} will not be recognized by the \dev{}-GUI or LibreVNA-GUI anymore. You can press and hold the function button while applying power to force the \dev{} into its default mode.
+
+Currently emulation modes for the following VNAs from other manufacturers are supported:
+\begin{itemize}
+\item Siglent SVA1000X series
+\item Siglent SNA5000A series
+\end{itemize}
+If you have access to electronic calibration modules from unsupported manufacturers and the capability to reverse engineer their protocols please get in touch to extend this list.
 
 
 \end{document}

@@ -62,7 +62,7 @@ windows{
 
 REVISION = $$system(git rev-parse HEAD)
 DEFINES += GITHASH=\\"\"$$REVISION\\"\"
-DEFINES += FW_MAJOR=0 FW_MINOR=2 FW_PATCH=4 FW_SUFFIX=""#\\"\"-alpha.2\\"\"
+DEFINES += FW_MAJOR=0 FW_MINOR=3 FW_PATCH=0 FW_SUFFIX=""#\\"\"-alpha.2\\"\"
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

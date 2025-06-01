@@ -31,8 +31,8 @@ target_include_directories(FreeRTOS PUBLIC
 
 add_definitions(
 -DFW_MAJOR=0
--DFW_MINOR=2
--DFW_PATCH=4
+-DFW_MINOR=3
+-DFW_PATCH=0
 #-DENABLE_UART
 )
 
