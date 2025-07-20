@@ -45,7 +45,7 @@ def say_open(name, *args):
 zipbuf = io.BytesIO()
 with ZipFile(zipbuf, "w", compression=ZIP_DEFLATED, compresslevel=9) as zf, \
      zf.open("Factory.csv", "w") as outf_b, \
-     io.TextIOWrapper(outf_b) as outf:
+     io.TextIOWrapper(outf_b, newline='\x0A') as outf:
     with say_open(indir / "info.txt", "r") as inf:
         for l in inf.readlines():
             outf.write(f"! {l.strip()}\n")
