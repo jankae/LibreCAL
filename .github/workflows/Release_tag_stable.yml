@@ -80,7 +80,7 @@ jobs:
       
       - name: Download libusb
         run: |
-          curl -o libusb.7z -L https://github.com/libusb/libusb/releases/download/v1.0.23/libusb-1.0.25.7z
+          curl -o libusb.7z -L https://github.com/libusb/libusb/releases/download/v1.0.25/libusb-1.0.25.7z
           7z x libusb.7z -r -olibusb
           Xcopy /E /I /Y libusb\include ..\Qt\6.2.0\mingw81_64\include
           Xcopy /E /I /Y libusb\MinGW64\static\libusb-1.0.a Software\LibreCAL-GUI
