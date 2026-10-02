@@ -115,13 +115,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.8.*'
+          modules: 'qtcharts qtsvg'
+          cache: true
+
       - name: Install dependencies
         run: |
-          brew install qt@6 pcre
+          brew install libusb pkgconf pcre
 
-      - name: Set Environment
+      - name: Set libusb Environment
         run: |
-          echo "/usr/local/opt/qt@6/bin" >> $GITHUB_PATH
+          echo "PKG_CONFIG_PATH=$(brew --prefix libusb)/lib/pkgconfig:${PKG_CONFIG_PATH:-}" >> "$GITHUB_ENV"
           
       - name: Get build timestamp
         id: id_date
