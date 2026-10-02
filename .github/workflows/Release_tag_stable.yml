@@ -143,14 +143,6 @@ jobs:
           version: '6.11.*'
           modules: 'qtcharts'
           cache: true
-
-      - name: Install dependencies
-        run: |
-          brew install libusb pkgconf
-
-      - name: Set libusb Environment
-        run: |
-          echo "PKG_CONFIG_PATH=$(brew --prefix libusb)/lib/pkgconfig:${PKG_CONFIG_PATH:-}" >> "$GITHUB_ENV"
           
       - name: Get app version
         id: id_version
