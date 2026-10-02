@@ -119,7 +119,7 @@ jobs:
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.8.*'
-          modules: 'qtcharts qtsvg'
+          modules: 'qtcharts'
           cache: true
 
       - name: Install dependencies
